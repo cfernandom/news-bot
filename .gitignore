@@ -1,0 +1,49 @@
+# Entorno virtual
+.venv/
+venv/
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Archivos de log o salida
+*.log
+*.out
+*.tmp
+
+# Archivos de configuración de pruebas
+.coverage
+.cache/
+.tox/
+.pytest_cache/
+
+# Archivos generados por editores
+*.swp
+*.swo
+*.DS_Store
+*.idea/
+.vscode/
+
+# Archivos de instalación
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Docker
+*.env
+docker-compose.override.yml
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# MacOS
+.DS_Store
+
+# Archivos secretos o locales
+secrets/
+*.pem
+*.key
+*.crt
