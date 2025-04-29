@@ -1,7 +1,7 @@
 import asyncio
-from services.decision_engine.src.main import main as decision_engine
+from services.orchestrator.src.main import run_pipeline
 
 async def main():
-    await decision_engine()
+    await run_pipeline()
 
 asyncio.run(main())

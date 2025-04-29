@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from services.nlp.src.models import NLPResult
+from services.shared.models.article import Article
 
 @dataclass
 class DecisionResult:
-    article_url: str
+    article: Article
     should_publish: bool
     reason: str
     score: int
@@ -19,7 +20,7 @@ class DecisionResult:
             else f"Score {nlp.score} < {threshold}"
         )
         return cls(
-            article_url=nlp.article.url,
+            article=nlp.article,
             should_publish=publish,
             reason=reason,
             score=nlp.score,
