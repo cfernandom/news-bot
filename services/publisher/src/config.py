@@ -9,3 +9,4 @@ WP_PASSWORD = os.getenv("WP_PASSWORD", "clave_wp")
 
 # Ruta completa al endpoint de posts
 WP_POSTS_ENDPOINT = f"{WP_BASE_URL}/wp-json/wp/v2/posts"
+WP_FEATURE_IMAGE_ID = "277"

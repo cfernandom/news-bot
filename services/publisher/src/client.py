@@ -1,5 +1,5 @@
 from requests.auth import HTTPBasicAuth
-from services.publisher.src.config import WP_POSTS_ENDPOINT, WP_USER, WP_PASSWORD
+from services.publisher.src.config import WP_POSTS_ENDPOINT, WP_USER, WP_PASSWORD, WP_FEATURE_IMAGE_ID
 from typing import Any
 import base64
 import requests
@@ -24,7 +24,8 @@ class WordPressClient:
         payload = {
             "title": title,
             "content": content,
-            "status": status
+            "status": status,
+            "featured_media": WP_FEATURE_IMAGE_ID
         }
         resp = requests.post(
             self.endpoint,
