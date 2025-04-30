@@ -1,7 +1,4 @@
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # URL base de tu WordPress, sin slash final, e.g. "https://tudominio.com"
 WP_BASE_URL = os.getenv("WP_BASE_URL", "https://tudominio.com")
