@@ -11,32 +11,38 @@ async def scraper__www_breast_cancer_org() -> list[Article]:
     html = await get_html_with_playwright(URL)
     soup = BeautifulSoup(html, "html.parser")
     articles = []
-    # Buscamos todos los enlaces relevantes dentro del cuerpo
+
     for a_tag in soup.find_all("a", href=True):
         href = a_tag["href"]
-        text = a_tag.get_text(strip=True)
-        # Heurística: buscamos enlaces internos relacionados con noticias
         if (
             href.startswith("/research-news/")
             and "topic/" not in href.lower()
         ):
-            title = text
+            title = a_tag.get_text(strip=True)
             full_url = urljoin(BASE_URL, href)
-            # extraer párrafo y resumen después del link
+
+            # resumen
             parent = a_tag.find_parent("div")
             p = parent.find_next("p") if parent else None
             summary = p.get_text(strip=True) if p else ""
-            # extraer la fecha desde el div con data-sentry-component="Info"
+
+            # fecha
             date: Optional[datetime] = None
-            info_div = parent.find_next("div", attrs={"data-sentry-component": "Info"}) if parent else None
+            info_div = parent.find_next(
+                "div",
+                class_="Info_dateAndAuthorWrapper__M8I4F"
+            ) if parent else None
+
             if info_div:
-                # El contenido de info_div suele ser: "Dec 19, 2024 | <autor>"
                 raw = info_div.get_text(" ", strip=True)
                 date_str = raw.split("|", 1)[0].strip()
                 try:
                     date = datetime.strptime(date_str, "%b %d, %Y")
                 except ValueError:
+                    # imprime raw para ver qué formato real está llegando
+                    print("Fecha no parseable:", raw)
                     date = None
+
             articles.append(Article(
                 title=title,
                 url=full_url,
@@ -44,4 +50,5 @@ async def scraper__www_breast_cancer_org() -> list[Article]:
                 date=date,
                 content=""
             ))
+
     return articles
