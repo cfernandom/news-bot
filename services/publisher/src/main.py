@@ -47,16 +47,27 @@ def publish_decisions(decisions: list[DecisionResult]) -> list[PublishResult]:
             ))
     return results
 
-#! El siguiente es un ejemplo para ilustrar rápidamente el uso de la funcion publish decision
-if __name__ == "__main__":
-    # Ejemplo de consumo: cargar decisions desde un JSON o importarlas directamente
-    # Aquí simulo dos decisiones:
-    sample = [
-        DecisionResult(article_url="https://ejemplo.com/a1", should_publish=True, reason="Score 3 ≥ 2", score=3, matched_keywords=["breast cancer","tumor"]),
-        DecisionResult(article_url="https://ejemplo.com/a2", should_publish=False, reason="Score 1 < 2", score=1, matched_keywords=["hydratation"])
-    ]
+def publish_newsletter_post(title: str, content: str) -> PublishResult:
+    """
+    Publica una entrada de tipo newsletter en WordPress.
+    """
+    client = WordPressClient()
 
-    res = publish_decisions(sample)
-    for r in res:
-        status = "✅" if r.published else "❌"
-        print(f"{status} {r.article.url} → {r.message} (WP ID: {r.wp_post_id})")
+    try:
+        post_data = client.create_post(title=title, content=content)
+        post_id = post_data.get("id")
+        link = post_data.get("link", "Desconocido")
+
+        return PublishResult(
+            article_url=link,
+            published=True,
+            wp_post_id=post_id,
+            message="Publicado correctamente"
+        )
+    except Exception as e:
+        return PublishResult(
+            article_url="newsletter",
+            published=False,
+            wp_post_id=None,
+            message=str(e)
+        )
