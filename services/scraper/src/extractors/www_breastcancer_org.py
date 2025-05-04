@@ -47,7 +47,7 @@ async def scraper__www_breast_cancer_org() -> list[Article]:
                 title=title,
                 url=full_url,
                 summary=summary,
-                date=date,
+                published_at=date,
                 content=""
             ))
 

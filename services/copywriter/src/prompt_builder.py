@@ -8,7 +8,7 @@ def build_news_prompt(decisions: list[DecisionResult]) -> str:
         prompt += (
             f"{i}. Título: {d.article.title}\n"
             f"   Resumen: {d.article.summary}\n"
-            f"   Fecha: {d.article.date.strftime('%Y-%m-%d')}\n"
+            f"   Fecha de publicación: {d.article.published_at.strftime('%Y-%m-%d')}\n"
             f"   Fuente: {d.article.url}\n\n"
         )
     return prompt.strip()
