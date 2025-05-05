@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta, timezone
+from services.shared.utils.dates import filter_articles_by_date_range
 from services.scraper.src.main import scrape_articles
 from services.nlp.src.main import analyze_articles
 from services.decision_engine.src.main import decide_publications
@@ -10,9 +12,13 @@ async def run_pipeline():
     print("🔍 Scrapeando artículos...")
     articles = await scrape_articles()
 
-    print(f"📚 {len(articles)} artículos extraídos. Procesando NLP...")
+    # Filtro: últimos 7 días
+    today = datetime.now(timezone.utc)
+    last_week = today - timedelta(days=7)
+    articles = filter_articles_by_date_range(articles, start_date=last_week, end_date=today)
+    
+    print(f"📚 {len(articles)} artículos encontrados en los últimos 7 días. Procesando NLP...")
     analyzed_articles = analyze_articles(articles)
-
     print("🧠 Evaluando publicaciones...")
     decisions = decide_publications(analyzed_articles)
 
