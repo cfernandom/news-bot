@@ -2,7 +2,7 @@ from services.shared.models.article import Article
 from services.scraper.src.utils import get_html_with_playwright
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 async def scraper__www_breast_cancer_org() -> list[Article]:
@@ -47,7 +47,7 @@ async def scraper__www_breast_cancer_org() -> list[Article]:
                 title=title,
                 url=full_url,
                 summary=summary,
-                published_at=date,
+                published_at=date.replace(tzinfo=timezone.utc),
                 content=""
             ))
 
