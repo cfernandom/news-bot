@@ -1,0 +1,1 @@
+${CRON_EXPR} botuser cd /app && /app/run_bot.sh >> /app/logs/cron.log 2>&1
