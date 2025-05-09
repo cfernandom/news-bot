@@ -1,4 +1,4 @@
-FROM python:3.14-slim
+FROM python:3.13-slim
 
 # Evitar archivos pyc y hacer output inmediato
 ENV PYTHONDONTWRITEBYTECODE=1
