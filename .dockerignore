@@ -1,0 +1,40 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environments
+venv/
+.env/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+logs/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Tests (si existieran en el futuro)
+tests/
+*.test.py
+
+# Git
+.git/
+.gitignore
+
+# Docs (si están fuera de uso productivo)
+*.md
+DEPLOYMENT.md
+README.md
+
+# Others
+*.bak
+*.tmp
