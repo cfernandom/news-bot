@@ -38,3 +38,7 @@ README.md
 # Others
 *.bak
 *.tmp
+
+# Virtual environments
+.venv/
+venv/
