@@ -70,9 +70,11 @@ CRON_LINE=""
 if [[ -n "${WEEKLY_TIME:-}" ]]; then
     # Modo semanal: minuto hora * * día_semana
     CRON_LINE="${MINUTE} ${HOUR} * * ${WEEKLY_DAY_NUM} /app/run_bot.sh"
+    echo "Configurando cron para ejecutar semanalmente a las ${WEEKLY_TIME} el día ${WEEKLY_DAY_NUM}"
 elif [[ -n "${DAYS_INTERVAL:-}" ]]; then
     # Modo intervalo de días: 00:00 cada N días
     CRON_LINE="0 0 */${DAYS_INTERVAL_NUM} * * /app/run_bot.sh"
+    echo "Configurando cron para ejecutar cada ${DAYS_INTERVAL_NUM} días a las 00:00"
 else
     # Sin programación configurada
     CRON_LINE="# No se ha configurado una programación de cron"
@@ -87,5 +89,5 @@ chmod 0600 /etc/cron.d/news-bot-cron
 crontab /etc/cron.d/news-bot-cron
 
 # Iniciar cron en primer plano (foreground) para que el contenedor no se detenga
-echo "Iniciando cron..."
+echo "Cron job configurado: ${CRON_LINE}"
 exec cron -f
