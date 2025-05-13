@@ -14,5 +14,5 @@ def filter_articles_by_date_range(
             if start_date <= pub_date <= end_date:
                 filtered.append(article)
         else:
-            print(f"⚠️ Ignorando artículo sin zona horaria o sin fecha: {article.article_url}")
+            print(f"⚠️ Ignorando artículo sin zona horaria o sin fecha: {article.url}")
     return filtered
