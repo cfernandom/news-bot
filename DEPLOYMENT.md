@@ -126,3 +126,51 @@ docker compose up -d --build
 ## 📤 Publicación de Contenido
 
 Una vez implementado de forma exitosa, el bot ejecutará su flujo de trabajo, que comprende las etapas de extracción de información (scraping), procesamiento del lenguaje natural (NLP), toma de decisiones, redacción (copywriting) y publicación en WordPress, de acuerdo con la programación definida en la configuración de `cron`.
+
+---
+
+## 🧪 Desarrollo Local y Pruebas
+
+Durante el desarrollo, puede ser tedioso reconstruir la imagen del contenedor en cada cambio de código. Para facilitar un ciclo de desarrollo más ágil, se recomienda utilizar un archivo `docker-compose.override.yml` que monte el código fuente local en el contenedor y permita su ejecución manual en tiempo real.
+
+### 1. Crear archivo `docker-compose.override.yml`
+
+Este archivo no se incluye en producción, y es cargado automáticamente por Docker Compose durante el desarrollo:
+
+```yaml
+services:
+  newsbot:
+    volumes:
+      - .:/app  # Monta el proyecto local dentro del contenedor
+    command: ["tail", "-f", "/dev/null"]  # Mantiene el contenedor activo sin ejecutar el bot automáticamente
+```
+
+### 2. Levantar el contenedor en modo desarrollo
+
+```bash
+docker compose up --build
+```
+
+Esto iniciará el contenedor sin ejecutar el bot automáticamente, pero con el código local disponible dentro del contenedor.
+
+### 3. Acceder al contenedor y ejecutar el bot
+
+Para entrar al contenedor con una terminal interactiva:
+
+```bash
+docker compose exec newsbot bash
+```
+
+Una vez dentro, puede ejecutar el bot manualmente:
+
+```bash
+python main.py
+```
+
+O ejecutar el flujo completo:
+
+```bash
+/app/run_bot.sh
+```
+
+Cualquier cambio que realice en archivos `.py` o scripts será reflejado automáticamente en el contenedor, sin necesidad de reconstruir.
