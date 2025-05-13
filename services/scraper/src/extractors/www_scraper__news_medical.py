@@ -2,7 +2,7 @@ from services.shared.models.article import Article
 from services.scraper.src.utils import get_html_with_playwright
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-from datetime import datetime
+from datetime import datetime, timezone
 
 async def scraper__news_medical() -> list[Article]:
     URL = "https://www.news-medical.net/condition/Breast-Cancer"
@@ -39,14 +39,20 @@ async def scraper__news_medical() -> list[Article]:
                 try:
                     date = datetime.strptime(date_str, "%d %b %Y")
                 except ValueError:
-                    print(f"⚠️ Formato de fecha no reconocido: {date_str} en artículo: {title}")
-        
+                    try:
+                        # Intentar otro formato por si acaso
+                        date = datetime.strptime(date_str, "%d %B %Y")
+                    except ValueError:
+                        print(f"⚠️ Formato de fecha no reconocido: {date_str} en artículo: {title}")
+                        continue
+
         articles.append(Article(
             title=title,
             url=full_url,
             summary=summary,
-            date=date,
+            published_at=date.replace(tzinfo=timezone.utc),
             content=""
         ))
-    
+    for article in articles:
+        print(f"📰 Artículo: {article.published_at}")
     return articles
