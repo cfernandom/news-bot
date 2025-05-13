@@ -53,6 +53,4 @@ async def scraper__news_medical() -> list[Article]:
             published_at=date.replace(tzinfo=timezone.utc),
             content=""
         ))
-    for article in articles:
-        print(f"📰 Artículo: {article.published_at}")
     return articles
