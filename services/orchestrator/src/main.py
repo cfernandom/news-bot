@@ -12,6 +12,10 @@ async def run_pipeline():
     print("🔍 Scrapeando artículos...")
     articles = await scrape_articles()
 
+    print(f"📰 {len(articles)} artículos encontrados")
+    for article in articles:
+        print(f"- {article.title[0:20]} ({article.published_at.strftime('%Y-%m-%d')})- Resumen: {article.summary[0:30]} - URL: {article.url})")
+
     # Filtro: últimos 7 días
     today = datetime.now(timezone.utc)
     last_week = today - timedelta(days=7)
@@ -27,7 +31,7 @@ async def run_pipeline():
         print("⚠️ No se encontraron artículos relevantes para publicar.")
         return
     
-    print("✍️ Generando newsletter con LLM...")
+    print(f"✍️ Generando newsletter con LLM utilizando {len(filtered)} artículos...")
     markdown_body = generate_copy(filtered)
     title = generate_title(markdown_body)
     print(f"Publicación '{title}' generada.") 
