@@ -37,12 +37,16 @@ async def scraper__mayoclinic() -> list[Article]:
             except ValueError:
                 print(f"⚠️ Formato de fecha no reconocido: {date_str} en artículo: {title}")
         
-        articles.append(Article(
+        article_obj = Article(
             title=title,
             url=full_url,
             summary=summary,
-            date=date,
+            published_at=date,
             content=""
-        ))
+        )
+        setattr(article_obj, "article_url", full_url)  
+
+        articles.append(article_obj)
+
     
     return articles
