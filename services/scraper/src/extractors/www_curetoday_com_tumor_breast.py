@@ -12,6 +12,9 @@ async def scraper__www_curetoday_com_tumor_breast() -> list[Article]:
     html = await get_html_with_playwright(URL)
     soup = BeautifulSoup(html, "html.parser")
     articles = []
+    
+    # Set para guardar URLs ya procesadas y evitar los duplicados
+    processed_urls = set()
 
     for i, article_div in enumerate(soup.find_all("div", class_="w-full h-full")):
         try:
@@ -22,7 +25,6 @@ async def scraper__www_curetoday_com_tumor_breast() -> list[Article]:
             href = ""
             
             if title_p:
-              
                 title_a = title_p.find("a", href=True)
                 if title_a:
                     title = title_a.get_text(strip=True)
@@ -41,7 +43,7 @@ async def scraper__www_curetoday_com_tumor_breast() -> list[Article]:
                         break
             
             if not title:
-                print("No se encontró título, saltando artículo")
+                print(f"No se encontró título en artículo {i}, saltando")
                 continue
                 
             # Si no tenemos href, buscarlo
@@ -51,9 +53,17 @@ async def scraper__www_curetoday_com_tumor_breast() -> list[Article]:
                     href = main_link["href"]
                     
             if not href:
+                print(f"No se encontró URL en artículo {i}, saltando")
                 continue
                 
             full_url = urljoin(BASE_URL, href)
+            
+            # VERIFICAR DUPLICADOS: Si ya procesamos esta URL, se saltara
+            if full_url in processed_urls:
+                continue
+            
+            # Agregar URL al set de procesadas
+            processed_urls.add(full_url)
 
             # Extraer el resumen - buscar el párrafo con el texto del artículo
             summary = ""
@@ -69,13 +79,11 @@ async def scraper__www_curetoday_com_tumor_breast() -> list[Article]:
                         not any(word in text.lower() for word in ["font-bold", "ryan scott", "may", "author"]) and
                         "pl-4" not in str(p.get("class", []))):
                         summary = text
-                        
                         break
 
             # Extrae la fecha de publicación con múltiples intentos
             date = None
             
-           
             date_span = article_div.find("span", class_="text-sm text-gray-500 pl-4")
             if date_span:
                 date_str = date_span.get_text(strip=True)
@@ -115,10 +123,10 @@ async def scraper__www_curetoday_com_tumor_breast() -> list[Article]:
                 content=""
             )
 
-
             articles.append(article)
             
         except Exception as e:
+            print(f"Error procesando artículo {i}: {e}")
             import traceback
             traceback.print_exc()
             continue

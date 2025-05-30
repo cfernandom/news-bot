@@ -21,7 +21,7 @@ async def scraper__breast_cancer_now_org() -> list[Article]:
         href = link.get("href")
         full_url = urljoin(BASE_URL, href)
 
-        title_tag = link.find("h5", class_="m-pm-card__title")
+        title_tag = link.find("h2", class_="m-pm-card__title")
         title = title_tag.get_text(strip=True) if title_tag else ""
 
         summary_tag = link.find("p", class_="m-pm-card__text")
