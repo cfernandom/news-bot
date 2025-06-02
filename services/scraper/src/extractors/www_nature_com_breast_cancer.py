@@ -9,6 +9,9 @@ async def scraper__www_nature_com_breast_cancer() -> list[Article]:
     URL = "https://www.nature.com/subjects/breast-cancer"
     BASE_URL = "https://www.nature.com"
     html = await get_html_with_playwright(URL)
+    if not html:
+        print(f"Failed to retrieve content from {URL}")
+        return None
     soup = BeautifulSoup(html, "html.parser")
     articles = []
 

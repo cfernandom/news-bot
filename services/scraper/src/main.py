@@ -11,14 +11,24 @@ from services.shared.models.article import Article
 
 async def scrape_articles() -> list[Article]:
     articles = []
-    article1 = await scraper__www_breast_cancer_org()
-    article2 = await scraper__breast_cancer_now_org()
-    article3 = await scraper__webmd_breast_cancer()
-    article4 = await scraper__news_medical()
-    article5 = await scraper__sciencedaily()
-    article6 = await scraper__news_medical()
-    article7 = await scraper__www_nature_com_breast_cancer()
-    article8 = await scraper__medicalxpress_com_breast_cancer()
-    article9 = await scraper__www_curetoday_com_tumor_breast()
-    articles.extend(article1 + article2 + article3 + article4 + article5 + article6 + article7 + article8 + article9)
+
+    # Lista de llamadas a funciones scraper
+    scrapers = [
+        scraper__www_breast_cancer_org,
+        scraper__breast_cancer_now_org,
+        scraper__webmd_breast_cancer,
+        scraper__news_medical,
+        scraper__sciencedaily,
+        scraper__www_nature_com_breast_cancer,
+        scraper__medicalxpress_com_breast_cancer,
+        scraper__www_curetoday_com_tumor_breast,
+    ]
+
+    # Ejecutar cada scraper y asegurarse de que no es None
+    for scraper_func in scrapers:
+        result = await scraper_func()
+        if result:
+            articles.extend(result)
+
     return articles
+

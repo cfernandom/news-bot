@@ -10,6 +10,9 @@ async def scraper__www_curetoday_com_tumor_breast() -> list[Article]:
     URL = "https://www.curetoday.com/tumor/breast"
     BASE_URL = "https://www.curetoday.com"
     html = await get_html_with_playwright(URL)
+    if not html:
+        print(f"Failed to retrieve content from {URL}")
+        return None
     soup = BeautifulSoup(html, "html.parser")
     articles = []
 
@@ -22,7 +25,7 @@ async def scraper__www_curetoday_com_tumor_breast() -> list[Article]:
             href = ""
             
             if title_p:
-              
+
                 title_a = title_p.find("a", href=True)
                 if title_a:
                     title = title_a.get_text(strip=True)
