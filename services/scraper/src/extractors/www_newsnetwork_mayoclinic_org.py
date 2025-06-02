@@ -8,6 +8,9 @@ async def scraper__mayoclinic() -> list[Article]:
     URL = "https://newsnetwork.mayoclinic.org/search/?search=breast"
     BASE_URL = "https://newsnetwork.mayoclinic.org"
     html = await get_html_with_playwright(URL)
+    if not html:
+        print(f"Failed to retrieve content from {URL}")
+        return None
     soup = BeautifulSoup(html, "html.parser")
     articles = []
     

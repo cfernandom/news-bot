@@ -19,6 +19,7 @@ class DecisionResult:
             if publish
             else f"Score {nlp.score} < {threshold}"
         )
+        print(f"Decision: {publish} - {reason}, {nlp.article.title}")
         return cls(
             article=nlp.article,
             should_publish=publish,

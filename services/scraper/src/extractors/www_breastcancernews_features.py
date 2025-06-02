@@ -12,6 +12,9 @@ async def scraper__webmd_breast_cancer() -> list[Article]:
     URL = "https://www.webmd.com/breast-cancer/news-features"
     BASE_URL = "https://www.webmd.com"
     html = await get_html_with_playwright(URL)
+    if not html:
+        print(f"Failed to retrieve content from {URL}")
+        return None
     soup = BeautifulSoup(html, "html.parser")
     articles = []
 
@@ -81,7 +84,7 @@ async def scraper__webmd_breast_cancer() -> list[Article]:
                                 print(f"❌ Error en segundo intento de parseo: {e2}")
 
         if not date:
-            print(f"⚠️ Saltando noticia por falta de fecha: {title}")
+            print(f"⚠️ {BASE_URL} Saltando noticia por falta de fecha: {title}")
             continue
             
         # Asegurarse de que la fecha tenga zona horaria (UTC por defecto)

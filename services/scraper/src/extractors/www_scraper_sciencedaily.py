@@ -9,6 +9,9 @@ async def scraper__sciencedaily() -> list[Article]:
     URL = "https://www.sciencedaily.com/news/health_medicine/breast_cancer/"
     BASE_URL = "https://www.sciencedaily.com"
     html = await get_html_with_playwright(URL)
+    if not html:
+        print(f"Failed to retrieve content from {URL}")
+        return None
     soup = BeautifulSoup(html, "html.parser")
     articles = []
     

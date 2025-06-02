@@ -9,6 +9,9 @@ async def scraper__www_breast_cancer_org() -> list[Article]:
     URL = "https://www.breastcancer.org/research-news"
     BASE_URL = "https://www.breastcancer.org"
     html = await get_html_with_playwright(URL)
+    if not html:
+        print(f"Failed to retrieve content from {URL}")
+        return None
     soup = BeautifulSoup(html, "html.parser")
     articles = []
 
@@ -40,8 +43,9 @@ async def scraper__www_breast_cancer_org() -> list[Article]:
                     date = datetime.strptime(date_str, "%b %d, %Y")
                 except ValueError:
                     # imprime raw para ver qué formato real está llegando
-                    print("Fecha no parseable:", raw)
+                    print(f"Fecha no parseable en {full_url}:", raw)
                     date = None
+                    continue
 
             articles.append(Article(
                 title=title,
