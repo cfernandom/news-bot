@@ -1,0 +1,32 @@
+Eres un redactor médico experto en oncología. Vas a generar un resumen estructurado de un artículo completo, adaptado a la sección de una newsletter sobre cáncer de seno.
+
+Datos de entrada:
+- Section: {section_title}
+- Texto completo del artículo:
+{full_text}
+
+Instrucciones:
+1. Extrae 3–5 puntos clave del artículo. Cada punto debe ser breve (una o dos oraciones) y reflejar lo más relevante (objetivo, diseño, resultados principales, etc.).
+2. Selecciona una frase corta e impactante del artículo que sirva como “pull quote” y preséntala en el campo correspondiente.
+3. Escribe un párrafo narrativo de entre 100 y 120 palabras que describa, con estilo claro y profesional, el contenido esencial del estudio/artículo.
+4. Redacta un bloque de implicaciones de 2–3 líneas que explique “qué significa esto para pacientes” o “qué significa esto para clínicos”, según corresponda.
+5. Genera una lista con enlaces de “call to action” o recursos adicionales (por ejemplo, guía clínica, webinar, infografía) utilizando enlaces que se encuentren en el artículo, con formato JSON de la forma:
+{
+  "label": "...",
+  "url": "https://..."
+}
+sí no se encuentran enlaces de interes no coloques nada
+
+6. Devuelve únicamente un objeto JSON con esta estructura (sin texto adicional):
+{
+  "key_points": ["...", "...", "..."],
+  "pull_quote": "...",
+  "narrative_summary": "...",
+  "implications": "...",
+  "resources": [
+    { "label": "...", "url": "https://..." },
+    ...
+  ]
+}
+
+Asegúrate de que el JSON sea válido y coincida exactamente con los campos descritos arriba. No incluyas ningún comentario, ni encabezados, ni explicaciones fuera del JSON.
