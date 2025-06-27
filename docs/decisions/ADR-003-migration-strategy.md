@@ -189,5 +189,5 @@ async def get_sentiment_trends(days: int = 30):
 ---
 *Documento creado: 2025-06-27*  
 *Autor: Claude Code (Director Técnico)*  
-*Revisor: Cristian Fernando (Senior Engineer)*  
+*Revisor: Cristhian F. Moreno (Senior Engineer)*  
 *Actualizado: 2025-06-27 - FASE 1 Completada*
