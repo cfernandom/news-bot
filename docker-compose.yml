@@ -1,19 +1,57 @@
 services:
-  newsbot:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: preventia_postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-preventia_news}
+      - POSTGRES_USER=${POSTGRES_USER:-preventia}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-preventia123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./services/data/database/migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-preventia}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # News Analytics Service (formerly newsbot)
+  analytics_service:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: newsbot
+    container_name: preventia_analytics
     restart: unless-stopped
     env_file:
       - .env
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - WP_BASE_URL=${WP_BASE_URL}
-      - WP_USER=${WP_USER}
-      - WP_PASSWORD=${WP_PASSWORD}
-      - DAYS_INTERVAL=${DAYS_INTERVAL}
-      - WEEKLY_DAY=${WEEKLY_DAY}
-      - WEEKLY_TIME=${WEEKLY_TIME}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-preventia}:${POSTGRES_PASSWORD:-preventia123}@postgres:5432/${POSTGRES_DB:-preventia_news}
+      - DAYS_INTERVAL=${DAYS_INTERVAL:-3}
+      - WEEKLY_DAY=${WEEKLY_DAY:-1}
+      - WEEKLY_TIME=${WEEKLY_TIME:-06:00}
     volumes:
       - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"  # FastAPI port
+
+  # Redis for caching (optional, but recommended for analytics)
+  redis:
+    image: redis:8-alpine
+    container_name: preventia_redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
+  redis_data:
