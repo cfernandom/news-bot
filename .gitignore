@@ -47,3 +47,9 @@ secrets/
 *.pem
 *.key
 *.crt
+
+# Test files y archivos temporales
+test_*.py
+debug_*.py
+*_temp.py
+temp_*
