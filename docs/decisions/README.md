@@ -8,6 +8,9 @@ Este directorio contiene todas las decisiones arquitectónicas importantes del p
 |-----|--------|--------|-------|---------|
 | [ADR-001](./ADR-001-project-scope-change.md) | Cambio de Alcance - De Newsletter Bot a Sistema de Analytics | Aceptado | 2025-06-27 | 🔴 Crítico |
 | [ADR-002](./ADR-002-database-architecture.md) | Arquitectura de Base de Datos - PostgreSQL con Enfoque Híbrido | Aceptado | 2025-06-27 | 🔴 Crítico |
+| [ADR-003](./ADR-003-migration-strategy.md) | Estrategia de Migración - Scrapers a PostgreSQL | Aceptado | 2025-06-27 | 🟡 Alto |
+| [ADR-004](./ADR-004-nlp-sentiment-analysis.md) | NLP Sentiment Analysis - VADER para Contenido Médico | Aceptado | 2025-06-28 | 🟡 Alto |
+| [ADR-005](./ADR-005-testing-framework-architecture.md) | Testing Framework - pytest con Estructura Profesional | Aceptado | 2025-06-28 | 🟡 Alto |
 
 ## 📝 Cómo Usar los ADRs
 
