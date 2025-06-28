@@ -353,6 +353,119 @@ Una vez completado este setup, puedes continuar con:
 3. **[Frontend Development](../guides/react-setup.md)** - Setup del dashboard React
 4. **[Adding Data Sources](../guides/adding-extractors.md)** - Agregar nuevas fuentes
 
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### Database Connection Failed
+**Problem**: `could not connect to server: Connection refused`
+**Causes**:
+- PostgreSQL container not running
+- Wrong port configuration
+- Firewall blocking connection
+
+**Solutions**:
+```bash
+# Check if container is running
+docker compose ps
+
+# Restart PostgreSQL
+docker compose restart postgres
+
+# Check logs for errors
+docker compose logs postgres
+
+# Verify port is available
+netstat -tlnp | grep 5433
+```
+
+#### Virtual Environment Issues
+**Problem**: `pip: command not found` or import errors
+**Causes**:
+- Virtual environment not activated
+- Wrong Python version
+- Missing dependencies
+
+**Solutions**:
+```bash
+# Activate virtual environment
+source venv/bin/activate
+
+# Verify Python version
+python --version  # Should be 3.13+
+
+# Reinstall requirements
+pip install -r requirements.txt
+
+# Check if venv is activated (should show venv in prompt)
+which python
+```
+
+#### Docker Issues
+**Problem**: `docker: command not found` or permission errors
+**Causes**:
+- Docker not installed
+- User not in docker group
+- Docker daemon not running
+
+**Solutions**:
+```bash
+# Install Docker (Ubuntu/Debian)
+sudo apt update && sudo apt install docker.io docker-compose
+
+# Add user to docker group
+sudo usermod -aG docker $USER
+# Then logout and login again
+
+# Start Docker daemon
+sudo systemctl start docker
+sudo systemctl enable docker
+```
+
+#### Port Already in Use
+**Problem**: `port 5433 is already allocated`
+**Solutions**:
+```bash
+# Find process using port
+sudo lsof -i :5433
+
+# Kill process if safe
+sudo kill -9 <PID>
+
+# Or change port in docker-compose.yml
+# Change "5433:5432" to "5434:5432"
+```
+
+### Performance Issues
+
+#### Slow Database Queries
+**Problem**: Queries taking too long
+**Solutions**:
+- Check database indexes
+- Analyze query execution plans
+- Consider connection pooling
+
+#### Memory Issues
+**Problem**: High memory usage during development
+**Solutions**:
+- Reduce batch sizes in scripts
+- Monitor memory with `htop` or `top`
+- Restart containers if memory leaks detected
+
+### FAQ
+
+**Q: Which Python version should I use?**
+A: Python 3.13+ is required. Check with `python --version`.
+
+**Q: How do I reset the database?**
+A: `docker compose down postgres && docker compose up postgres -d`
+
+**Q: Can I use a different database port?**
+A: Yes, change the port mapping in `docker-compose.yml` and update `DATABASE_URL` in `.env`.
+
+**Q: Where do I put API keys?**
+A: In the `.env` file, never commit them to git.
+
 ## 🔗 Referencias
 
 - [Docker Documentation](https://docs.docker.com/)
@@ -361,5 +474,5 @@ Una vez completado este setup, puedes continuar con:
 - [SQLAlchemy Documentation](https://docs.sqlalchemy.org/)
 
 ---
-**Última actualización**: 2025-06-27  
-**¿Problemas con el setup?** Revisa [Troubleshooting Guide](../guides/troubleshooting.md) o crea un issue.
+**Última actualización**: 2025-06-28  
+**Versión**: 1.1

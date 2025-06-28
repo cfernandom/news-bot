@@ -336,29 +336,180 @@ NEUTRAL_RANGE = 0.1         # Conservative neutral classification
 
 ### Common Issues
 
-1. **Slow batch processing**
-   - Solution: Use batch methods instead of individual calls
-   - Disable spaCy preprocessing if not needed
+#### 1. Sentiment Analysis Errors
 
-2. **Memory usage high**
-   - Solution: Process in smaller batches (25-50 articles)
-   - Clear analyzer cache periodically
+**Problem**: `ModuleNotFoundError: No module named 'vaderSentiment'`
+**Cause**: Missing dependencies
+**Solution**:
+```bash
+# Install missing dependencies
+pip install vaderSentiment spacy
 
-3. **Sentiment accuracy low**
-   - Check article content quality
-   - Verify medical content thresholds are appropriate
-   - Consider enabling spaCy preprocessing
+# Download spaCy model
+python -m spacy download en_core_web_sm
+```
+
+**Problem**: Incorrect sentiment classification for medical content
+**Cause**: Using wrong thresholds or preprocessing
+**Solution**:
+```python
+# Check thresholds are medical-optimized
+analyzer = get_sentiment_analyzer()
+# Should use ±0.3 thresholds, not ±0.05 standard
+
+# Verify medical content adjustment
+result = analyzer.analyze_sentiment("Cancer treatment breakthrough shows promise")
+print(f"Compound score: {result['detailed_scores']['compound']}")
+```
+
+#### 2. Performance Issues
+
+**Problem**: Slow batch processing (>5s per article)
+**Causes**: 
+- spaCy preprocessing enabled unnecessarily
+- Large batch sizes
+- Memory limitations
+
+**Solutions**:
+```python
+# Disable spaCy for better performance
+analyzer = SentimentAnalyzer(use_spacy=False)
+
+# Use optimal batch size
+batch_size = 25  # Instead of 100+
+results = analyzer.analyze_batch(articles[:batch_size])
+
+# Monitor memory usage
+import psutil
+print(f"Memory usage: {psutil.Process().memory_info().rss / 1024 / 1024:.1f} MB")
+```
+
+**Problem**: Memory usage growing during batch processing
+**Cause**: Memory leaks in long-running processes
+**Solution**:
+```python
+# Process in chunks and clear cache
+for chunk in chunks(articles, 50):
+    results = analyzer.analyze_batch(chunk)
+    # Process results
+    results = None  # Clear reference
+    gc.collect()    # Force garbage collection
+```
+
+#### 3. Integration Issues
+
+**Problem**: Database connection errors during NLP processing
+**Cause**: Connection pool exhaustion or timeout
+**Solution**:
+```python
+# Use proper connection management
+async with db_manager.get_session() as session:
+    try:
+        # Process articles
+        result = analyze_article(article)
+        # Update database
+        await session.commit()
+    except Exception as e:
+        await session.rollback()
+        logger.error(f"Processing failed: {e}")
+```
+
+**Problem**: Inconsistent results across API calls
+**Cause**: Different analyzer instances or configuration
+**Solution**:
+```python
+# Use singleton pattern for consistency
+analyzer = get_sentiment_analyzer()  # Global instance
+# Instead of creating new instances each time
+```
+
+### Error Messages Reference
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `VADER lexicon not found` | Missing VADER data | `pip install vaderSentiment` |
+| `spaCy model not found` | Missing language model | `python -m spacy download en_core_web_sm` |
+| `Empty text provided` | No content to analyze | Validate input before processing |
+| `Database connection failed` | DB unavailable | Check connection and retry |
+| `Memory error` | Batch too large | Reduce batch size to 25-50 |
 
 ### Debug Mode
 
 ```python
 # Enable detailed logging for troubleshooting
 import logging
-logging.getLogger('nlp.sentiment').setLevel(logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
+
+# Create logger for NLP components
+logger = logging.getLogger('nlp.sentiment')
+logger.setLevel(logging.DEBUG)
 
 # Analyze with debug info
-result = sentiment_analyzer.analyze_sentiment(text, debug=True)
+result = sentiment_analyzer.analyze_sentiment(text, title="Debug Test")
+logger.debug(f"Analysis result: {result}")
+
+# Check processing time
+import time
+start = time.time()
+result = sentiment_analyzer.analyze_sentiment(text)
+processing_time = time.time() - start
+logger.debug(f"Processing took {processing_time:.3f}s")
 ```
+
+### Performance Benchmarking
+
+```python
+# Benchmark different configurations
+import time
+
+def benchmark_sentiment_analysis():
+    test_texts = ["Medical breakthrough in cancer treatment..."] * 10
+    
+    # Test with spaCy preprocessing
+    start = time.time()
+    analyzer_spacy = SentimentAnalyzer(use_spacy=True)
+    for text in test_texts:
+        analyzer_spacy.analyze_sentiment(text)
+    spacy_time = time.time() - start
+    
+    # Test without spaCy preprocessing
+    start = time.time()
+    analyzer_no_spacy = SentimentAnalyzer(use_spacy=False)
+    for text in test_texts:
+        analyzer_no_spacy.analyze_sentiment(text)
+    no_spacy_time = time.time() - start
+    
+    print(f"With spaCy: {spacy_time:.3f}s")
+    print(f"Without spaCy: {no_spacy_time:.3f}s")
+    print(f"SpaCy overhead: {(spacy_time/no_spacy_time - 1)*100:.1f}%")
+
+# Run benchmark
+benchmark_sentiment_analysis()
+```
+
+### FAQ
+
+#### Configuration Questions
+
+**Q: Should I enable spaCy preprocessing?**
+A: Only if accuracy is critical and you can accept 30% slower processing. For batch operations, usually not needed.
+
+**Q: What batch size should I use?**
+A: 25-50 articles for optimal memory/performance balance. Adjust based on available RAM.
+
+**Q: How do I handle different languages?**
+A: Currently optimized for English. For Spanish content, consider using language-specific VADER models.
+
+#### Accuracy Questions
+
+**Q: Why do some medical articles get classified as negative when they're neutral?**
+A: Medical content naturally trends negative due to terminology. This is expected and accounted for in our thresholds.
+
+**Q: How can I improve sentiment accuracy?**
+A: Enable spaCy preprocessing, verify content quality, and ensure you're using medical-optimized thresholds (±0.3).
+
+**Q: Can I customize the sentiment thresholds?**
+A: Yes, but use caution. Medical content requires conservative thresholds to avoid false classifications.
 
 ## References
 
