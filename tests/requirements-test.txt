@@ -1,0 +1,30 @@
+# Testing dependencies for PreventIA News Analytics
+# Install with: pip install -r tests/requirements-test.txt
+
+# Core testing framework (verified latest versions)
+pytest==8.4.1
+pytest-asyncio==1.0.0
+pytest-cov==6.2.1
+pytest-mock==3.14.1
+
+# Test utilities (verified versions)
+factory-boy==3.3.3          # Test data factories
+faker==37.4.0               # Fake data generation
+responses==0.25.4           # HTTP response mocking
+freezegun==1.6.3            # Time/date mocking
+
+# Performance testing
+pytest-benchmark==4.0.0     # Performance benchmarking
+memory-profiler==0.61.0     # Memory usage profiling
+
+# Code quality and linting
+black==25.1.0               # Code formatting
+isort==5.13.2               # Import sorting
+flake8==7.1.1               # Style checking
+
+# Coverage reporting (verified version)
+coverage[toml]==7.9.1       # Coverage with TOML support
+
+# Async testing helpers
+aioresponses==0.7.7         # Async HTTP mocking
+pytest-timeout==2.3.1       # Test timeout handling
