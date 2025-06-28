@@ -8,6 +8,7 @@ Este directorio contiene el registro de todas las conversaciones técnicas impor
 |-------|--------|---------------|------|-------------|--------|
 | 2025-06-27 | [Project Kickoff & Documentation Structure](2025-06-27_project-kickoff.md) | Claude, cfernandom | Planning | Estructura inicial, Roadmap técnico | ✅ Completado |
 | 2025-06-27 | [Database Implementation & Architecture Setup](2025-06-27_database-implementation.md) | Claude, cfernandom | Development/Architecture | PostgreSQL, Híbrido ORM+SQL, Testing | ✅ Completado |
+| 2025-06-28 | [NLP Sentiment Analysis + Testing Framework](2025-06-28_nlp-sentiment-analysis-implementation.md) | Claude, cfernandom | Development | VADER+spaCy, Testing profesional, Metrics validation | ✅ Completado |
 
 ## 📝 Cómo Usar Este Registro
 
@@ -33,10 +34,10 @@ Este directorio contiene el registro de todas las conversaciones técnicas impor
 
 ## 📊 Estadísticas
 
-- **Total conversaciones documentadas**: 2
-- **Conversaciones activas este mes**: 2
-- **Decisiones técnicas derivadas**: 5
-- **Action items pendientes**: Ver conversaciones individuales
+- **Total conversaciones documentadas**: 3
+- **Conversaciones activas este mes**: 3
+- **Decisiones técnicas derivadas**: 8
+- **Action items pendientes**: 1 (ADR creation pending)
 
 ## 🔍 Búsqueda Rápida
 
@@ -44,15 +45,18 @@ Este directorio contiene el registro de todas las conversaciones técnicas impor
 - **Arquitectura**: [2025-06-27 Project Kickoff](2025-06-27_project-kickoff.md), [2025-06-27 Database Implementation](2025-06-27_database-implementation.md)
 - **Documentación**: [2025-06-27 Project Kickoff](2025-06-27_project-kickoff.md), [2025-06-27 Database Implementation](2025-06-27_database-implementation.md)
 - **Database**: [2025-06-27 Database Implementation](2025-06-27_database-implementation.md)
-- **Testing**: [2025-06-27 Database Implementation](2025-06-27_database-implementation.md)
+- **Testing**: [2025-06-27 Database Implementation](2025-06-27_database-implementation.md), [2025-06-28 NLP Implementation](2025-06-28_nlp-sentiment-analysis-implementation.md)
+- **NLP/Sentiment**: [2025-06-28 NLP Implementation](2025-06-28_nlp-sentiment-analysis-implementation.md)
+- **Metrics Validation**: [2025-06-28 NLP Implementation](2025-06-28_nlp-sentiment-analysis-implementation.md)
 - **Performance**: [Pendiente]
 - **Deployment**: [Pendiente]
 
 ### Por Componente
 - **Database**: [2025-06-27 Database Implementation](2025-06-27_database-implementation.md)
 - **Analytics Pipeline**: [2025-06-27 Project Kickoff](2025-06-27_project-kickoff.md), [2025-06-27 Database Implementation](2025-06-27_database-implementation.md)
-- **Scraper**: [Pendiente]
-- **NLP**: [Pendiente]
+- **Scraper**: [2025-06-27 Database Implementation](2025-06-27_database-implementation.md)
+- **NLP**: [2025-06-28 NLP Implementation](2025-06-28_nlp-sentiment-analysis-implementation.md)
+- **Testing Framework**: [2025-06-28 NLP Implementation](2025-06-28_nlp-sentiment-analysis-implementation.md)
 - **FastAPI**: [Pendiente]
 - **React Dashboard**: [Pendiente]
 
@@ -70,5 +74,5 @@ Este directorio contiene el registro de todas las conversaciones técnicas impor
 5. **Mantén el índice actualizado**: El índice es la puerta de entrada principal
 
 ---
-**Última actualización**: 2025-06-27  
+**Última actualización**: 2025-06-28  
 **Próxima revisión del proceso**: 2025-07-27
