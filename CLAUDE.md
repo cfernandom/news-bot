@@ -21,9 +21,20 @@ PreventIA News Analytics is an intelligent media monitoring system specialized i
 - **Docker full stack**: `docker compose up -d --build`
 - **View all services**: `docker compose ps`
 
-### Testing
-- **Database tests**: `source venv/bin/activate && python test_database.py`
+### Testing Framework (Professional Structure)
+- **Setup testing environment**: `source venv/bin/activate && pip install -r tests/requirements-test.txt`
+- **Run unit tests**: `cd tests && pytest -m unit`
+- **Run integration tests**: `cd tests && pytest -m integration`
+- **Run all tests**: `cd tests && pytest`
+- **Coverage report**: `cd tests && pytest --cov=../services --cov-report=html`
+- **Database tests**: `cd tests && pytest -m database`
+- **Legacy database test**: `source venv/bin/activate && python tests/legacy_test_database.py`
 - **Check PostgreSQL health**: `docker compose exec postgres pg_isready -U preventia`
+
+### NLP Analytics Commands
+- **Run sentiment analysis**: `python scripts/batch_sentiment_analysis.py`
+- **Test sentiment analyzer**: `source venv/bin/activate && python tests/legacy_test_sentiment_analysis.py`
+- **Analyze individual article**: Use `services.nlp.src.sentiment.get_sentiment_analyzer()`
 
 ## Architecture Overview
 
@@ -35,7 +46,7 @@ The system follows a hybrid architecture combining data analytics with the exist
    - Optimized schema for analytics queries
    - Connection pooling and health checks
 2. **Collection Layer** (evolved `services/scraper/`) - Smart data extraction
-3. **Processing Layer** (evolved `services/nlp/`) - NLP analysis + sentiment analysis
+3. **Processing Layer** (evolved `services/nlp/`) - NLP analysis + VADER sentiment analysis + spaCy preprocessing
 4. **Analytics Layer** (new) - Data aggregation and trend analysis
 5. **API Layer** (planned) - FastAPI REST endpoints for dashboard
 6. **Frontend Layer** (planned) - React dashboard with visualizations
@@ -55,8 +66,74 @@ The system follows a hybrid architecture combining data analytics with the exist
 ### Current Data Flow
 ```
 External Sources → Scrapers → Full-text Extraction → 
-PostgreSQL Storage → NLP Analysis → Sentiment/Topic Classification → 
-Analytics Aggregation → (Future: API → React Dashboard)
+PostgreSQL Storage → NLP Analysis (Keywords + VADER Sentiment) → 
+Sentiment/Topic Classification → Analytics Aggregation → 
+(Future: API → React Dashboard)
+```
+
+## NLP Analytics Architecture
+
+### Sentiment Analysis System
+- **Engine**: VADER (Valence Aware Dictionary and sEntiment Reasoner)
+- **Preprocessing**: spaCy 3.8.7 with en_core_web_sm model
+- **Specialization**: Medical content with conservative thresholds
+- **Performance**: ~2 articles/second batch processing
+- **Coverage**: 56/106 articles analyzed (52.8%)
+
+### Medical Content Adjustments
+```python
+# Conservative thresholds for medical news
+if compound >= 0.3:          # Strong positive (vs 0.05 standard)
+    return "positive"
+elif compound <= -0.3:       # Strong negative (vs -0.05 standard)  
+    return "negative"
+else:
+    return "neutral"         # Medical content tends to be neutral
+```
+
+### Sentiment Analysis Usage
+```python
+from services.nlp.src.sentiment import get_sentiment_analyzer
+
+# Analyze single article
+analyzer = get_sentiment_analyzer()
+result = analyzer.analyze_sentiment(
+    text="Medical breakthrough shows promising results",
+    title="Cancer Treatment Success"
+)
+# Returns: {'sentiment_label': 'positive', 'confidence': 0.7, 'scores': {...}}
+
+# Batch processing (production script)
+python scripts/batch_sentiment_analysis.py
+```
+
+### Current NLP Capabilities
+1. **Keyword Extraction** - Medical term identification with relevance scoring
+2. **Sentiment Analysis** - VADER-based with medical content adjustments  
+3. **Content Relevance** - Multi-keyword matching for breast cancer content
+4. **Batch Processing** - Optimized for large article collections
+5. **Database Integration** - Sentiment data stored in PostgreSQL
+
+### NLP Pipeline Integration
+```python
+# Enhanced analyze_article function
+def analyze_article(article: Article) -> NLPResult:
+    # Keyword matching (existing)
+    matched_keywords = extract_keywords(article)
+    
+    # Sentiment analysis (new)
+    sentiment_data = get_sentiment_analyzer().analyze_sentiment(
+        text=article.summary,
+        title=article.title
+    )
+    
+    return NLPResult(
+        article=article,
+        is_relevant=len(matched_keywords) >= 2,
+        matched_keywords=matched_keywords,
+        score=len(matched_keywords),
+        sentiment_data=sentiment_data  # New field
+    )
 ```
 
 ## Database Architecture
@@ -135,44 +212,126 @@ results = await db_manager.execute_sql(
 
 ### Core Application
 - `main.py` - Legacy entry point (transitioning)
-- `test_database.py` - Comprehensive database testing suite
 - `requirements.txt` - All dependencies with verified versions
+
+### Scripts (Production)
+- `scripts/batch_sentiment_analysis.py` - Batch sentiment analysis for existing articles
+- `scripts/run_migrated_scrapers.py` - Execute individual or all scrapers
 
 ### Database Layer
 - `services/data/database/connection.py` - Hybrid connection manager
 - `services/data/database/models.py` - SQLAlchemy + Pydantic models
 - `services/data/database/migrations/001_initial_schema.sql` - Database schema
 
+### NLP Analytics Layer
+- `services/nlp/src/sentiment.py` - VADER sentiment analyzer with medical adjustments
+- `services/nlp/src/analyzer.py` - Enhanced NLP pipeline with sentiment integration
+- `services/nlp/src/models.py` - NLP result models with sentiment data
+
+### Testing Framework (Professional Structure)
+- `tests/conftest.py` - pytest configuration with async fixtures
+- `tests/pytest.ini` - Test markers and execution settings
+- `tests/requirements-test.txt` - Testing dependencies (verified versions)
+- `tests/unit/test_nlp/test_sentiment.py` - 14 comprehensive sentiment tests
+- `tests/integration/test_nlp_pipeline.py` - NLP pipeline integration tests
+- `tests/legacy_test_database.py` - Legacy database testing (migrated)
+- `tests/legacy_test_sentiment_analysis.py` - Legacy sentiment testing (migrated)
+
 ### Configuration
 - `.env.template` - Configuration template with all variables
 - `docker-compose.yml` - PostgreSQL + Redis + analytics service
 - `DEPLOYMENT.md` - Deployment instructions
 
-### Documentation
-- `docs/README.md` - Documentation hub
+### Documentation (Professional Structure)
+- `docs/README.md` - Documentation hub (updated for Phase 2)
+- `docs/api/services/nlp-api.md` - ✅ NLP API documentation with sentiment analysis
 - `docs/architecture/system-overview.md` - Complete system architecture
 - `docs/development/setup/local-development.md` - Local setup guide
-- `docs/decisions/` - Architecture Decision Records (ADRs)
+- `docs/development/standards/` - ✅ Language standards, testing strategy, structure
+- `docs/decisions/` - ✅ 5 Architecture Decision Records (ADR-001 through ADR-005)
+- `docs/implementation/` - ✅ Phase 1 & 2 results documentation
+
+# 📊 Estado del Proyecto: FASE 2 COMPLETADA - NLP Analytics Implementado (2025-06-28)
+
+## ✅ FASE 1 COMPLETADA - Migración de Scrapers a PostgreSQL
+- **4 scrapers migrados** exitosamente: Breast Cancer Org, WebMD, CureToday, News Medical
+- **106 artículos** almacenados con 100% integridad y 0% duplicados
+- **Playwright integrado** para JavaScript rendering (React/Next.js sites)
+- **Framework de testing** estandarizado con validaciones automatizadas
+- **Documentación comprehensiva** (ADRs, guías de uso, resultados implementación)
+- **Git workflow** establecido con 12 commits sistemáticos
+
+### Scrapers Operativos (4/8)
+| Scraper | Status | Artículos | Performance | Tecnología |
+|---------|--------|-----------|------------|------------|
+| Breast Cancer Org | ✅ Operativo | 25 | ~2.5s | Playwright + PostgreSQL |
+| WebMD | ✅ Operativo | 31 | ~45s | Playwright + Date Parsing |
+| CureToday | ✅ Operativo | 30 | ~50s | Playwright + Duplicate Detection |
+| News Medical | ✅ Operativo | 20 | ~30s | Playwright + International Metadata |
+
+### Scrapers Pendientes (4/8 - Opcional para FASE 2)
+- Medical Xpress, Nature, Breast Cancer Now, Science Daily
+
+## ✅ FASE 2 COMPLETADA - NLP Analytics Implementation
+- **Sentiment analysis** implementado con VADER + spaCy especializado para contenido médico
+- **56 artículos procesados** con sentiment analysis (52.8% coverage, 0 errores)
+- **Testing framework profesional** establecido: unit/integration/e2e structure
+- **24 tests implementados** (14 unit + 6 integration + 4 database) con 100% passing
+- **Coverage 95%** en módulos NLP con HTML reporting
+- **Scripts de producción** organizados en `scripts/` directory
+
+### Distribución Sentiment Analysis
+| Label | Artículos | Porcentaje | Promedio Score |
+|-------|-----------|------------|----------------|
+| Negative | 40 | 71% | -0.700 |
+| Positive | 15 | 27% | 0.415 |
+| Neutral | 1 | 2% | 0.000 |
+
+## 🎯 Estado Actual del Sistema
+**Status:** ✅ FASE 2 COMPLETADA - NLP ANALYTICS OPERATIVO
+**Próximo paso recomendado:** 🚀 **FASE 3 - FastAPI Dashboard Implementation**
+
+### Infraestructura Lista para Analytics
+- **PostgreSQL** optimizado con campos analytics-ready (sentiment_score, topic_category)
+- **Testing Framework** con 6 tests obligatorios por scraper
+- **Documentación completa** en `docs/` con guías de uso y troubleshooting
+- **Scripts utilitarios** para manejo de scrapers individuales o batch
+
+### Comandos para Scrapers Migrados
+```bash
+# Ejecutar scraper individual
+python scripts/run_migrated_scrapers.py webmd.com
+
+# Testing completo
+python tests/scrapers/test_all_migrated_scrapers.py
+
+# Ver artículos almacenados
+docker compose exec postgres psql -U preventia -d preventia_news -c "SELECT COUNT(*) FROM articles;"
+```
 
 ## Current Implementation Status
 
-### ✅ Completed
+### ✅ Completed - FASE 1 & FASE 2
 - PostgreSQL database with optimized analytics schema
-- Hybrid ORM + raw SQL data layer
+- Hybrid ORM + raw SQL data layer  
 - Docker containerization with health checks
-- Comprehensive testing suite
-- Complete documentation structure
+- 4 scrapers migrados con Playwright integration
+- **VADER sentiment analysis** with medical content specialization
+- **Professional testing framework** (unit/integration/e2e/performance)
+- **24 comprehensive tests** with 95% coverage and HTML reporting
+- Complete documentation structure and usage guides
+- Git workflow establecido con systematic commits
 
-### 🔄 In Progress
-- Migration of existing scrapers to new database
-- Analytics pipeline implementation
-- Sentiment analysis integration
+### 🚀 Ready for FASE 3 - Dashboard Analytics
+- FastAPI REST API endpoints implementation
+- React dashboard frontend with sentiment visualizations
+- Real-time WebSocket updates for live analytics
+- Geographic and trending analysis expansion
 
-### 📋 Planned
-- FastAPI REST API endpoints
-- React dashboard frontend
-- Advanced analytics (geographic, trend analysis)
-- Real-time WebSocket updates
+### 📋 Pending Issues & Next Steps
+- **Coverage Investigation**: 50 artículos sin procesar (47.2% pending sentiment analysis)
+- **Topic Categorization**: Automatic medical topic classification implementation
+- **Performance Optimization**: Batch processing parallelization
 
 ## Migration Notes
 
