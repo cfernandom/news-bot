@@ -48,8 +48,13 @@ secrets/
 *.key
 *.crt
 
-# Test files y archivos temporales
-test_*.py
+# Test files temporales y archivos de debug
+test_temp_*.py
 debug_*.py
 *_temp.py
 temp_*
+scratch_*.py
+
+# Coverage reports (mantener archivos, excluir reportes)
+htmlcov/
+.coverage.*
