@@ -10,7 +10,7 @@ PreventIA News Analytics is an intelligent media monitoring system specialized i
 
 ### Database Operations
 - **Start PostgreSQL**: `docker compose up postgres -d`
-- **Test database connection**: `python test_database.py` (requires virtual env)
+- **Test database connection**: `python tests/legacy_test_database.py` (requires virtual env)
 - **Database shell**: `docker compose exec postgres psql -U preventia -d preventia_news`
 - **View logs**: `docker compose logs postgres`
 
@@ -175,7 +175,7 @@ results = await db_manager.execute_sql(
 ### Database Development
 - **Migrations**: Located in `services/data/database/migrations/`
 - **Models**: Hybrid approach - use ORM for CRUD, raw SQL for analytics
-- **Testing**: Always run `python test_database.py` after database changes
+- **Testing**: Always run `cd tests && pytest -m database` after database changes
 
 ### Adding New Features
 - **New endpoints**: Plan for FastAPI in `services/api/` (future)
@@ -187,6 +187,31 @@ results = await db_manager.execute_sql(
 - **Full-text extractors**: `services/scraper/fulltext/src/extractors/`
 - **Follow existing patterns** when adding new sources
 - **Test with database storage** instead of file output
+
+### Git Workflow Standards
+- **Conventional Commits**: Use format `type(scope): description` (feat, fix, docs, test, chore)
+- **Atomic Commits**: One logical change per commit, complete and testable
+- **Branch Strategy**: `main` (production) ← `dev` (integration) ← `feature/name` (development)
+- **Documentation**: Follow language usage standard (English for technical, Spanish for decisions)
+- **Reference**: See `docs/development/standards/git-workflow.md` for complete guidelines
+
+### Example Git Commands
+```bash
+# Create feature branch
+git checkout dev
+git checkout -b feature/analytics-endpoints
+
+# Atomic commits with conventional format
+git add services/api/
+git commit -m "feat(api): add FastAPI endpoints for sentiment analytics"
+
+git add tests/integration/
+git commit -m "test(api): add integration tests for analytics endpoints"
+
+# Merge back to dev
+git checkout dev
+git merge --no-ff feature/analytics-endpoints
+```
 
 ## Technology Stack
 
@@ -247,7 +272,7 @@ results = await db_manager.execute_sql(
 - `docs/api/services/nlp-api.md` - ✅ NLP API documentation with sentiment analysis
 - `docs/architecture/system-overview.md` - Complete system architecture
 - `docs/development/setup/local-development.md` - Local setup guide
-- `docs/development/standards/` - ✅ Language standards, testing strategy, structure
+- `docs/development/standards/` - ✅ Language standards, testing strategy, git workflow standards
 - `docs/decisions/` - ✅ 5 Architecture Decision Records (ADR-001 through ADR-005)
 - `docs/implementation/` - ✅ Phase 1 & 2 results documentation
 
@@ -259,7 +284,7 @@ results = await db_manager.execute_sql(
 - **Playwright integrado** para JavaScript rendering (React/Next.js sites)
 - **Framework de testing** estandarizado con validaciones automatizadas
 - **Documentación comprehensiva** (ADRs, guías de uso, resultados implementación)
-- **Git workflow** establecido con 12 commits sistemáticos
+- **Git workflow profesional** establecido con conventional commits y commits atómicos
 
 ### Scrapers Operativos (4/8)
 | Scraper | Status | Artículos | Performance | Tecnología |
@@ -279,6 +304,7 @@ results = await db_manager.execute_sql(
 - **24 tests implementados** (14 unit + 6 integration + 4 database) con 100% passing
 - **Coverage 95%** en módulos NLP con HTML reporting
 - **Scripts de producción** organizados en `scripts/` directory
+- **Git workflow estandarizado** con conventional commits y commits atómicos
 
 ### Distribución Sentiment Analysis
 | Label | Artículos | Porcentaje | Promedio Score |
@@ -293,7 +319,7 @@ results = await db_manager.execute_sql(
 
 ### Infraestructura Lista para Analytics
 - **PostgreSQL** optimizado con campos analytics-ready (sentiment_score, topic_category)
-- **Testing Framework** con 6 tests obligatorios por scraper
+- **Testing Framework** con estructura profesional unit/integration/e2e
 - **Documentación completa** en `docs/` con guías de uso y troubleshooting
 - **Scripts utilitarios** para manejo de scrapers individuales o batch
 
@@ -320,7 +346,7 @@ docker compose exec postgres psql -U preventia -d preventia_news -c "SELECT COUN
 - **Professional testing framework** (unit/integration/e2e/performance)
 - **24 comprehensive tests** with 95% coverage and HTML reporting
 - Complete documentation structure and usage guides
-- Git workflow establecido con systematic commits
+- **Git workflow profesional** con conventional commits, commits atómicos y branch strategy
 
 ### 🚀 Ready for FASE 3 - Dashboard Analytics
 - FastAPI REST API endpoints implementation
