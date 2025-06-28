@@ -1,5 +1,16 @@
 # Git Workflow Standard - PreventIA News Analytics
 
+---
+**Document Metadata**
+- **Version**: 1.0
+- **Last Updated**: 2025-06-28
+- **Maintainer**: Technical Team
+- **Category**: Development Standards
+- **Priority**: High
+- **Status**: Approved
+- **Language**: English (Technical Standard)
+---
+
 ## Overview
 
 This document defines the Git workflow, commit conventions, and branching strategy for PreventIA News Analytics to ensure consistent, traceable, and professional version control.

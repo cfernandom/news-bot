@@ -1,5 +1,16 @@
 # Local Development Setup - PreventIA News Analytics
 
+---
+**Document Metadata**
+- **Version**: 1.0
+- **Last Updated**: 2025-06-28
+- **Maintainer**: Technical Team
+- **Category**: Development Setup
+- **Priority**: High
+- **Status**: Approved
+- **Language**: Spanish (Team Documentation)
+---
+
 Esta guía te ayudará a configurar el entorno de desarrollo local para el proyecto PreventIA News Analytics.
 
 ## 📋 Prerequisitos
@@ -250,8 +261,8 @@ source venv/bin/activate
 uvicorn services.api.main:app --reload --host 0.0.0.0 --port 8000
 
 # API Docs automáticas en:
-# http://localhost:8000/docs
-# http://localhost:8000/redoc
+# http://localhost:8000/docs (local development only)
+# http://localhost:8000/redoc (local development only)
 ```
 
 ## 📊 Verificación del Setup

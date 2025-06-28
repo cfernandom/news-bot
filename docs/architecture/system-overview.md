@@ -1,15 +1,26 @@
 # System Overview - PreventIA News Analytics
 
-## Vision General
-PreventIA News Analytics es un sistema de inteligencia mediática especializado en análisis automatizado de noticias sobre cáncer de seno. Transforma datos desestructurados de múltiples fuentes en insights accionables a través de procesamiento de lenguaje natural y visualizaciones interactivas.
+---
+**Document Metadata**
+- **Version**: 1.1
+- **Last Updated**: 2025-06-28
+- **Maintainer**: Technical Team
+- **Category**: Architecture
+- **Priority**: High
+- **Status**: Approved
+- **Language**: English (Technical Standard)
+---
 
-## Objetivos Principales
-- **Monitoreo automatizado** de cobertura mediática sobre cáncer de seno
-- **Análisis de tendencias** en diferentes países y idiomas
-- **Inteligencia de mercado** para tomadores de decisiones
-- **Visualización interactiva** de patrones y insights
+## General Vision
+PreventIA News Analytics is a media intelligence system specialized in automated analysis of breast cancer news. It transforms unstructured data from multiple sources into actionable insights through natural language processing and interactive visualizations.
 
-## Arquitectura de Alto Nivel
+## Main Objectives
+- **Automated monitoring** of breast cancer media coverage
+- **Trend analysis** across different countries and languages
+- **Market intelligence** for decision makers
+- **Interactive visualization** of patterns and insights
+
+## High-Level Architecture
 
 ```mermaid
 graph TB
@@ -93,37 +104,37 @@ graph TB
     DB --> MP
 ```
 
-## Componentes del Sistema
+## System Components
 
-### 1. Collection Layer (Capa de Recolección)
-**Propósito**: Extracción inteligente y validada de contenido de fuentes web
+### 1. Collection Layer
+**Purpose**: Intelligent and validated content extraction from web sources
 
 #### Smart Scrapers
-- Scrapers específicos por sitio web
-- Detección automática de estructura de contenido
-- Rate limiting inteligente
-- Detección de duplicados por hash de contenido
+- Site-specific scrapers
+- Automatic content structure detection
+- Intelligent rate limiting
+- Duplicate detection by content hash
 
 #### Source Validator
-- Validación automática de nuevas fuentes
-- Verificación de robots.txt y políticas
-- Testing de extracción antes de activación
-- Monitoreo de salud de fuentes existentes
+- Automatic validation of new sources
+- Verification of robots.txt and policies
+- Extraction testing before activation
+- Health monitoring of existing sources
 
 #### Full-text Extractor
-- Extracción de contenido completo de artículos
-- Limpieza y normalización de texto
-- Detección de idioma automática
-- Preservación de metadatos importantes
+- Complete article content extraction
+- Text cleaning and normalization
+- Automatic language detection
+- Important metadata preservation
 
-### 2. Processing Layer (Capa de Procesamiento)
-**Propósito**: Análisis inteligente y enriquecimiento de contenido
+### 2. Processing Layer
+**Purpose**: Intelligent analysis and content enrichment
 
 #### NLP Analyzer
-- Extracción de keywords con relevancia
-- Detección de entidades médicas
-- Análisis de estructura de contenido
-- Clasificación de calidad de fuente
+- Keyword extraction with relevance
+- Medical entity detection
+- Content structure analysis
+- Source quality classification
 
 #### Sentiment Analysis
 - Análisis de tono emocional (positivo/neutral/negativo)

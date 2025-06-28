@@ -1,5 +1,16 @@
 # NLP Service API Documentation
 
+---
+**Document Metadata**
+- **Version**: 2.0
+- **Last Updated**: 2025-06-28
+- **Maintainer**: Technical Team
+- **Category**: API Documentation
+- **Priority**: High
+- **Status**: Approved
+- **Language**: English (Technical Standard)
+---
+
 ## Overview
 
 The PreventIA NLP service provides specialized text analysis for medical content, including sentiment analysis, keyword extraction, and relevance scoring. This service is optimized for breast cancer news articles.
