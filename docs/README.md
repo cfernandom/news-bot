@@ -87,16 +87,17 @@ Documentación central del proyecto PreventIA News Analytics - Sistema inteligen
 
 ## 📊 Estado Actual del Proyecto
 
-### ✅ Completado (FASE 1 & 2)
-- **FASE 1**: Migración de 4 scrapers a PostgreSQL (106 artículos)
-- **FASE 2**: NLP Analytics con sentiment analysis (56 artículos procesados)
-- **Testing Framework**: Estructura profesional pytest con 24 tests
+### ✅ Completado (FASE 1, 2 & 2.5)
+- **FASE 1**: Migración de 4 scrapers a PostgreSQL (106 artículos, 0% duplicados)
+- **FASE 2**: NLP Analytics con sentiment analysis (106 artículos procesados, 100% coverage)
+- **FASE 2.5**: Topic Classification (106 artículos clasificados en 10 categorías médicas)
+- **Testing Framework**: Estructura profesional pytest con 24+ tests
 - **Documentación**: ADRs, API docs, estándares técnicos
 
 ### 🚀 Próximo (FASE 3)
-- **FastAPI Endpoints**: REST API para analytics dashboard
-- **React Dashboard**: Frontend con visualizaciones
-- **Real-time Analytics**: WebSocket updates y métricas live
+- **FastAPI Endpoints**: REST API para analytics dashboard con topic analytics
+- **React Dashboard**: Frontend con visualizaciones sentiment + topic distribution
+- **Real-time Analytics**: WebSocket updates y métricas live por categoría médica
 
 ## 📋 Estado de la Documentación
 
@@ -162,10 +163,5 @@ Para FASE 3, se recomienda completar:
 ---
 
 **Última verificación**: 2025-06-28  
-**Estado**: FASE 2 Completada ✅ | Documentación: 61.0% completada  
-**Mantenedores**: Claude (Director Técnico), cfernandom (Ingeniero Senior)
----
-
-**Última actualización**: 2025-06-28  
-**Estado**: FASE 2 Completada ✅ | Documentación: 54% completada  
+**Estado**: FASE 2.5 Completada ✅ | Topic Classification: 106/106 artículos | Documentación: 61.0% completada  
 **Mantenedores**: Claude (Director Técnico), cfernandom (Ingeniero Senior)

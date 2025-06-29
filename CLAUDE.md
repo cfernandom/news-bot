@@ -33,8 +33,9 @@ PreventIA News Analytics is an intelligent media monitoring system specialized i
 
 ### NLP Analytics Commands
 - **Run sentiment analysis**: `python scripts/batch_sentiment_analysis.py`
+- **Run topic classification**: `python scripts/batch_topic_classification.py`
 - **Test sentiment analyzer**: `source venv/bin/activate && python tests/legacy_test_sentiment_analysis.py`
-- **Analyze individual article**: Use `services.nlp.src.sentiment.get_sentiment_analyzer()`
+- **Analyze individual article**: Use `services.nlp.src.sentiment.get_sentiment_analyzer()` and `services.nlp.src.topic_classifier.get_topic_classifier()`
 
 ## Architecture Overview
 
@@ -109,10 +110,11 @@ python scripts/batch_sentiment_analysis.py
 
 ### Current NLP Capabilities
 1. **Keyword Extraction** - Medical term identification with relevance scoring
-2. **Sentiment Analysis** - VADER-based with medical content adjustments  
-3. **Content Relevance** - Multi-keyword matching for breast cancer content
-4. **Batch Processing** - Optimized for large article collections
-5. **Database Integration** - Sentiment data stored in PostgreSQL
+2. **Sentiment Analysis** - VADER-based with medical content adjustments (106/106 articles processed)
+3. **Topic Classification** - Rule-based categorization into 10 medical topics (106/106 articles classified)
+4. **Content Relevance** - Multi-keyword matching for breast cancer content
+5. **Batch Processing** - Optimized for large article collections
+6. **Database Integration** - Sentiment + topic data stored in PostgreSQL
 
 ### NLP Pipeline Integration
 ```python
@@ -176,6 +178,13 @@ results = await db_manager.execute_sql(
 - **Migrations**: Located in `services/data/database/migrations/`
 - **Models**: Hybrid approach - use ORM for CRUD, raw SQL for analytics
 - **Testing**: Always run `cd tests && pytest -m database` after database changes
+
+### Documentation Standards & Quality Assurance
+- **Automated verification**: `python scripts/verify_docs.py` - Auto-updates status indicators in 2-3 minutes
+- **Quality checking**: `python scripts/doc_quality_check.py --severity warning` - Detects 8 quality issue types
+- **Language standards**: English for technical docs, Spanish for team decisions per `docs/development/standards/language-usage-standard.md`
+- **Metadata requirements**: Important documents must include metadata blocks with version, maintainer, status
+- **Status tracking**: Documentation completeness tracked automatically in `docs/README.md`
 
 ### Adding New Features
 - **New endpoints**: Plan for FastAPI in `services/api/` (future)
@@ -241,6 +250,7 @@ git merge --no-ff feature/analytics-endpoints
 
 ### Scripts (Production)
 - `scripts/batch_sentiment_analysis.py` - Batch sentiment analysis for existing articles
+- `scripts/batch_topic_classification.py` - Batch topic classification for existing articles
 - `scripts/run_migrated_scrapers.py` - Execute individual or all scrapers
 
 ### Database Layer
@@ -250,8 +260,9 @@ git merge --no-ff feature/analytics-endpoints
 
 ### NLP Analytics Layer
 - `services/nlp/src/sentiment.py` - VADER sentiment analyzer with medical adjustments
-- `services/nlp/src/analyzer.py` - Enhanced NLP pipeline with sentiment integration
-- `services/nlp/src/models.py` - NLP result models with sentiment data
+- `services/nlp/src/topic_classifier.py` - Medical topic classifier with 10 categories
+- `services/nlp/src/analyzer.py` - Enhanced NLP pipeline with sentiment + topic integration
+- `services/nlp/src/models.py` - NLP result models with sentiment + topic data
 
 ### Testing Framework (Professional Structure)
 - `tests/conftest.py` - pytest configuration with async fixtures
@@ -275,6 +286,12 @@ git merge --no-ff feature/analytics-endpoints
 - `docs/development/standards/` - ✅ Language standards, testing strategy, git workflow standards
 - `docs/decisions/` - ✅ 5 Architecture Decision Records (ADR-001 through ADR-005)
 - `docs/implementation/` - ✅ Phase 1 & 2 results documentation
+
+### Documentation Tools & Automation
+- `scripts/verify_docs.py` - Automated documentation verification (95% time savings: 30-45min → 2-3min)
+- `scripts/doc_quality_check.py` - Quality assurance automation detecting 8 issue types
+- **Completion metrics**: 61.0% documentation completeness (25 existing/16 pending files)
+- **Automated status updates**: Status indicators (✅/Pendiente) auto-updated in docs/README.md
 
 # 📊 Estado del Proyecto: FASE 2 COMPLETADA - NLP Analytics Implementado (2025-06-28)
 

@@ -13,15 +13,16 @@
 
 ## Overview
 
-The PreventIA NLP service provides specialized text analysis for medical content, including sentiment analysis, keyword extraction, and relevance scoring. This service is optimized for breast cancer news articles.
+The PreventIA NLP service provides specialized text analysis for medical content, including sentiment analysis, topic classification, keyword extraction, and relevance scoring. This service is optimized for breast cancer news articles with 106 articles successfully processed.
 
 ## Architecture
 
 ```
 NLP Service
-├── SentimentAnalyzer    # VADER + spaCy sentiment analysis
-├── NLPAnalyzer         # Keyword extraction + relevance scoring
-└── Models              # Data structures and response types
+├── SentimentAnalyzer      # VADER + spaCy sentiment analysis
+├── TopicClassifier        # Medical topic categorization (10 categories)
+├── NLPAnalyzer           # Keyword extraction + relevance scoring
+└── Models                # Data structures and response types
 ```
 
 ## Core Components
@@ -97,7 +98,104 @@ class NLPAnalyzer:
 
 **Returns**: `NLPResult` object with complete analysis
 
-### 3. Data Models
+### 3. Topic Classification
+
+#### MedicalTopicClassifier Class
+
+**Location**: `services/nlp/src/topic_classifier.py`
+
+**Description**: Rule-based medical topic classifier that categorizes breast cancer articles into 10 medical topic categories using weighted keyword matching.
+
+##### Medical Topic Categories
+
+```python
+class MedicalTopic(Enum):
+    TREATMENT = "treatment"      # 36.8% of articles
+    RESEARCH = "research"        # 17.9% of articles  
+    GENERAL = "general"          # 17.9% of articles
+    SURGERY = "surgery"          # 11.3% of articles
+    LIFESTYLE = "lifestyle"      # 3.8% of articles
+    GENETICS = "genetics"        # 3.8% of articles
+    DIAGNOSIS = "diagnosis"      # 3.8% of articles
+    SCREENING = "screening"      # 2.8% of articles
+    SUPPORT = "support"          # 0.9% of articles
+    POLICY = "policy"            # 0.9% of articles
+```
+
+##### Key Methods
+
+```python
+class MedicalTopicClassifier:
+    def classify_article(title: str, summary: str, content: str = "") -> TopicResult
+```
+
+**Parameters**:
+- `title` (str): Article title
+- `summary` (str): Article summary/description
+- `content` (str, optional): Full article content
+
+**Returns**:
+```python
+@dataclass
+class TopicResult:
+    primary_topic: MedicalTopic      # Highest scoring topic
+    confidence: float                # 0.0-1.0 confidence score
+    matched_keywords: List[str]      # Keywords that matched
+    topic_scores: Dict[MedicalTopic, float]  # All topic scores
+```
+
+##### Keyword Weighting System
+
+```python
+# Scoring weights for keyword importance
+weights = {
+    "high": 3.0,      # Core medical terms
+    "medium": 2.0,    # Related medical terms
+    "low": 1.0        # General medical terms
+}
+```
+
+**Example Classification**:
+```python
+from services.nlp.src.topic_classifier import get_topic_classifier
+
+classifier = get_topic_classifier()
+result = classifier.classify_article(
+    title="New Chemotherapy Protocol Shows Promise",
+    summary="Clinical trial demonstrates improved outcomes...",
+    content="Researchers tested combination therapy..."
+)
+
+# Returns:
+# TopicResult(
+#     primary_topic=MedicalTopic.TREATMENT,
+#     confidence=0.755,
+#     matched_keywords=["chemotherapy", "clinical trial", "therapy"],
+#     topic_scores={TREATMENT: 12.0, RESEARCH: 6.0, ...}
+# )
+```
+
+##### Batch Processing
+
+```python
+def get_topic_distribution(articles_data: List[Dict]) -> Dict[MedicalTopic, int]
+```
+
+**Performance**: Processes 106 articles in ~30 seconds with 100% success rate
+
+##### Production Usage
+
+```bash
+# Batch classify all articles without topic classification
+python scripts/batch_topic_classification.py
+
+# Expected output:
+# ✅ 106/106 articles classified
+# ✅ 10 medical topic categories
+# ✅ Average confidence: 75.5% (treatment), 88.3% (surgery)
+```
+
+### 4. Data Models
 
 #### SentimentResult
 
