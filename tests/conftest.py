@@ -4,6 +4,7 @@ Provides reusable fixtures for database, testing utilities, and mock data
 """
 
 import pytest
+import pytest_asyncio
 import asyncio
 import os
 from typing import AsyncGenerator
@@ -29,7 +30,7 @@ def event_loop():
     yield loop
     loop.close()
 
-@pytest.fixture(scope="session")
+@pytest_asyncio.fixture(scope="session")
 async def test_db_manager() -> AsyncGenerator[DatabaseManager, None]:
     """
     Provide a database manager instance for testing
@@ -53,7 +54,7 @@ async def test_db_manager() -> AsyncGenerator[DatabaseManager, None]:
         if hasattr(db_manager, '_pool') and db_manager._pool:
             await db_manager._pool.close()
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def clean_database(test_db_manager):
     """
     Provide a clean database state for each test

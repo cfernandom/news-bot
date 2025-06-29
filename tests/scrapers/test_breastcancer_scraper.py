@@ -3,6 +3,7 @@
 Test del scraper migrado de breastcancer.org
 """
 
+import pytest
 import asyncio
 import sys
 import os
@@ -17,6 +18,7 @@ load_dotenv()
 # Importar después de configurar path
 from services.data.database.connection import db_manager, init_database, close_database
 
+@pytest.mark.asyncio
 async def test_breastcancer_scraper():
     """Test del scraper migrado"""
     print("🧪 Testing breastcancer.org migrated scraper...")

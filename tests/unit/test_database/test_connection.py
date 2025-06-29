@@ -30,17 +30,15 @@ class TestDatabaseManager:
         with patch.dict('os.environ', {'DATABASE_URL': 'postgresql://user:pass@localhost/db'}):
             db_manager = DatabaseManager()
             
-            # Mock the connection pool and execute method
-            mock_pool = AsyncMock()
-            mock_conn = AsyncMock()
-            mock_pool.acquire.return_value.__aenter__.return_value = mock_conn
-            mock_conn.fetchval.return_value = 1
+            # Mock the session and execute method
+            mock_session = AsyncMock()
+            mock_session.execute = AsyncMock()
             
-            db_manager._pool = mock_pool
-            
-            result = await db_manager.health_check()
-            assert result is True
-            mock_conn.fetchval.assert_called_once_with("SELECT 1")
+            with patch.object(db_manager, 'get_session') as mock_get_session:
+                mock_get_session.return_value.__aenter__.return_value = mock_session
+                
+                result = await db_manager.health_check()
+                assert result is True
     
     @pytest.mark.asyncio
     async def test_health_check_failure(self):
@@ -66,17 +64,16 @@ class TestDatabaseManager:
             db_manager = DatabaseManager()
             
             # Mock the connection and result
-            mock_pool = AsyncMock()
             mock_conn = AsyncMock()
-            mock_pool.acquire.return_value.__aenter__.return_value = mock_conn
             mock_conn.fetch.return_value = [{'id': 1, 'name': 'test'}]
             
-            db_manager._pool = mock_pool
-            
-            result = await db_manager.execute_sql("SELECT * FROM test WHERE id = $1", 1)
-            
-            assert result == [{'id': 1, 'name': 'test'}]
-            mock_conn.fetch.assert_called_once_with("SELECT * FROM test WHERE id = $1", 1)
+            with patch.object(db_manager, 'get_connection') as mock_get_connection:
+                mock_get_connection.return_value.__aenter__.return_value = mock_conn
+                
+                result = await db_manager.execute_sql("SELECT * FROM test WHERE id = $1", 1)
+                
+                assert result == [{'id': 1, 'name': 'test'}]
+                mock_conn.fetch.assert_called_once_with("SELECT * FROM test WHERE id = $1", 1)
 
 @pytest.mark.unit
 class TestDatabaseHelpers:
