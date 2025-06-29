@@ -9,8 +9,9 @@ import sys
 from pathlib import Path
 import logging
 
-# Add services to path
-sys.path.append(str(Path(__file__).parent))
+# Add project root to path
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
 
 from services.data.database.connection import DatabaseManager
 from services.nlp.src.sentiment import get_sentiment_analyzer

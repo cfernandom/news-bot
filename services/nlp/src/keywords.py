@@ -1,7 +1,7 @@
 # Palabras clave relacionadas con cáncer de seno
-KEYWORDS = {
+KEYWORDS = [
     "breast cancer", "mammogram", "mastectomy", "tumor", "metastasis", 
     "early detection", "hormone therapy", "chemotherapy", "radiation",
     "biopsy", "dense breasts", "triple-negative", "oncology", "HER2",
-    "invasive", "lumpectomy", "BRCA", "genetic testing"
-}
+    "invasive", "lumpectomy", "BRCA", "genetic testing", "cancer", "breast"
+]
