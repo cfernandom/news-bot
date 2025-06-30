@@ -162,6 +162,6 @@ Para FASE 3, se recomienda completar:
 
 ---
 
-**Última verificación**: 2025-06-28  
-**Estado**: FASE 2.5 Completada ✅ | Topic Classification: 106/106 artículos | Documentación: 61.0% completada  
+**Última verificación**: 2025-06-28
+**Estado**: FASE 2.5 Completada ✅ | Topic Classification: 106/106 artículos | Documentación: 61.0% completada
 **Mantenedores**: Claude (Director Técnico), cfernandom (Ingeniero Senior)

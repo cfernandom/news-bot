@@ -3,25 +3,32 @@ pytest configuration and fixtures for PreventIA News Analytics
 Provides reusable fixtures for database, testing utilities, and mock data
 """
 
-import pytest
-import pytest_asyncio
 import asyncio
 import os
-from typing import AsyncGenerator
-from pathlib import Path
 
 # Add project root to path
 import sys
+from pathlib import Path
+from typing import AsyncGenerator
+
+import pytest
+import pytest_asyncio
+
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
+
+from datetime import datetime
 
 from services.data.database.connection import DatabaseManager
 from services.nlp.src.sentiment import SentimentAnalyzer
 from services.shared.models.article import Article
-from datetime import datetime
 
 # Configure test environment
-os.environ["DATABASE_URL"] = os.getenv("TEST_DATABASE_URL", "postgresql://preventia:test_password@localhost:5433/preventia_test")
+os.environ["DATABASE_URL"] = os.getenv(
+    "TEST_DATABASE_URL",
+    "postgresql://preventia:test_password@localhost:5433/preventia_test",
+)
+
 
 @pytest.fixture(scope="session")
 def event_loop():
@@ -30,6 +37,7 @@ def event_loop():
     yield loop
     loop.close()
 
+
 @pytest_asyncio.fixture(scope="session")
 async def test_db_manager() -> AsyncGenerator[DatabaseManager, None]:
     """
@@ -37,22 +45,23 @@ async def test_db_manager() -> AsyncGenerator[DatabaseManager, None]:
     Uses test database configuration
     """
     db_manager = DatabaseManager()
-    
+
     try:
         # Initialize database connection
         await db_manager.initialize()
-        
+
         # Verify connection
         health = await db_manager.health_check()
         if not health:
             pytest.skip("Test database not available")
-        
+
         yield db_manager
-        
+
     finally:
         # Cleanup
-        if hasattr(db_manager, '_pool') and db_manager._pool:
+        if hasattr(db_manager, "_pool") and db_manager._pool:
             await db_manager._pool.close()
+
 
 @pytest_asyncio.fixture
 async def clean_database(test_db_manager):
@@ -64,17 +73,19 @@ async def clean_database(test_db_manager):
     async with test_db_manager.get_connection() as conn:
         transaction = conn.transaction()
         await transaction.start()
-        
+
         try:
             yield test_db_manager
         finally:
             # Rollback transaction to clean state
             await transaction.rollback()
 
+
 @pytest.fixture
 def sentiment_analyzer():
     """Provide a configured sentiment analyzer instance"""
     return SentimentAnalyzer()
+
 
 @pytest.fixture
 def sample_article():
@@ -84,8 +95,9 @@ def sample_article():
         published_at=datetime(2024, 1, 15),
         summary="This is a sample article about medical research with positive outcomes.",
         content="Detailed content about medical research findings that show promising results.",
-        url="https://example.com/sample-article"
+        url="https://example.com/sample-article",
     )
+
 
 @pytest.fixture
 def sample_articles():
@@ -96,23 +108,24 @@ def sample_articles():
             published_at=datetime(2024, 1, 15),
             summary="Scientists discover new treatment with excellent results.",
             content="Detailed positive medical content.",
-            url="https://example.com/positive"
+            url="https://example.com/positive",
         ),
         Article(
             title="Concerning Health Trend",
             published_at=datetime(2024, 1, 16),
             summary="Study shows worrying increase in disease rates.",
             content="Detailed negative medical content.",
-            url="https://example.com/negative"
+            url="https://example.com/negative",
         ),
         Article(
             title="FDA Approves New Diagnostic Tool",
             published_at=datetime(2024, 1, 17),
             summary="Regulatory approval for medical device.",
             content="Neutral regulatory content.",
-            url="https://example.com/neutral"
-        )
+            url="https://example.com/neutral",
+        ),
     ]
+
 
 @pytest.fixture
 def mock_http_responses():
@@ -137,30 +150,22 @@ def mock_http_responses():
                 <p>Latest health information...</p>
             </body>
         </html>
-        """
+        """,
     }
+
 
 # Pytest markers for test categorization
 def pytest_configure(config):
     """Register custom pytest markers"""
-    config.addinivalue_line(
-        "markers", "unit: Unit tests for isolated components"
-    )
+    config.addinivalue_line("markers", "unit: Unit tests for isolated components")
     config.addinivalue_line(
         "markers", "integration: Integration tests for component interaction"
     )
-    config.addinivalue_line(
-        "markers", "e2e: End-to-end tests for complete workflows"
-    )
-    config.addinivalue_line(
-        "markers", "performance: Performance and load tests"
-    )
-    config.addinivalue_line(
-        "markers", "slow: Slow running tests (>10s)"
-    )
-    config.addinivalue_line(
-        "markers", "database: Tests requiring database connection"
-    )
+    config.addinivalue_line("markers", "e2e: End-to-end tests for complete workflows")
+    config.addinivalue_line("markers", "performance: Performance and load tests")
+    config.addinivalue_line("markers", "slow: Slow running tests (>10s)")
+    config.addinivalue_line("markers", "database: Tests requiring database connection")
+
 
 # Test collection and execution helpers
 def pytest_collection_modifyitems(config, items):
@@ -175,7 +180,10 @@ def pytest_collection_modifyitems(config, items):
             item.add_marker(pytest.mark.e2e)
         elif "performance" in str(item.fspath):
             item.add_marker(pytest.mark.performance)
-        
+
         # Add database marker for tests that use database fixtures
-        if any(fixture in item.fixturenames for fixture in ['test_db_manager', 'clean_database']):
+        if any(
+            fixture in item.fixturenames
+            for fixture in ["test_db_manager", "clean_database"]
+        ):
             item.add_marker(pytest.mark.database)

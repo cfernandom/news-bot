@@ -1,8 +1,8 @@
 # ADR-006: Legal Compliance Framework Implementation
 
-**Status:** ✅ Accepted and Implemented  
-**Date:** 2025-06-30  
-**Deciders:** Cristhian F. Moreno (UCOMPENSAR Research Team)  
+**Status:** ✅ Accepted and Implemented
+**Date:** 2025-06-30
+**Deciders:** Cristhian F. Moreno (UCOMPENSAR Research Team)
 **Tags:** legal, compliance, ethics, privacy, copyright
 
 ## Context
@@ -10,7 +10,7 @@
 PreventIA News Analytics system was operating with significant legal risks that could expose the project and Fundación Universitaria Compensar to:
 
 - **Copyright infringement** due to full article content storage
-- **GDPR violations** lacking privacy policy and user rights framework  
+- **GDPR violations** lacking privacy policy and user rights framework
 - **Unethical web scraping** without robots.txt compliance or rate limiting
 - **Academic ethics violations** not meeting university research standards
 - **Potential lawsuits** from major medical publishers (WebMD, News Medical, etc.)
@@ -85,7 +85,7 @@ CREATE VIEW compliance_dashboard AS (...);
 
 ### Technical Components
 - **Robots.txt Checker:** `services/scraper/src/compliance/robots_checker.py`
-- **Rate Limiter:** `services/scraper/src/compliance/rate_limiter.py`  
+- **Rate Limiter:** `services/scraper/src/compliance/rate_limiter.py`
 - **Migration Script:** `scripts/apply_legal_compliance.py`
 - **Review Helper:** `scripts/compliance_review_helper.py`
 

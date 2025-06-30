@@ -72,7 +72,7 @@ async def scrape_and_store():
 
 **Criterios de Éxito Fase 1:**
 - ✅ ~~8~~ **4 scrapers funcionales** en PostgreSQL ✅ **COMPLETADO**
-- ✅ **>95% tasa extracción** mantenida ✅ **COMPLETADO**  
+- ✅ **>95% tasa extracción** mantenida ✅ **COMPLETADO**
 - ✅ **<2s latencia promedio** scraping ✅ **COMPLETADO**
 - ✅ **0 pérdida de datos** durante migración ✅ **COMPLETADO**
 
@@ -98,7 +98,7 @@ class MedicalSentimentAnalyzer:
     def __init__(self):
         self.vader = SentimentIntensityAnalyzer()
         self.nlp = spacy.load("es_core_news_sm")
-    
+
     async def analyze_article(self, article: Article) -> SentimentResult:
         # Análisis VADER + spaCy
         # Categorización temas médicos
@@ -112,7 +112,7 @@ class MedicalSentimentAnalyzer:
 async def sentiment_trends(days: int = 30):
     return await analytics_service.get_sentiment_trends(days)
 
-@app.get("/analytics/topic-distribution") 
+@app.get("/analytics/topic-distribution")
 async def topic_distribution():
     return await analytics_service.get_topic_distribution()
 ```
@@ -221,6 +221,6 @@ Esta estrategia de migración balances:
 El enfoque de 3 fases permite validación continua y rollback si necesario, mientras construye sistemáticamente las capacidades analytics requeridas.
 
 ---
-*Roadmap preparado por: Director Técnico - Claude Code*  
-*Fecha: 2025-06-27*  
+*Roadmap preparado por: Director Técnico - Claude Code*
+*Fecha: 2025-06-27*
 *Próxima revisión: 2025-07-04*

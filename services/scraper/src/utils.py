@@ -1,5 +1,6 @@
 from playwright.async_api import async_playwright
 
+
 async def get_html_with_playwright(url):
     async with async_playwright() as p:
         browser = await p.chromium.launch()
@@ -14,7 +15,7 @@ async def get_html_with_playwright(url):
                 print(f"Error al cargar la página {url} después del reintento: {e}")
                 await browser.close()
                 return None
-        await page.evaluate('window.scrollTo(0, document.body.scrollHeight)')
+        await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
         html = await page.content()
         await browser.close()
         return html

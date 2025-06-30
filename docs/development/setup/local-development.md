@@ -178,7 +178,7 @@ DATABASE_URL=postgresql://preventia:preventia123@localhost:5433/preventia_news
 DATABASE_ECHO=false  # Set to true for SQL query logging
 
 # =============================================================================
-# API CONFIGURATION  
+# API CONFIGURATION
 # =============================================================================
 OPENAI_API_KEY=sk-your-openai-api-key-here
 API_HOST=0.0.0.0
@@ -474,5 +474,5 @@ A: In the `.env` file, never commit them to git.
 - [SQLAlchemy Documentation](https://docs.sqlalchemy.org/)
 
 ---
-**Última actualización**: 2025-06-28  
+**Última actualización**: 2025-06-28
 **Versión**: 1.1

@@ -54,7 +54,7 @@ class SentimentAnalyzer:
     "detailed_scores": {
         "compound": float,       # -1.0 to 1.0 overall sentiment
         "positive": float,       # 0.0-1.0 positive intensity
-        "negative": float,       # 0.0-1.0 negative intensity  
+        "negative": float,       # 0.0-1.0 negative intensity
         "neutral": float         # 0.0-1.0 neutral intensity
     }
 }
@@ -111,7 +111,7 @@ class NLPAnalyzer:
 ```python
 class MedicalTopic(Enum):
     TREATMENT = "treatment"      # 36.8% of articles
-    RESEARCH = "research"        # 17.9% of articles  
+    RESEARCH = "research"        # 17.9% of articles
     GENERAL = "general"          # 17.9% of articles
     SURGERY = "surgery"          # 11.3% of articles
     LIFESTYLE = "lifestyle"      # 3.8% of articles
@@ -213,7 +213,7 @@ class SentimentResult:
 #### NLPResult (Enhanced)
 
 ```python
-@dataclass  
+@dataclass
 class NLPResult:
     article: Article
     is_relevant: bool
@@ -374,15 +374,15 @@ pytest --cov=../services/nlp --cov-report=html
 # Update article with sentiment data
 async with db_manager.get_session() as session:
     article = await session.get(Article, article_id)
-    
+
     sentiment_result = sentiment_analyzer.analyze_sentiment(
         article.content, article.title
     )
-    
+
     article.sentiment_label = sentiment_result["sentiment_label"]
     article.sentiment_score = sentiment_result["detailed_scores"]["compound"]
     article.processing_status = "analyzed"
-    
+
     await session.commit()
 ```
 
@@ -397,7 +397,7 @@ async def analyze_sentiment(request: SentimentRequest):
     )
     return SentimentResponse(**result)
 
-@app.post("/api/nlp/batch-sentiment") 
+@app.post("/api/nlp/batch-sentiment")
 async def batch_sentiment(request: BatchSentimentRequest):
     results = sentiment_analyzer.analyze_batch(request.articles)
     return BatchSentimentResponse(results=results)
@@ -463,7 +463,7 @@ print(f"Compound score: {result['detailed_scores']['compound']}")
 #### 2. Performance Issues
 
 **Problem**: Slow batch processing (>5s per article)
-**Causes**: 
+**Causes**:
 - spaCy preprocessing enabled unnecessarily
 - Large batch sizes
 - Memory limitations
@@ -562,21 +562,21 @@ import time
 
 def benchmark_sentiment_analysis():
     test_texts = ["Medical breakthrough in cancer treatment..."] * 10
-    
+
     # Test with spaCy preprocessing
     start = time.time()
     analyzer_spacy = SentimentAnalyzer(use_spacy=True)
     for text in test_texts:
         analyzer_spacy.analyze_sentiment(text)
     spacy_time = time.time() - start
-    
+
     # Test without spaCy preprocessing
     start = time.time()
     analyzer_no_spacy = SentimentAnalyzer(use_spacy=False)
     for text in test_texts:
         analyzer_no_spacy.analyze_sentiment(text)
     no_spacy_time = time.time() - start
-    
+
     print(f"With spaCy: {spacy_time:.3f}s")
     print(f"Without spaCy: {no_spacy_time:.3f}s")
     print(f"SpaCy overhead: {(spacy_time/no_spacy_time - 1)*100:.1f}%")
@@ -617,6 +617,6 @@ A: Yes, but use caution. Medical content requires conservative thresholds to avo
 - [Phase 2 Implementation Results](../../implementation/phase-2-nlp-analytics.md)
 
 ---
-**Last Updated**: 2025-06-28  
-**API Version**: 2.0 (Phase 2)  
+**Last Updated**: 2025-06-28
+**API Version**: 2.0 (Phase 2)
 **Maintainer**: PreventIA Analytics Team

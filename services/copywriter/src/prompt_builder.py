@@ -1,5 +1,6 @@
 from services.decision_engine.src.models import DecisionResult
 
+
 def build_news_prompt(decisions: list[DecisionResult]) -> str:
     prompt = ""
     for i, d in enumerate(decisions, 1):

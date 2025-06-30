@@ -147,7 +147,7 @@ performance benchmarks, and CI/CD integration guidelines.
 
 chore(gitignore): fix test file exclusion pattern
 
-Change overly broad `test_*.py` pattern to `test_temp_*.py` 
+Change overly broad `test_*.py` pattern to `test_temp_*.py`
 to allow legitimate test files while excluding temporary ones.
 ```
 
@@ -268,13 +268,13 @@ repos:
       - id: check-yaml
       - id: check-added-large-files
       - id: check-merge-conflict
-  
+
   - repo: https://github.com/psf/black
     rev: 23.9.1
     hooks:
       - id: black
         language_version: python3
-  
+
   - repo: https://github.com/pycqa/flake8
     rev: 6.1.0
     hooks:
@@ -322,22 +322,22 @@ pre-commit install
     ca = commit -a
     cm = commit -m
     cam = commit -am
-    
+
     # Branch operations
     co = checkout
     br = branch
     sw = switch
-    
+
     # Status and log
     st = status
     lg = log --oneline --graph --decorate --all
     last = log -1 HEAD
-    
+
     # Useful shortcuts
     unstage = reset HEAD --
     uncommit = reset --soft HEAD~1
     recommit = commit --amend --no-edit
-    
+
     # Project-specific
     phase = !git log --oneline --grep="feat\\|docs\\|fix" -10
     docs-only = !git log --oneline --grep="docs" -10
@@ -435,7 +435,7 @@ git filter-branch --force --index-filter \
 - [Pre-commit Hooks](https://pre-commit.com/)
 
 ---
-**Version**: 1.0  
-**Effective Date**: 2025-06-28  
-**Next Review**: 2025-09-28  
+**Version**: 1.0
+**Effective Date**: 2025-06-28
+**Next Review**: 2025-09-28
 **Approved By**: Technical Team

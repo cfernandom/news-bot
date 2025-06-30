@@ -26,7 +26,7 @@ PreventIA News Analytics is a media intelligence system specialized in automated
 graph TB
     subgraph "Data Sources"
         S1[Medical News Sites]
-        S2[Scientific Publications] 
+        S2[Scientific Publications]
         S3[Health Organizations]
         S4[News Aggregators]
     end
@@ -73,31 +73,31 @@ graph TB
     S2 --> SC
     S3 --> SC
     S4 --> SC
-    
+
     SC --> SV
     SV --> FT
     FT --> NLP
-    
+
     NLP --> SA
     NLP --> TC
     NLP --> GC
-    
+
     SA --> PG
     TC --> PG
     GC --> PG
-    
+
     PG --> AG
     PG --> TR
     AG --> SG
     TR --> WA
-    
+
     WA --> RD
     SG --> RD
-    
+
     RD --> API
     API --> WS
     API --> EX
-    
+
     API --> DB
     WS --> VZ
     EX --> RP
@@ -243,21 +243,21 @@ graph TB
 
 ### 1. Article Processing Pipeline
 ```
-Web Sources → Scrapers → Validation → Full-text Extraction → 
-NLP Analysis → Sentiment/Topic Classification → Database Storage → 
+Web Sources → Scrapers → Validation → Full-text Extraction →
+NLP Analysis → Sentiment/Topic Classification → Database Storage →
 Cache Update → Dashboard Refresh
 ```
 
 ### 2. Analytics Generation Pipeline
 ```
-Raw Articles → Weekly Aggregation → Trend Analysis → 
-LLM Summary Generation → Cache Storage → API Serving → 
+Raw Articles → Weekly Aggregation → Trend Analysis →
+LLM Summary Generation → Cache Storage → API Serving →
 Dashboard Visualization
 ```
 
 ### 3. Real-time Updates Pipeline
 ```
-New Article Detection → Processing Queue → Analysis → 
+New Article Detection → Processing Queue → Analysis →
 WebSocket Notification → Dashboard Update → User Notification
 ```
 
@@ -352,5 +352,5 @@ WebSocket Notification → Dashboard Update → User Notification
 - **Next**: 🔄 FastAPI implementation
 
 ---
-**Última actualización**: 2025-06-27  
+**Última actualización**: 2025-06-27
 **Próxima revisión**: 2025-07-27

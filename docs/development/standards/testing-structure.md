@@ -95,7 +95,7 @@ testpaths = tests
 python_files = test_*.py *_test.py
 python_classes = Test*
 python_functions = test_*
-addopts = 
+addopts =
     --strict-markers
     --disable-warnings
     --tb=short

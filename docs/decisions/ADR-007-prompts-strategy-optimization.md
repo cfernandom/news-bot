@@ -1,8 +1,8 @@
 # ADR-007: Prompts Strategy Optimization - From Modular to Self-Contained
 
-**Status:** ✅ Accepted and Implemented  
-**Date:** 2025-06-30  
-**Deciders:** Cristhian F. Moreno (UCOMPENSAR Research Team)  
+**Status:** ✅ Accepted and Implemented
+**Date:** 2025-06-30
+**Deciders:** Cristhian F. Moreno (UCOMPENSAR Research Team)
 **Tags:** productivity, documentation, developer-experience, efficiency
 
 ## Context
@@ -118,7 +118,7 @@ docs/prompts/
 ```
 v1.0 (Self-contained):
 - development.md (152 lines)
-- academic.md (154 lines)  
+- academic.md (154 lines)
 - debugging.md (105 lines)
 - quick-commands.md (151 lines)
 - README.md (90 lines)

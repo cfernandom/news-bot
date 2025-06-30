@@ -134,7 +134,7 @@ weekly_analytics: métricas pre-calculadas para performance dashboard
 ```
 
 ### Technology Stack
-- **Database**: PostgreSQL 16+ 
+- **Database**: PostgreSQL 16+
 - **ORM**: SQLAlchemy 2.0 con async support
 - **Raw SQL**: asyncpg para maximum performance
 - **Migrations**: Alembic para schema versioning
@@ -182,7 +182,7 @@ class AnalyticsService:
 ### Core Tables
 ```sql
 news_sources    -- Fuentes dinámicas con validación automática
-articles        -- Artículos con análisis NLP integrado  
+articles        -- Artículos con análisis NLP integrado
 article_keywords -- Keywords con relevance scoring
 weekly_analytics -- Métricas agregadas pre-calculadas
 ```

@@ -1,9 +1,12 @@
-from services.shared.models.article import Article
-from services.scraper.src.utils import get_html_with_playwright
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 from datetime import datetime, timezone
 from typing import Optional
+from urllib.parse import urljoin
+
+from bs4 import BeautifulSoup
+
+from services.scraper.src.utils import get_html_with_playwright
+from services.shared.models.article import Article
+
 
 async def scraper__www_nature_com_breast_cancer() -> list[Article]:
     URL = "https://www.nature.com/subjects/breast-cancer"
@@ -29,7 +32,7 @@ async def scraper__www_nature_com_breast_cancer() -> list[Article]:
             href = title_tag["href"]
             full_url = urljoin(BASE_URL, href)
 
-            # Resumen 
+            # Resumen
             summary_tag = article_tag.find("div", {"data-test": "article-description"})
             summary = summary_tag.get_text(strip=True) if summary_tag else ""
 
@@ -48,7 +51,7 @@ async def scraper__www_nature_com_breast_cancer() -> list[Article]:
                 url=full_url,
                 summary=summary,
                 published_at=date,
-                content=""
+                content="",
             )
 
             articles.append(article)

@@ -1,10 +1,18 @@
 import re
 
-from .extractors.www_breastcancer_org import extract_full_text as extract_breastcancer_org_full_text
-from .extractors.breastcancernow_org import extract_full_text as extract_breastcancernow_org_full_text
-from .extractors.www_curetoday_com import extract_full_text as extract_curetoday_com_full_text
+from .extractors.breastcancernow_org import (
+    extract_full_text as extract_breastcancernow_org_full_text,
+)
+from .extractors.www_breastcancer_org import (
+    extract_full_text as extract_breastcancer_org_full_text,
+)
+from .extractors.www_curetoday_com import (
+    extract_full_text as extract_curetoday_com_full_text,
+)
 from .extractors.www_nature_com import extract_full_text as extract_nature_com_full_text
-from .extractors.www_news_medical_net import extract_full_text as extract_news_medical_net_full_text
+from .extractors.www_news_medical_net import (
+    extract_full_text as extract_news_medical_net_full_text,
+)
 from .extractors.www_webmd_com import extract_full_text as extract_webmd_com_full_text
 
 EXTRACTOR_REGISTRY = {
@@ -16,6 +24,7 @@ EXTRACTOR_REGISTRY = {
     r"www\.webmd\.com": extract_webmd_com_full_text,
     # Add more extractors as needed
 }
+
 
 def get_extractor_for_domain(domain: str):
     """

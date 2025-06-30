@@ -4,9 +4,9 @@
 
 ## **Quién Soy**
 
-**Cristhian Fernando Moreno Manrique**  
+**Cristhian Fernando Moreno Manrique**
 - Docente e Investigador, Fundación Universitaria Compensar (UCOMPENSAR), Bogotá
-- Ingeniero Electrónico → Ingeniería de Sistemas  
+- Ingeniero Electrónico → Ingeniería de Sistemas
 - Desarrollador web 3 años → Docente universitario 1 año → Investigador novato
 - Email: cfmorenom@ucompensar.edu.co
 
@@ -104,7 +104,7 @@ News Sources → Scrapers (Playwright) → PostgreSQL → NLP Pipeline → [API 
 
 ### **Recursos y Restricciones:**
 
-**Tiempo Disponible:** 
+**Tiempo Disponible:**
 - Trabajo paralelo a docencia (tiempo limitado)
 - Timeline objetivo: 3-4 semanas informe, 2-3 meses libro
 

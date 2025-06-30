@@ -140,7 +140,7 @@
 ## **💡 Usage Tips:**
 
 1. **Copy-paste** any command above
-2. **Customize** the bracketed parts [LIKE_THIS] 
+2. **Customize** the bracketed parts [LIKE_THIS]
 3. **Add specifics** if needed
 4. **Start new Claude Code session**
 5. **Paste and go!**

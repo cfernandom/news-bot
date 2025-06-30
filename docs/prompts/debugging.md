@@ -4,9 +4,9 @@
 
 ## **System Context:**
 
-**PreventIA:** Sistema analytics noticias cáncer de seno  
-**Stack:** Python 3.13, FastAPI, PostgreSQL, Playwright, spaCy  
-**Status:** Fase 3 - 106 artículos, compliance completo, API en desarrollo  
+**PreventIA:** Sistema analytics noticias cáncer de seno
+**Stack:** Python 3.13, FastAPI, PostgreSQL, Playwright, spaCy
+**Status:** Fase 3 - 106 artículos, compliance completo, API en desarrollo
 **Environment:** Docker Compose, testing 95% coverage
 
 **Technical Setup:**
@@ -37,7 +37,7 @@
 
 **Reproduction Steps:**
 1. [Paso 1]
-2. [Paso 2]  
+2. [Paso 2]
 3. [Error occurs]
 
 **Expected Behavior:** [Lo que debería pasar]
@@ -56,7 +56,7 @@
 # Database status
 docker compose ps postgres
 
-# Python environment  
+# Python environment
 source venv/bin/activate
 python --version
 
@@ -74,7 +74,7 @@ git log --oneline -3
 docker compose ps
 docker compose logs postgres
 
-# Database debugging  
+# Database debugging
 docker compose exec postgres psql -U preventia -d preventia_news
 SELECT COUNT(*) FROM articles;
 SELECT * FROM compliance_dashboard;
@@ -87,7 +87,7 @@ python -c "import [MODULE]; print([MODULE].__version__)"
 python scripts/test_robots_checker.py
 python scripts/run_migrated_scrapers.py [SCRAPER_NAME] --debug
 
-# NLP debugging  
+# NLP debugging
 python -c "from services.nlp.src.sentiment import get_sentiment_analyzer; print('NLP OK')"
 ```
 

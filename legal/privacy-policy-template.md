@@ -1,6 +1,6 @@
 # Privacy Policy - PreventIA News Analytics
 
-**Effective Date:** [DATE]  
+**Effective Date:** [DATE]
 **Last Updated:** [DATE]
 
 ## 1. Introduction
@@ -119,14 +119,14 @@ We may update this Privacy Policy to reflect:
 
 ## 11. Contact Information
 
-**Data Controller**: Cristhian F. Moreno - Research Team  
-**Institution**: Fundación Universitaria Compensar (UCOMPENSAR)  
-**Address**: Av. Calle 32 No. 17 - 30, Bogotá D.C., Colombia  
-**Email**: cfmorenom@ucompensar.edu.co    
+**Data Controller**: Cristhian F. Moreno - Research Team
+**Institution**: Fundación Universitaria Compensar (UCOMPENSAR)
+**Address**: Av. Calle 32 No. 17 - 30, Bogotá D.C., Colombia
+**Email**: cfmorenom@ucompensar.edu.co
 **Website**: https://preventia.cfernandom.dev
 
-**Technical Contact**: cfmorenom@ucompensar.edu.co  
-**Legal/Compliance Contact**: cfmorenom@ucompensar.edu.co  
+**Technical Contact**: cfmorenom@ucompensar.edu.co
+**Legal/Compliance Contact**: cfmorenom@ucompensar.edu.co
 
 
 ## 12. Supervisory Authority
@@ -134,22 +134,22 @@ We may update this Privacy Policy to reflect:
 ### For Colombian Residents
 If you are in Colombia and have concerns about our data processing, you may contact:
 
-**Superintendencia de Industria y Comercio (SIC)**  
-**Address**: Carrera 13 No. 27 - 00, Bogotá D.C., Colombia  
-**Website**: https://www.sic.gov.co  
-**Email**: contactenos@sic.gov.co  
-**Phone**: (+57) 601 587 0000  
+**Superintendencia de Industria y Comercio (SIC)**
+**Address**: Carrera 13 No. 27 - 00, Bogotá D.C., Colombia
+**Website**: https://www.sic.gov.co
+**Email**: contactenos@sic.gov.co
+**Phone**: (+57) 601 587 0000
 **Consumer Line**: 018000 910165
 
-**For Data Protection Complaints**:  
-**Email**: protecciondatos@sic.gov.co  
+**For Data Protection Complaints**:
+**Email**: protecciondatos@sic.gov.co
 **Online Form**: Available at SIC website under "Protección de Datos Personales"
 
 ### For EU Residents
 If you are in the EU and have concerns about our data processing, you may contact your local data protection authority:
 
-**General EU Information**:  
-- **List of EU Data Protection Authorities**: https://edpb.europa.eu/about-edpb/board/members_en  
+**General EU Information**:
+- **List of EU Data Protection Authorities**: https://edpb.europa.eu/about-edpb/board/members_en
 - **European Data Protection Board**: https://edpb.europa.eu
 
 ### For Other Jurisdictions

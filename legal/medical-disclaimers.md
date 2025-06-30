@@ -100,8 +100,8 @@ This disclaimer may be updated to reflect:
 - Regulatory requirements
 - Institutional policies
 
-**Last Updated**: [DATE]  
-**Review Schedule**: Every 6 months or as needed  
+**Last Updated**: [DATE]
+**Review Schedule**: Every 6 months or as needed
 **Contact**: cfmorenom@ucompensar.edu.co
 
 ---

@@ -68,7 +68,7 @@ class SentimentAnalyzer:
 ```python
 def _interpret_medical_sentiment(self, scores: Dict[str, float]):
     compound = scores["compound"]
-    
+
     # Medical content requires conservative thresholds
     if compound >= 0.3:
         return "positive", abs(compound)
@@ -176,11 +176,11 @@ pytest unit/test_nlp/test_sentiment.py -v
 ### Estado Real de Procesamiento
 ```sql
 -- Estado actual validado
-SELECT 
+SELECT
     processing_status,
     COUNT(*) as count,
     ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM articles), 1) as percentage
-FROM articles 
+FROM articles
 GROUP BY processing_status;
 
 -- Results:
@@ -191,19 +191,19 @@ GROUP BY processing_status;
 ### Distribución Sentiment Análisis
 ```sql
 -- Distribución de artículos procesados
-SELECT 
+SELECT
     sentiment_label,
     COUNT(*) as count,
     ROUND(AVG(sentiment_score), 3) as avg_score,
     ROUND(MIN(sentiment_score), 3) as min_score,
     ROUND(MAX(sentiment_score), 3) as max_score
-FROM articles 
+FROM articles
 WHERE sentiment_label IS NOT NULL
 GROUP BY sentiment_label;
 
 -- Results:
 -- negative: 40 (avg: -0.700, range: -0.950 to -0.103)
--- positive: 15 (avg: 0.415, range: 0.103 to 0.872) 
+-- positive: 15 (avg: 0.415, range: 0.103 to 0.872)
 -- neutral: 1 (avg: 0.000, range: 0.000 to 0.000)
 ```
 
@@ -282,9 +282,9 @@ def analyze_article(article: Article) -> NLPResult:
 
 La FASE 2 ha establecido exitosamente la capacidad de análisis de sentimientos especializado en contenido médico, procesando 56 artículos con 100% de éxito en el batch processing y estableciendo un framework de testing profesional.
 
-**Estado**: ✅ COMPLETADO con observaciones  
-**Coverage actual**: 52.8% (56/106 artículos)  
-**Calidad**: Alta (0 errores, testing completo)  
+**Estado**: ✅ COMPLETADO con observaciones
+**Coverage actual**: 52.8% (56/106 artículos)
+**Calidad**: Alta (0 errores, testing completo)
 **Recomendación**: Investigar coverage pendiente + proceder con FASE 3
 
 ### Impacto en el Proyecto
@@ -294,7 +294,7 @@ La FASE 2 ha establecido exitosamente la capacidad de análisis de sentimientos 
 - **Metodología**: Verificación de métricas implementada (gracias cfernandom)
 
 ---
-*Documento generado: 2025-06-28*  
-*Autor: Claude Code (Director Técnico)*  
-*Colaborador: cfernandom (Ingeniero Senior)*  
+*Documento generado: 2025-06-28*
+*Autor: Claude Code (Director Técnico)*
+*Colaborador: cfernandom (Ingeniero Senior)*
 *Validado por: Datos reales de PostgreSQL*

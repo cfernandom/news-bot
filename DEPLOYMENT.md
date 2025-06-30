@@ -26,7 +26,7 @@ El presente documento describe el procedimiento para la implementación del sist
 ├── requirements.txt
 ├── .env                 # Configuración sensible (no versionado)
 └── services/            # Código principal del sistema
-``` 
+```
 
 ---
 

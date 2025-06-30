@@ -1,11 +1,11 @@
 from datetime import datetime
 from typing import List
+
 from services.shared.models.article import Article
 
+
 def filter_articles_by_date_range(
-    articles: List[Article],
-    start_date: datetime,
-    end_date: datetime
+    articles: List[Article], start_date: datetime, end_date: datetime
 ) -> List[Article]:
     filtered = []
     for article in articles:

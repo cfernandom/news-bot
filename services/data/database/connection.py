@@ -3,15 +3,15 @@ Database connection and session management for PreventIA News Analytics
 Supports both SQLAlchemy ORM and raw SQL queries via asyncpg
 """
 
-import os
 import asyncio
-from typing import AsyncGenerator, Optional
+import os
 from contextlib import asynccontextmanager
+from typing import AsyncGenerator, Optional
 
 import asyncpg
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-from sqlalchemy.pool import NullPool
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.pool import NullPool
 
 from .models import Base
 
@@ -20,15 +20,17 @@ class DatabaseManager:
     """
     Manages database connections for both ORM and raw SQL operations
     """
-    
+
     def __init__(self):
         self.database_url = os.getenv("DATABASE_URL")
         if not self.database_url:
             raise ValueError("DATABASE_URL environment variable is required")
-        
+
         # Convert postgres:// to postgresql+asyncpg:// for SQLAlchemy
-        self.sqlalchemy_url = self.database_url.replace("postgresql://", "postgresql+asyncpg://")
-        
+        self.sqlalchemy_url = self.database_url.replace(
+            "postgresql://", "postgresql+asyncpg://"
+        )
+
         # SQLAlchemy async engine
         self.engine = create_async_engine(
             self.sqlalchemy_url,
@@ -36,33 +38,28 @@ class DatabaseManager:
             poolclass=NullPool,  # Use connection pooling in production
             pool_pre_ping=True,
         )
-        
+
         # Session factory
         self.session_factory = async_sessionmaker(
-            self.engine,
-            class_=AsyncSession,
-            expire_on_commit=False
+            self.engine, class_=AsyncSession, expire_on_commit=False
         )
-        
+
         # Connection pool for raw SQL queries
         self._pool: Optional[asyncpg.Pool] = None
-    
+
     async def initialize(self):
         """Initialize database connection pool"""
         if not self._pool:
             self._pool = await asyncpg.create_pool(
-                self.database_url,
-                min_size=2,
-                max_size=10,
-                command_timeout=60
+                self.database_url, min_size=2, max_size=10, command_timeout=60
             )
-    
+
     async def close(self):
         """Close all database connections"""
         if self._pool:
             await self._pool.close()
         await self.engine.dispose()
-    
+
     @asynccontextmanager
     async def get_session(self) -> AsyncGenerator[AsyncSession, None]:
         """
@@ -79,7 +76,7 @@ class DatabaseManager:
                 raise
             finally:
                 await session.close()
-    
+
     @asynccontextmanager
     async def get_connection(self) -> AsyncGenerator[asyncpg.Connection, None]:
         """
@@ -90,46 +87,46 @@ class DatabaseManager:
         """
         if not self._pool:
             await self.initialize()
-        
+
         async with self._pool.acquire() as connection:
             yield connection
-    
+
     async def execute_sql(self, query: str, *args) -> list:
         """
         Execute raw SQL query and return results
         Usage:
             results = await db.execute_sql(
-                "SELECT COUNT(*) FROM articles WHERE published_at > $1", 
+                "SELECT COUNT(*) FROM articles WHERE published_at > $1",
                 datetime.now()
             )
         """
         async with self.get_connection() as conn:
             return await conn.fetch(query, *args)
-    
+
     async def execute_sql_one(self, query: str, *args) -> Optional[dict]:
         """
         Execute raw SQL query and return single result
         """
         async with self.get_connection() as conn:
             return await conn.fetchrow(query, *args)
-    
+
     async def execute_sql_scalar(self, query: str, *args):
         """
         Execute raw SQL query and return single value
         """
         async with self.get_connection() as conn:
             return await conn.fetchval(query, *args)
-    
+
     async def create_tables(self):
         """Create all tables (for development/testing)"""
         async with self.engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
-    
+
     async def drop_tables(self):
         """Drop all tables (for development/testing)"""
         async with self.engine.begin() as conn:
             await conn.run_sync(Base.metadata.drop_all)
-    
+
     async def health_check(self) -> bool:
         """Check if database is accessible"""
         try:
@@ -162,11 +159,11 @@ async def get_db_connection():
 async def init_database():
     """Initialize database on application startup"""
     await db_manager.initialize()
-    
+
     # Run health check
     if not await db_manager.health_check():
         raise RuntimeError("Database connection failed")
-    
+
     print("✅ Database initialized successfully")
 
 
@@ -189,17 +186,17 @@ if __name__ == "__main__":
     # Test database connection
     async def test_connection():
         await init_database()
-        
+
         # Test ORM
         async with db_manager.get_session() as session:
             result = await session.execute(text("SELECT version()"))
             version = result.scalar()
             print(f"PostgreSQL version (ORM): {version}")
-        
+
         # Test raw SQL
         version = await db_manager.execute_sql_scalar("SELECT version()")
         print(f"PostgreSQL version (Raw SQL): {version}")
-        
+
         await close_database()
-    
+
     asyncio.run(test_connection())

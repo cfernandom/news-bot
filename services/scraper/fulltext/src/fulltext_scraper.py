@@ -1,7 +1,10 @@
-from urllib.parse import urlparse
-import requests
 from typing import Optional
+from urllib.parse import urlparse
+
+import requests
+
 from .registry import get_extractor_for_domain
+
 
 async def scrape_full_text(url: str) -> Optional[str]:
     """
@@ -14,7 +17,7 @@ async def scrape_full_text(url: str) -> Optional[str]:
         # resp = requests.get(url, headers=headers, timeout=10)
         # if resp.status_code != 200:
         #     return None
-        
+
         domain = urlparse(url).netloc.lower()
         extractor_fn = get_extractor_for_domain(domain)
 

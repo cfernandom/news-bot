@@ -132,7 +132,7 @@ testpaths = tests
 addopts = --strict-markers --disable-warnings --tb=short -v
 markers =
     unit: Unit tests for isolated components
-    integration: Integration tests for component interaction  
+    integration: Integration tests for component interaction
     e2e: End-to-end tests for complete workflows
     database: Tests requiring database connection
     performance: Performance and load tests
@@ -162,7 +162,7 @@ def sample_articles():
 
 ### Positivas
 - ✅ **Testing categorizado**: `pytest -m unit` para desarrollo rápido
-- ✅ **Async support completo**: Fixtures async para database/NLP testing  
+- ✅ **Async support completo**: Fixtures async para database/NLP testing
 - ✅ **Coverage integrado**: HTML reports automáticos con `--cov`
 - ✅ **Developer experience**: Debugging fácil con `-v` y `--tb=short`
 - ✅ **CI/CD ready**: Estructura preparada para pipelines automatizados
@@ -191,7 +191,7 @@ def sample_articles():
 tests/unit/test_nlp/test_sentiment.py     # 14 comprehensive tests
 tests/unit/test_database/test_connection.py  # 4 database tests
 
-# Integration tests (componente interaction)  
+# Integration tests (componente interaction)
 tests/integration/test_nlp_pipeline.py   # 6 pipeline tests
 
 # Commands disponibles
@@ -204,7 +204,7 @@ cd tests && pytest --cov=../services --cov-report=html  # Coverage
 ```bash
 # cfernandom methodology: verificar versiones antes de usar
 pip index versions pytest        # → 8.4.1 (latest)
-pip index versions pytest-asyncio # → 1.0.0 (latest)  
+pip index versions pytest-asyncio # → 1.0.0 (latest)
 pip index versions pytest-cov    # → 6.2.1 (latest)
 ```
 

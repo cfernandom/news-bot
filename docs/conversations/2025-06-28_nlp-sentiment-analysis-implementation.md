@@ -3,7 +3,7 @@
 ## Metadata
 - **Fecha**: 2025-06-28
 - **Duración**: ~3 horas
-- **Participantes**: 
+- **Participantes**:
   - Claude (Dirección Técnica)
   - cfernandom (Ingeniero Senior, 3 años exp. fullstack)
 - **Tipo**: Development + Architecture
@@ -23,26 +23,26 @@ Tras completar exitosamente la FASE 1 (migración de scrapers), el proyecto requ
 
 ### 1. Arquitectura de Sentiment Analysis
 **Problema/Pregunta**: ¿Cómo adaptar sentiment analysis general para contenido médico especializado?
-**Discusión**: 
+**Discusión**:
 - Evaluación de VADER vs BERT para noticias médicas
 - Necesidad de thresholds ajustados para contexto médico (más conservador)
 - Integración con spaCy para preprocesamiento de texto
 - Diseño de pipeline escalable
 
-**Resolución**: 
+**Resolución**:
 - Implementar VADER + spaCy con thresholds médicos ajustados
 - Crear clase `SentimentAnalyzer` reutilizable con instancia global
 - Integrar análisis con pipeline NLP existente
 
 ### 2. Testing Framework Desestructurado
 **Problema/Pregunta**: Los tests estaban dispersos y sin organización profesional
-**Discusión**: 
+**Discusión**:
 - Tests mezclados con código de producción (test_*.py en raíz)
 - Falta de categorización (unit/integration/e2e)
 - Sin configuración pytest estándar
 - Falta de fixtures reutilizables
 
-**Resolución**: 
+**Resolución**:
 - Diseñar estructura professional: unit/integration/e2e/performance
 - Crear conftest.py con fixtures async y database
 - Implementar pytest.ini con markers y configuración
@@ -50,24 +50,24 @@ Tras completar exitosamente la FASE 1 (migración de scrapers), el proyecto requ
 
 ### 3. Verificación de Dependencias
 **Problema/Pregunta**: cfernandom solicitó verificar versiones de dependencias en lugar de asumir
-**Discusión**: 
+**Discusión**:
 - Importancia de verificar versiones exactas usando `pip index versions`
 - Necesidad de requirements-test.txt con versiones específicas
 - Compatibilidad entre pytest-asyncio y async/await patterns
 
-**Resolución**: 
+**Resolución**:
 - Verificar versiones con `pip index versions` para cada paquete
 - Crear requirements-test.txt con versiones exactas verificadas
 - Instalar y probar dependencias antes de crear configuración
 
 ### 4. Validación de Métricas
 **Problema/Pregunta**: cfernandom cuestionó métrica "100% precisión de procesamiento"
-**Discusión**: 
+**Discusión**:
 - Diferencia entre "artículos procesados en batch" vs "coverage total"
 - Importancia de validar métricas con datos reales
 - Confusión entre success rate vs coverage percentage
 
-**Resolución**: 
+**Resolución**:
 - Verificar métricas reales con queries PostgreSQL
 - Clarificar: 56/106 artículos procesados (52.8% coverage)
 - Batch success rate: 100% (0 errores), pero coverage incompleto
@@ -155,9 +155,9 @@ def _interpret_medical_sentiment(self, scores: Dict[str, float]):
 ### 🧠 Sentiment Analysis Implementado
 - **Artículos procesados**: 56/106 (52.8% coverage)
 - **Batch success rate**: 100% (0 errores en procesamiento)
-- **Distribución resultados**: 
+- **Distribución resultados**:
   - Negative: 40 artículos (71%)
-  - Positive: 15 artículos (27%) 
+  - Positive: 15 artículos (27%)
   - Neutral: 1 artículo (2%)
 - **Thresholds médicos**: Implementados y validados
 
@@ -207,6 +207,6 @@ SELECT processing_status, COUNT(*) FROM articles GROUP BY processing_status;
 - **FASE 3**: 🎯 **Preparado para API + Dashboard**
 
 ---
-**Conversación documentada por**: Claude (Dirección Técnica)  
-**Revisada por**: cfernandom (Ingeniero Senior)  
+**Conversación documentada por**: Claude (Dirección Técnica)
+**Revisada por**: cfernandom (Ingeniero Senior)
 **Próxima sesión programada**: TBD - Investigación coverage pendiente + topic categorization

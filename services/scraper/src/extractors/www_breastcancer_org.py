@@ -1,9 +1,12 @@
-from services.shared.models.article import Article
-from services.scraper.src.utils import get_html_with_playwright
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 from datetime import datetime, timezone
 from typing import Optional
+from urllib.parse import urljoin
+
+from bs4 import BeautifulSoup
+
+from services.scraper.src.utils import get_html_with_playwright
+from services.shared.models.article import Article
+
 
 async def scraper__www_breast_cancer_org() -> list[Article]:
     URL = "https://www.breastcancer.org/research-news"
@@ -17,10 +20,7 @@ async def scraper__www_breast_cancer_org() -> list[Article]:
 
     for a_tag in soup.find_all("a", href=True):
         href = a_tag["href"]
-        if (
-            href.startswith("/research-news/")
-            and "topic/" not in href.lower()
-        ):
+        if href.startswith("/research-news/") and "topic/" not in href.lower():
             title = a_tag.get_text(strip=True)
             full_url = urljoin(BASE_URL, href)
 
@@ -31,10 +31,11 @@ async def scraper__www_breast_cancer_org() -> list[Article]:
 
             # fecha
             date: Optional[datetime] = None
-            info_div = parent.find_next(
-                "div",
-                class_="Info_dateAndAuthorWrapper__M8I4F"
-            ) if parent else None
+            info_div = (
+                parent.find_next("div", class_="Info_dateAndAuthorWrapper__M8I4F")
+                if parent
+                else None
+            )
 
             if info_div:
                 raw = info_div.get_text(" ", strip=True)
@@ -47,12 +48,14 @@ async def scraper__www_breast_cancer_org() -> list[Article]:
                     date = None
                     continue
 
-            articles.append(Article(
-                title=title,
-                url=full_url,
-                summary=summary,
-                published_at=date.replace(tzinfo=timezone.utc),
-                content=""
-            ))
+            articles.append(
+                Article(
+                    title=title,
+                    url=full_url,
+                    summary=summary,
+                    published_at=date.replace(tzinfo=timezone.utc),
+                    content="",
+                )
+            )
 
     return articles

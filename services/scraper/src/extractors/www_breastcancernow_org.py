@@ -1,9 +1,12 @@
-from services.shared.models.article import Article
-from services.scraper.src.utils import get_html_with_playwright
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 from datetime import datetime, timezone
 from typing import Optional
+from urllib.parse import urljoin
+
+from bs4 import BeautifulSoup
+
+from services.scraper.src.utils import get_html_with_playwright
+from services.shared.models.article import Article
+
 
 async def scraper__breast_cancer_now_org() -> list[Article]:
     URL = "https://breastcancernow.org/about-us/research-news"
@@ -36,9 +39,7 @@ async def scraper__breast_cancer_now_org() -> list[Article]:
 
         if date_str:
             try:
-                month_fixes = {
-                    "Sept": "Sep"
-                }
+                month_fixes = {"Sept": "Sep"}
                 for wrong, correct in month_fixes.items():
                     date_str = date_str.replace(wrong, correct)
 
@@ -47,15 +48,11 @@ async def scraper__breast_cancer_now_org() -> list[Article]:
             except ValueError:
                 print(f"Fecha no parseable: {date_str}")
                 date = None
-                
+
         article_obj = Article(
-            title=title,
-            url=full_url,
-            summary=summary,
-            published_at=date,
-            content=""
+            title=title, url=full_url, summary=summary, published_at=date, content=""
         )
-        setattr(article_obj, "article_url", full_url)  
+        setattr(article_obj, "article_url", full_url)
 
         articles.append(article_obj)
 

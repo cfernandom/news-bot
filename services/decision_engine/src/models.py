@@ -1,6 +1,8 @@
 from dataclasses import dataclass
+
 from services.nlp.src.models import NLPResult
 from services.shared.models.article import Article
+
 
 @dataclass
 class DecisionResult:
@@ -25,5 +27,5 @@ class DecisionResult:
             should_publish=publish,
             reason=reason,
             score=nlp.score,
-            matched_keywords=nlp.matched_keywords
+            matched_keywords=nlp.matched_keywords,
         )

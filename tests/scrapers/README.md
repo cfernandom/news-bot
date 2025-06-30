@@ -66,7 +66,7 @@ class MiScraperTest(ScraperTestFramework):
             scraper_function=mi_scraper_function,
             expected_source_name="Mi Fuente"
         )
-    
+
     async def test_scraper_specific(self):
         """Tests específicos para mi scraper"""
         # Implementar validaciones específicas
@@ -164,6 +164,6 @@ pip install playwright beautifulsoup4 asyncpg python-dotenv
 4. Confirmar estructura de datos en PostgreSQL
 
 ---
-*Framework creado: 2025-06-27*  
-*Autor: Claude Code (Director Técnico)*  
+*Framework creado: 2025-06-27*
+*Autor: Claude Code (Director Técnico)*
 *Revisor: Cristhian F. Moreno (Senior Engineer)*

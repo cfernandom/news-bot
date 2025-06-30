@@ -70,7 +70,7 @@
 
 ## 🔄 **Evolution & Maintenance**
 
-**Current Version:** 1.0 - Self-contained  
+**Current Version:** 1.0 - Self-contained
 **Design principle:** Simple and efficient for daily use
 
 **Adding New Prompts:**

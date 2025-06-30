@@ -25,7 +25,7 @@ class SentimentAnalyzer:
         """Analyze sentiment of medical content."""
         return self._process_medical_text(text)
 
-# ❌ Incorrect - Mixed languages  
+# ❌ Incorrect - Mixed languages
 class AnalizadorSentimiento:
     def analyze_sentiment(self, texto: str) -> Dict[str, Any]:
         """Analiza el sentimiento del contenido médico."""
@@ -106,7 +106,7 @@ def calculate_relevance_score(article: Article) -> float:
     keywords = extract_medical_keywords(article.content)
     return score
 
-# ✅ Acceptable - User-facing error in Spanish  
+# ✅ Acceptable - User-facing error in Spanish
 class ArticleProcessingError(Exception):
     def __init__(self, article_id: int):
         super().__init__(f"Error procesando artículo {article_id}")
@@ -131,7 +131,7 @@ Brief description in clear, professional English.
 - [Internal Reference](../other-doc.md)
 ```
 
-#### Spanish Documents Template  
+#### Spanish Documents Template
 ```markdown
 # [Título del Documento]
 
@@ -158,7 +158,7 @@ Descripción breve en español claro y profesional.
 - [ ] Code examples follow English naming conventions
 - [ ] References to English resources when available
 
-#### For Spanish Documents  
+#### For Spanish Documents
 - [ ] Clear, professional Spanish
 - [ ] Technical terms properly translated or explained
 - [ ] Consistent with team communication style
@@ -171,7 +171,7 @@ Descripción breve en español claro y profesional.
 # Wrong
 El sistema uses VADER para sentiment analysis.
 
-# Correct  
+# Correct
 El sistema utiliza VADER para análisis de sentimientos.
 # OR
 The system uses VADER for sentiment analysis.
@@ -242,7 +242,7 @@ def analyze_sentiment(text: str) -> dict:
 - [Real Academia Española - Tecnología](https://www.rae.es/)
 
 ---
-**Effective Date**: 2025-06-28  
-**Last Updated**: 2025-06-28  
-**Next Review**: 2025-09-28  
+**Effective Date**: 2025-06-28
+**Last Updated**: 2025-06-28
+**Next Review**: 2025-09-28
 **Approved By**: Claude (Technical Director), cfernandom (Senior Engineer)

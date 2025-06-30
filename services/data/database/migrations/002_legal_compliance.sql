@@ -68,13 +68,13 @@ CREATE INDEX IF NOT EXISTS idx_notices_received ON legal_notices(received_at);
 
 -- Create view for compliance dashboard
 CREATE OR REPLACE VIEW compliance_dashboard AS
-SELECT 
+SELECT
     -- Source compliance overview
     COUNT(DISTINCT ns.id) as total_sources,
     COUNT(DISTINCT CASE WHEN ns.scraping_allowed = true THEN ns.id END) as sources_permitted,
     COUNT(DISTINCT CASE WHEN ns.scraping_allowed = false THEN ns.id END) as sources_blocked,
     COUNT(DISTINCT CASE WHEN ns.scraping_allowed IS NULL THEN ns.id END) as sources_unknown,
-    
+
     -- Article compliance overview
     COUNT(DISTINCT a.id) as total_articles,
     COUNT(DISTINCT CASE WHEN a.robots_txt_compliant = true THEN a.id END) as articles_robots_compliant,
@@ -83,12 +83,12 @@ SELECT
     COUNT(DISTINCT CASE WHEN a.copyright_status = 'violation' THEN a.id END) as articles_copyright_violation,
     COUNT(DISTINCT CASE WHEN a.legal_review_status = 'approved' THEN a.id END) as articles_legally_approved,
     COUNT(DISTINCT CASE WHEN a.data_retention_expires_at < CURRENT_TIMESTAMP THEN a.id END) as articles_expired_retention,
-    
+
     -- Legal notices overview
     COUNT(DISTINCT ln.id) as total_legal_notices,
     COUNT(DISTINCT CASE WHEN ln.status = 'received' THEN ln.id END) as notices_pending,
     COUNT(DISTINCT CASE WHEN ln.status = 'complied' THEN ln.id END) as notices_complied,
-    
+
     -- Recent activity
     MAX(cal.performed_at) as last_compliance_check
 FROM news_sources ns
@@ -110,27 +110,27 @@ COMMENT ON COLUMN articles.legal_review_status IS 'Legal review status: pending,
 COMMENT ON COLUMN articles.data_retention_expires_at IS 'When this data should be deleted per retention policy';
 
 -- Insert default compliance settings for existing sources
-UPDATE news_sources 
-SET 
+UPDATE news_sources
+SET
     crawl_delay_seconds = 2,
     robots_txt_url = base_url || '/robots.txt'
 WHERE robots_txt_url IS NULL;
 
 -- Mark existing articles as needing compliance review
-UPDATE articles 
-SET 
+UPDATE articles
+SET
     legal_review_status = 'needs_review',
     content_type = 'full',
     copyright_status = 'unknown'
 WHERE legal_review_status = 'pending';
 
 -- Set data retention expiry (1 year from scraping for existing data)
-UPDATE articles 
+UPDATE articles
 SET data_retention_expires_at = scraped_at + INTERVAL '1 year'
 WHERE data_retention_expires_at IS NULL;
 
 -- Log this migration
 INSERT INTO compliance_audit_log (table_name, record_id, action, status, details, performed_by)
-VALUES ('schema', 0, 'migration_002_applied', 'passed', 
-        '{"migration": "002_legal_compliance", "fields_added": 14, "tables_created": 2}', 
+VALUES ('schema', 0, 'migration_002_applied', 'passed',
+        '{"migration": "002_legal_compliance", "fields_added": 14, "tables_created": 2}',
         'migration_system');

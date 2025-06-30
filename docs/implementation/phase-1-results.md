@@ -62,14 +62,14 @@ CREATE TABLE articles (
     summary TEXT,
     published_at TIMESTAMP,
     scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     -- Analytics fields
     language VARCHAR(10),
     country VARCHAR(50),
     processing_status VARCHAR(50) DEFAULT 'pending',
     content_hash VARCHAR(64),
     word_count INTEGER,
-    
+
     -- Prepared for Phase 2
     sentiment_score DECIMAL(4,3),
     sentiment_label VARCHAR(20),
@@ -170,7 +170,7 @@ SELECT COUNT(DISTINCT url) / COUNT(*) as uniqueness_ratio FROM articles;
 -- Result: 1.0
 
 -- Campos completos
-SELECT 
+SELECT
     COUNT(content_hash) / COUNT(*) as hash_completeness,
     COUNT(word_count) / COUNT(*) as wordcount_completeness,
     COUNT(language) / COUNT(*) as language_completeness
@@ -187,11 +187,11 @@ FROM articles;
 
 La FASE 1 ha establecido exitosamente la infraestructura base para analytics médicos. Con 106 artículos de calidad almacenados y 4 scrapers funcionalmente migrados, el sistema está preparado para análisis NLP avanzados.
 
-**Estado**: ✅ COMPLETADO  
-**Preparación FASE 2**: ✅ LISTO  
+**Estado**: ✅ COMPLETADO
+**Preparación FASE 2**: ✅ LISTO
 **Recomendación**: Proceder con NLP Analytics
 
 ---
-*Documento generado: 2025-06-27*  
-*Autor: Claude Code (Director Técnico)*  
+*Documento generado: 2025-06-27*
+*Autor: Claude Code (Director Técnico)*
 *Validado por: Sistema automatizado*

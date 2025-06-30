@@ -130,10 +130,10 @@ def test_example():
     # Arrange - Set up test data
     analyzer = SentimentAnalyzer()
     text = "Medical breakthrough shows promising results"
-    
+
     # Act - Execute the code under test
     result = analyzer.analyze_sentiment(text)
-    
+
     # Assert - Verify the results
     assert result['sentiment_label'] == 'positive'
     assert result['confidence'] > 0.5
@@ -228,18 +228,18 @@ from services.new_feature.new_component import NewComponent
 @pytest.mark.unit
 class TestNewComponent:
     """Test NewComponent class functionality"""
-    
+
     def test_component_initialization(self):
         """Test component initializes correctly"""
         component = NewComponent()
         assert component is not None
-    
+
     def test_component_method_with_valid_input(self):
         """Test component method with valid input"""
         component = NewComponent()
         result = component.process("valid input")
         assert result is not None
-    
+
     def test_component_method_with_invalid_input(self):
         """Test component method handles invalid input"""
         component = NewComponent()
@@ -262,7 +262,7 @@ class TestNewComponent:
    ```bash
    # Ensure test database is running
    docker compose up postgres -d
-   
+
    # Check environment variables
    echo $DATABASE_URL
    ```

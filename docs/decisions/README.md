@@ -106,6 +106,6 @@ Este directorio contiene todas las decisiones arquitectónicas importantes del p
 - [ ] Criterios de rollback establecidos
 
 ---
-**Última actualización**: 2025-06-27  
-**Próxima revisión**: 2025-07-27  
+**Última actualización**: 2025-06-27
+**Próxima revisión**: 2025-07-27
 **Template**: [adr-template.md](./adr-template.md)

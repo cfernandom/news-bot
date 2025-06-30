@@ -142,7 +142,7 @@ class SentimentAnalyzer:
 ### Oportunidades de Upgrade
 Con precios OpenAI actualizados (GPT-4.1 nano: $0.10/1M tokens entrada), **considerar para casos específicos**:
 - **Edge cases complejos** donde VADER falla
-- **Análisis explicable** para reportes ejecutivos  
+- **Análisis explicable** para reportes ejecutivos
 - **Sentiment reasoning** con justificación textual
 
 ### Hybrid Approach Candidato

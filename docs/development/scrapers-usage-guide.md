@@ -6,7 +6,7 @@ Documentación completa para el uso, testing y mantenimiento de los scrapers mig
 
 4 scrapers han sido migrados exitosamente a PostgreSQL con estructura analytics-ready:
 - **Breast Cancer Org**: 25 artículos
-- **WebMD**: 31 artículos  
+- **WebMD**: 31 artículos
 - **CureToday**: 30 artículos
 - **News Medical**: 20 artículos
 
@@ -61,7 +61,7 @@ python debug_breastcancer_structure.py
 
 El framework mide automáticamente:
 - **Execution Time**: Tiempo de ejecución del scraper
-- **Data Quality**: Completeness de campos obligatorios  
+- **Data Quality**: Completeness de campos obligatorios
 - **Performance**: Artículos por segundo
 - **Uniqueness**: Detección de duplicados
 - **Specific Tests**: Validaciones específicas por scraper
@@ -117,7 +117,7 @@ if existing:
 # .env file required
 DATABASE_URL=postgresql://user:pass@localhost:5433/db_name
 POSTGRES_DB=preventia_news
-POSTGRES_USER=preventia  
+POSTGRES_USER=preventia
 POSTGRES_PASSWORD=preventia123
 ```
 
@@ -156,7 +156,7 @@ print(f"Inserted {len(article_ids)} articles")
 
 ### 2. WebMD
 - **URL**: `https://www.webmd.com/breast-cancer/news-features`
-- **Tecnología**: Playwright + parsing de fechas múltiples formatos  
+- **Tecnología**: Playwright + parsing de fechas múltiples formatos
 - **Particularidades**: Estructura de listas complejas, metadatos en spans
 - **Performance**: ~45s, 31 artículos típicos
 
@@ -304,15 +304,15 @@ LEFT JOIN articles a ON ns.id = a.source_id
 GROUP BY ns.name;
 
 -- Calidad de datos
-SELECT 
+SELECT
     COUNT(*) as total,
     COUNT(content_hash) / COUNT(*) * 100 as hash_completeness,
     COUNT(word_count) / COUNT(*) * 100 as wordcount_completeness
 FROM articles;
 
 -- Performance por día
-SELECT DATE(scraped_at), COUNT(*) 
-FROM articles 
+SELECT DATE(scraped_at), COUNT(*)
+FROM articles
 WHERE scraped_at >= CURRENT_DATE - INTERVAL '7 days'
 GROUP BY DATE(scraped_at)
 ORDER BY DATE(scraped_at) DESC;
@@ -328,18 +328,18 @@ Con los scrapers establecidos, el siguiente paso es implementar:
 
 ### Scrapers Pendientes
 - Medical Xpress
-- Nature  
+- Nature
 - Breast Cancer Now
 - Science Daily (opcional - términos restrictivos)
 
 ### Optimizaciones
 - Connection pooling para ejecución batch
-- Rate limiting para respetar sitios web  
+- Rate limiting para respetar sitios web
 - Paralelización de scrapers
 - Caching inteligente
 
 ---
-*Guía creada: 2025-06-27*  
-*Autor: Claude Code (Director Técnico)*  
-*Revisor: Cristhian F. Moreno (Senior Engineer)*  
+*Guía creada: 2025-06-27*
+*Autor: Claude Code (Director Técnico)*
+*Revisor: Cristhian F. Moreno (Senior Engineer)*
 *Versión: 1.0 - FASE 1*

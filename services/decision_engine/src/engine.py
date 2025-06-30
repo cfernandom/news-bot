@@ -1,12 +1,14 @@
 from typing import Iterable
+
+from services.decision_engine.src.config import PUBLISH_THRESHOLD
 from services.decision_engine.src.models import DecisionResult
 from services.nlp.src.models import NLPResult
-from services.decision_engine.src.config import PUBLISH_THRESHOLD
+
 
 def decide(nlp_results: Iterable[NLPResult]) -> list[DecisionResult]:
     """
     Aplica la regla de decisión a cada resultado NLP.
-    
+
     - Publicar si score ≥ PUBLISH_THRESHOLD.
     - Todas las decisiones se devuelven junto con la razón.
     """

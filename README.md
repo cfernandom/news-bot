@@ -85,10 +85,10 @@ C4Context
     title Sistema Autónomo de Curación y Publicación de Noticias
 
     Person(user, "Editor / Administrador", "Supervisa y ajusta el sistema")
-    
-    
+
+
 	  System(newsbot, "NewsBot", "Sistema que extrae, analiza y publica noticias")
-		
+
     Boundary(externalSystems, "Sistemas Externos") {
         System_Ext(wordpress, "WordPress", "Plataforma de publicación vía REST API")
         System_Ext(openai, "OpenAI API", "Generación de texto con LLM")

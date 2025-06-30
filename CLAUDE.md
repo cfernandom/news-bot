@@ -66,9 +66,9 @@ The system follows a hybrid architecture combining data analytics with the exist
 
 ### Current Data Flow
 ```
-External Sources → Scrapers → Full-text Extraction → 
-PostgreSQL Storage → NLP Analysis (Keywords + VADER Sentiment) → 
-Sentiment/Topic Classification → Analytics Aggregation → 
+External Sources → Scrapers → Full-text Extraction →
+PostgreSQL Storage → NLP Analysis (Keywords + VADER Sentiment) →
+Sentiment/Topic Classification → Analytics Aggregation →
 (Future: API → React Dashboard)
 ```
 
@@ -86,7 +86,7 @@ Sentiment/Topic Classification → Analytics Aggregation →
 # Conservative thresholds for medical news
 if compound >= 0.3:          # Strong positive (vs 0.05 standard)
     return "positive"
-elif compound <= -0.3:       # Strong negative (vs -0.05 standard)  
+elif compound <= -0.3:       # Strong negative (vs -0.05 standard)
     return "negative"
 else:
     return "neutral"         # Medical content tends to be neutral
@@ -122,13 +122,13 @@ python scripts/batch_sentiment_analysis.py
 def analyze_article(article: Article) -> NLPResult:
     # Keyword matching (existing)
     matched_keywords = extract_keywords(article)
-    
+
     # Sentiment analysis (new)
     sentiment_data = get_sentiment_analyzer().analyze_sentiment(
         text=article.summary,
         title=article.title
     )
-    
+
     return NLPResult(
         article=article,
         is_relevant=len(matched_keywords) >= 2,
@@ -160,7 +160,7 @@ async with db_manager.get_session() as session:
 
 # Raw SQL for complex analytics
 results = await db_manager.execute_sql(
-    "SELECT COUNT(*) FROM articles WHERE sentiment_label = %s", 
+    "SELECT COUNT(*) FROM articles WHERE sentiment_label = %s",
     "positive"
 )
 ```
@@ -168,7 +168,7 @@ results = await db_manager.execute_sql(
 ## Development Guidelines
 
 ### Environment Configuration
-- **Required `.env` variables**: 
+- **Required `.env` variables**:
   - `DATABASE_URL` - PostgreSQL connection string
   - `OPENAI_API_KEY` - For LLM analysis
   - `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`
@@ -340,14 +340,14 @@ git merge --no-ff feature/analytics-endpoints
 
 ## 🛡️ CUMPLIMIENTO LEGAL COMPLETADO (2025-06-30)
 - **Legal compliance framework** implementado con robots.txt + rate limiting + GDPR
-- **106 artículos aprobados** para uso académico bajo fair use doctrine 
+- **106 artículos aprobados** para uso académico bajo fair use doctrine
 - **Documentación legal** completa: privacy policy + medical disclaimers + contact info
 - **Auditoría legal** establecida con compliance_audit_log y legal_notices tables
 - **Risk assessment:** 🔴 ALTO RIESGO → 🟢 BAJO RIESGO - FULLY COMPLIANT
 
 ### Marco Legal Implementado
 - **Robots.txt Compliance:** Verificación automática para todos los scrapers
-- **Rate Limiting:** 2 segundos entre requests, respeta crawl-delay directives  
+- **Rate Limiting:** 2 segundos entre requests, respeta crawl-delay directives
 - **Copyright Protection:** Fair use académico, solo metadatos almacenados
 - **GDPR Framework:** Privacy policy + user rights + data retention (1 año)
 - **Medical Disclaimers:** Avisos legales para contenido médico automatizado
@@ -355,7 +355,7 @@ git merge --no-ff feature/analytics-endpoints
 
 ### Archivos Legales Creados
 - `legal/privacy-policy-template.md` - Política de privacidad personalizada UCOMPENSAR
-- `legal/medical-disclaimers.md` - Disclaimers médicos comprehensivos  
+- `legal/medical-disclaimers.md` - Disclaimers médicos comprehensivos
 - `services/scraper/src/compliance/` - Framework de cumplimiento ético
 - `scripts/apply_legal_compliance.py` - Migración legal automatizada
 - `docs/implementation/legal-compliance-implementation.md` - Documentación completa
@@ -401,7 +401,7 @@ docker compose exec postgres psql -U preventia -d preventia_news -c "SELECT COUN
 
 ### ✅ Completed - FASE 1 & FASE 2
 - PostgreSQL database with optimized analytics schema
-- Hybrid ORM + raw SQL data layer  
+- Hybrid ORM + raw SQL data layer
 - Docker containerization with health checks
 - 4 scrapers migrados con Playwright integration
 - **VADER sentiment analysis** with medical content specialization

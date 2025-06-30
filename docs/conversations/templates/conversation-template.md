@@ -3,7 +3,7 @@
 ## Metadata
 - **Fecha**: YYYY-MM-DD
 - **Duración**: HH:MM - HH:MM
-- **Participantes**: 
+- **Participantes**:
   - Claude (Dirección Técnica)
   - cfernandom (Ingeniero Senior, Docente)
 - **Tipo**: [Planning/Development/Review/Architecture/Debugging]
@@ -20,14 +20,14 @@ Breve descripción del contexto que motivó la conversación.
 ## Temas Discutidos
 
 ### 1. Tema Principal
-**Problema/Pregunta**: 
-**Discusión**: 
-**Resolución**: 
+**Problema/Pregunta**:
+**Discusión**:
+**Resolución**:
 
 ### 2. Segundo Tema
-**Problema/Pregunta**: 
-**Discusión**: 
-**Resolución**: 
+**Problema/Pregunta**:
+**Discusión**:
+**Resolución**:
 
 ## Decisiones Tomadas
 
@@ -68,6 +68,6 @@ codigo_importante()
 Cualquier información adicional relevante que no encaje en las secciones anteriores.
 
 ---
-**Conversación documentada por**: [Nombre]  
-**Revisada por**: [Nombre]  
+**Conversación documentada por**: [Nombre]
+**Revisada por**: [Nombre]
 **Próxima sesión programada**: [Fecha/TBD]

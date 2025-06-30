@@ -4,9 +4,9 @@
 
 ## **Quién Soy**
 
-**Cristhian Fernando Moreno Manrique**  
+**Cristhian Fernando Moreno Manrique**
 - Docente e Investigador, Fundación Universitaria Compensar (UCOMPENSAR), Bogotá
-- Ingeniero Electrónico → Ingeniería de Sistemas  
+- Ingeniero Electrónico → Ingeniería de Sistemas
 - Desarrollador web 3 años → Docente universitario 1 año → Investigador novato
 - Email: cfmorenom@ucompensar.edu.co
 
@@ -109,7 +109,7 @@ docker compose exec postgres psql -U preventia -d preventia_news
 
 **Need:** [solution/debugging/implementation/architecture guidance/code review]
 
-**Priority:** [high/medium/low] 
+**Priority:** [high/medium/low]
 
 **Component:** [API/Frontend/Database/Scrapers/NLP Pipeline/Testing]
 

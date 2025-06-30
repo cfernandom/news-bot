@@ -103,7 +103,7 @@ async def test_article_crud_operations():
         article = Article(title="Test", content="Content")
         session.add(article)
         await session.commit()
-        
+
         retrieved = await session.get(Article, article.id)
         assert retrieved.title == "Test"
 ```
@@ -132,7 +132,7 @@ def test_sentiment_accuracy_medical_content():
         ("Patient mortality rates increased significantly", "negative"),
         ("Clinical trial results pending review", "neutral")
     ]
-    
+
     for text, expected in test_cases:
         result = sentiment_analyzer.analyze_sentiment(text)
         assert result["sentiment_label"] == expected
@@ -144,11 +144,11 @@ def test_sentiment_accuracy_medical_content():
 @pytest.mark.performance
 def test_sentiment_batch_performance():
     articles = generate_test_articles(100)
-    
+
     start = time.time()
     results = sentiment_analyzer.analyze_batch(articles)
     duration = time.time() - start
-    
+
     assert len(results) == 100
     assert duration < 60  # Must process 100 articles in < 1 minute
 ```
@@ -395,7 +395,7 @@ def test_sentiment_analysis_versions(version):
 - [Testing Structure Standard](./testing-structure.md)
 
 ---
-**Effective Date**: 2025-06-28  
-**Version**: 1.0  
-**Next Review**: 2025-09-28  
+**Effective Date**: 2025-06-28
+**Version**: 1.0
+**Next Review**: 2025-09-28
 **Owner**: Technical Team

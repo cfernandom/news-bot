@@ -52,8 +52,8 @@ docs/
 │   └── 📄 2025-06-27_database-implementation.md  # Implementación BD
 ├── 📁 operations/                        # Operaciones y deployment
 │   ├── 📁 deployment/                   # (Estructura lista, pendiente contenido)
-│   ├── 📁 monitoring/                   
-│   └── 📁 maintenance/                  
+│   ├── 📁 monitoring/
+│   └── 📁 maintenance/
 ├── 📁 api/                              # Documentación de APIs
 │   ├── 📁 services/                     # APIs internas
 │   └── 📁 external/                     # APIs externas
@@ -144,7 +144,7 @@ services/
 │
 ├── 📁 analytics/                       # 🔮 Procesamiento analytics
 │   ├── 📁 sentiment/                  # Análisis sentimientos
-│   ├── 📁 topic_classifier/           # Clasificación temática  
+│   ├── 📁 topic_classifier/           # Clasificación temática
 │   ├── 📁 geographic/                 # Análisis geográfico
 │   └── 📁 aggregation/                # Métricas agregadas
 │
@@ -231,6 +231,6 @@ services/
 
 ---
 
-**Última actualización**: 2025-06-27  
-**Versión de la estructura**: v2.0 (Analytics Architecture)  
+**Última actualización**: 2025-06-27
+**Versión de la estructura**: v2.0 (Analytics Architecture)
 **Próxima actualización**: Cuando se implemente FastAPI layer
