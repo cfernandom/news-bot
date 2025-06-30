@@ -64,6 +64,16 @@ class NewsSource(Base):
     validation_status = Column(String(50), default=ValidationStatus.PENDING)
     validation_error = Column(Text)
     last_validation_at = Column(DateTime)
+    
+    # Legal compliance fields
+    robots_txt_url = Column(String(500))
+    robots_txt_last_checked = Column(DateTime)
+    crawl_delay_seconds = Column(Integer, default=2)
+    scraping_allowed = Column(Boolean)
+    terms_of_service_url = Column(String(500))
+    terms_reviewed_at = Column(DateTime)
+    legal_contact_email = Column(String(255))
+    
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -77,7 +87,7 @@ class Article(Base):
     source_id = Column(Integer, ForeignKey("news_sources.id"), nullable=False)
     title = Column(Text, nullable=False)
     url = Column(String(1000), nullable=False, unique=True)
-    content = Column(Text)
+    content = Column(Text)  # Will be phased out for compliance
     summary = Column(Text)
     published_at = Column(DateTime, nullable=False)
     scraped_at = Column(DateTime, default=datetime.utcnow)
@@ -100,6 +110,15 @@ class Article(Base):
     processing_error = Column(Text)
     content_hash = Column(String(64))
     word_count = Column(Integer)
+    
+    # Legal compliance fields
+    robots_txt_compliant = Column(Boolean)
+    copyright_status = Column(String(50), default="unknown")  # unknown, cleared, fair_use, violation
+    fair_use_basis = Column(Text)
+    scraping_permission = Column(Boolean)
+    content_type = Column(String(20), default="summary")  # full, summary, metadata
+    legal_review_status = Column(String(50), default="pending")  # pending, approved, rejected, needs_review
+    data_retention_expires_at = Column(DateTime)
     
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
