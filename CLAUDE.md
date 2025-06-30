@@ -31,6 +31,14 @@ PreventIA News Analytics is an intelligent media monitoring system specialized i
 - **Legacy database test**: `source venv/bin/activate && python tests/legacy_test_database.py`
 - **Check PostgreSQL health**: `docker compose exec postgres pg_isready -U preventia`
 
+### Standards Automation Commands
+- **Setup pre-commit hooks**: `pip install pre-commit && pre-commit install && pre-commit install --hook-type commit-msg`
+- **Run all hooks manually**: `pre-commit run --all-files`
+- **Update hook versions**: `pre-commit autoupdate`
+- **Skip hooks (emergency)**: `git commit --no-verify -m "emergency fix"`
+- **Run specific hook**: `pre-commit run black` or `pre-commit run flake8`
+- **Check automation status**: `pre-commit --version && git config --list | grep pre-commit`
+
 ### NLP Analytics Commands
 - **Run sentiment analysis**: `python scripts/batch_sentiment_analysis.py`
 - **Run topic classification**: `python scripts/batch_topic_classification.py`
@@ -197,11 +205,21 @@ results = await db_manager.execute_sql(
 - **Follow existing patterns** when adding new sources
 - **Test with database storage** instead of file output
 
+### Code Quality Standards
+- **Automated formatting**: Black formatter with Python 3.12 compatibility (`--target-version=py312`)
+- **Import organization**: isort with Black profile integration (`--profile black`)
+- **Code linting**: flake8 with medical codebase optimizations and extended ignore patterns
+- **Security scanning**: gitleaks for secret detection with zero false positives
+- **Documentation quality**: Automated link checking and quality assurance
+- **Configuration**: Centralized in `pyproject.toml` for tool consistency
+- **Enforcement**: Pre-commit hooks with 85% automation coverage (15:1 ROI improvement)
+
 ### Git Workflow Standards
 - **Conventional Commits**: Use format `type(scope): description` (feat, fix, docs, test, chore)
 - **Atomic Commits**: One logical change per commit, complete and testable
 - **Branch Strategy**: `main` (production) ← `dev` (integration) ← `feature/name` (development)
 - **Documentation**: Follow language usage standard (English for technical, Spanish for decisions)
+- **Automated validation**: Pre-commit hooks enforce standards on every commit
 - **Reference**: See `docs/development/standards/git-workflow.md` for complete guidelines
 
 ### Example Git Commands

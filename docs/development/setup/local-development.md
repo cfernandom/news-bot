@@ -87,13 +87,45 @@ docker compose ps
 docker compose logs postgres
 ```
 
-### 5. Verificar Setup
+### 5. Setup Development Automation
+```bash
+# Activar virtual environment
+source venv/bin/activate
+
+# Instalar pre-commit (ya incluido en requirements.txt)
+pip install pre-commit
+
+# Instalar git hooks
+pre-commit install
+pre-commit install --hook-type commit-msg
+
+# Verificar instalación (opcional)
+pre-commit run --all-files
+```
+
+**Output esperado:**
+```
+✅ trim trailing whitespace.................Passed
+✅ fix end of files..........................Passed
+✅ check for added large files...............Passed
+✅ check for merge conflicts.................Passed
+✅ check for case conflicts..................Passed
+✅ mixed line ending.........................Passed
+✅ black.....................................Passed
+✅ isort.....................................Passed
+✅ flake8....................................Passed
+✅ Detect hardcoded secrets..................Passed
+✅ Verify documentation links................Passed
+✅ Documentation quality check...............Passed
+```
+
+### 6. Verificar Setup
 ```bash
 # Activar virtual environment
 source venv/bin/activate
 
 # Ejecutar tests de base de datos
-python test_database.py
+python tests/legacy_test_database.py
 ```
 
 **Output esperado:**
@@ -272,9 +304,13 @@ uvicorn services.api.main:app --reload --host 0.0.0.0 --port 8000
 - [ ] Docker y Docker Compose funcionando
 - [ ] Virtual environment creado y activado
 - [ ] Dependencias de requirements.txt instaladas
+- [ ] Pre-commit hooks instalados y funcionando
+- [ ] Code formatting automatizado (Black + isort)
+- [ ] Commit message validation activo
+- [ ] Security scanning operacional
 - [ ] Archivo .env configurado con valores correctos
 - [ ] PostgreSQL container corriendo en puerto 5433
-- [ ] test_database.py ejecuta sin errores
+- [ ] tests/legacy_test_database.py ejecuta sin errores
 - [ ] Puedes conectarte a PostgreSQL manualmente
 - [ ] Tablas de base de datos creadas correctamente
 
@@ -294,6 +330,53 @@ source venv/bin/activate && python test_database.py
 ```
 
 ## 🐛 Troubleshooting
+
+### Automation Troubleshooting
+
+#### Error: Pre-commit hooks not running
+```bash
+# Verificar instalación
+pre-commit --version
+
+# Reinstalar hooks
+pre-commit uninstall
+pre-commit install
+pre-commit install --hook-type commit-msg
+
+# Test manual
+pre-commit run --all-files
+```
+
+#### Error: Black formatting fails
+```bash
+# Verificar configuración
+cat pyproject.toml | grep -A 10 "\[tool.black\]"
+
+# Run manually
+black --check services/ scripts/
+black services/ scripts/  # Apply fixes
+```
+
+#### Error: Conventional commit validation fails
+```bash
+# Skip validation for emergency
+git commit --no-verify -m "fix: emergency hotfix"
+
+# Check configuration
+cat .pre-commit-config.yaml | grep -A 10 "conventional-pre-commit"
+```
+
+#### Error: flake8 violations
+```bash
+# Check specific errors
+flake8 services/ scripts/
+
+# Run with pre-commit
+pre-commit run flake8
+
+# Temporary skip for legacy code
+git commit -m "fix: legacy code cleanup" --no-verify
+```
 
 ### Problemas Comunes
 
