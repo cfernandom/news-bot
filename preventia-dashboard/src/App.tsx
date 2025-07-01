@@ -4,7 +4,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { DualModeProvider } from './contexts/DualModeContext';
 import { AdaptiveContainer } from './components/adaptive/AdaptiveWrapper';
 import { ModeToggle } from './components/ui/ModeToggle';
-import { AdaptiveKPICard, ArticleCountCard } from './components/adaptive/AdaptiveKPICard';
+import MedicalKPIGrid from './components/dashboard/MedicalKPIGrid';
+import MedicalErrorBoundary from './components/common/ErrorBoundary';
 
 // Create a query client
 const queryClient = new QueryClient({
@@ -61,51 +62,8 @@ const DashboardContent: React.FC = () => {
         </p>
       </div>
 
-      {/* KPI Cards Grid */}
-      <div className="medical-grid">
-        <ArticleCountCard count={106} />
-
-        <AdaptiveKPICard
-          title="Análisis Completado"
-          value="100%"
-          subtitle="Todos los artículos procesados"
-          trend={{
-            direction: 'up',
-            value: 5.2,
-            period: 'última semana'
-          }}
-          icon={({ className }) => (
-            <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          )}
-        />
-
-        <AdaptiveKPICard
-          title="Sentimiento Promedio"
-          value="Neutral"
-          subtitle="Distribución: 27% Positivo, 71% Negativo, 2% Neutral"
-          icon={({ className }) => (
-            <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                    d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-            </svg>
-          )}
-        />
-
-        <AdaptiveKPICard
-          title="Fuentes Activas"
-          value="4"
-          subtitle="WebMD, BreastCancer.org, CureToday, News-Medical"
-          icon={({ className }) => (
-            <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                    d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-            </svg>
-          )}
-        />
-      </div>
+      {/* Medical KPI Grid with Real Data */}
+      <MedicalKPIGrid />
 
       {/* Status message */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
@@ -131,20 +89,24 @@ const DashboardContent: React.FC = () => {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <DualModeProvider initialMode="professional">
-        <div className="min-h-screen bg-gray-50">
-          <AppHeader />
+      <MedicalErrorBoundary>
+        <DualModeProvider initialMode="professional">
+          <div className="min-h-screen bg-gray-50">
+            <AppHeader />
 
-          <main className="py-8">
-            <AdaptiveContainer maxWidth="full">
-              <DashboardContent />
-            </AdaptiveContainer>
-          </main>
-        </div>
+            <main className="py-8">
+              <AdaptiveContainer maxWidth="full">
+                <MedicalErrorBoundary>
+                  <DashboardContent />
+                </MedicalErrorBoundary>
+              </AdaptiveContainer>
+            </main>
+          </div>
 
-        {/* React Query DevTools (only in development) */}
-        <ReactQueryDevtools initialIsOpen={false} />
-      </DualModeProvider>
+          {/* React Query DevTools (only in development) */}
+          <ReactQueryDevtools initialIsOpen={false} />
+        </DualModeProvider>
+      </MedicalErrorBoundary>
     </QueryClientProvider>
   );
 }
