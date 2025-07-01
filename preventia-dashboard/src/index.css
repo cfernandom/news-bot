@@ -1,0 +1,228 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Medical Design System for Dual-Mode Interface */
+:root {
+  /* Medical color tokens */
+  --primary-pink: #F8BBD9;
+  --primary-blue: #4A90E2;
+  --academic-navy: #1e3a8a;
+  --professional-gray: #6b7280;
+
+  /* Sentiment analysis colors */
+  --positive-sentiment: #d1fae5;
+  --negative-sentiment: #fef2f2;
+  --neutral-sentiment: #f3f4f6;
+
+  /* Mode-specific typography */
+  --medical-title: 3rem;
+  --clinical-subtitle: 1.5rem;
+  --metric-value: 2.5rem;
+  --medical-body: 1rem;
+
+  /* Medical accessibility standards */
+  --focus-ring-color: #4A90E2;
+  --contrast-ratio: 4.5;
+
+  /* Performance targets */
+  --transition-speed: 0.3s;
+  --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base medical typography */
+@layer base {
+  body {
+    @apply font-medical text-professional-gray bg-white;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1 {
+    @apply text-academic-navy;
+    font-size: var(--medical-title);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  h2 {
+    @apply text-professional-gray;
+    font-size: var(--clinical-subtitle);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .metric-value {
+    @apply text-primary-blue;
+    font-size: var(--metric-value);
+    font-weight: 800;
+    line-height: 1;
+  }
+}
+
+/* Dual-mode components */
+@layer components {
+  /* Professional mode styles */
+  .mode-professional {
+    @apply bg-professional-50 text-professional-800;
+  }
+
+  .mode-professional .card {
+    @apply bg-white border border-professional-200 shadow-sm;
+  }
+
+  .mode-professional .metric-card {
+    @apply bg-white border border-professional-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow;
+  }
+
+  .mode-professional .chart-container {
+    @apply bg-white border border-professional-200 rounded-lg p-6;
+  }
+
+  /* Educational mode styles */
+  .mode-educational {
+    @apply bg-educational-50 text-educational-800;
+  }
+
+  .mode-educational .card {
+    @apply bg-white border-2 border-educational-200 shadow-lg rounded-xl;
+  }
+
+  .mode-educational .metric-card {
+    @apply bg-gradient-to-br from-white to-educational-50 border-2 border-educational-200 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all;
+  }
+
+  .mode-educational .chart-container {
+    @apply bg-white border-2 border-educational-200 rounded-xl p-8 shadow-lg;
+  }
+
+  /* Mode toggle component */
+  .mode-toggle {
+    @apply flex items-center space-x-3 p-3 bg-white rounded-full shadow-lg border border-gray-200;
+  }
+
+  .mode-toggle-label {
+    @apply text-sm font-medium transition-colors duration-300;
+  }
+
+  .mode-toggle-label.active {
+    @apply text-primary-blue font-semibold;
+  }
+
+  /* Adaptive navigation */
+  .nav-professional {
+    @apply bg-white border-b border-professional-200 shadow-sm;
+  }
+
+  .nav-educational {
+    @apply bg-gradient-to-r from-educational-500 to-primary-pink shadow-lg;
+  }
+
+  /* Sentiment visualization colors */
+  .sentiment-positive {
+    @apply bg-positive-sentiment border-green-300 text-green-800;
+  }
+
+  .sentiment-negative {
+    @apply bg-negative-sentiment border-red-300 text-red-800;
+  }
+
+  .sentiment-neutral {
+    @apply bg-neutral-sentiment border-gray-300 text-gray-800;
+  }
+
+  /* Medical tooltips for educational mode */
+  .medical-tooltip {
+    @apply bg-academic-navy text-white p-3 rounded-lg shadow-lg text-sm max-w-xs;
+  }
+
+  /* Loading states */
+  .loading-professional {
+    @apply animate-pulse bg-professional-100;
+  }
+
+  .loading-educational {
+    @apply animate-pulse bg-gradient-to-r from-educational-100 to-primary-pink;
+  }
+
+  /* Accessibility enhancements */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-blue focus:ring-offset-2;
+  }
+
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-blue text-white p-2 rounded;
+  }
+}
+
+/* Utilities for dual-mode switching */
+@layer utilities {
+  .mode-switch-enter {
+    @apply opacity-0 transform -translate-y-2;
+  }
+
+  .mode-switch-enter-active {
+    @apply opacity-100 transform translate-y-0 transition-all duration-300 ease-out;
+  }
+
+  .mode-switch-exit {
+    @apply opacity-100 transform translate-y-0;
+  }
+
+  .mode-switch-exit-active {
+    @apply opacity-0 transform -translate-y-2 transition-all duration-300 ease-in;
+  }
+
+  /* Medical data visualization utilities */
+  .chart-professional {
+    @apply text-sm text-professional-600;
+  }
+
+  .chart-educational {
+    @apply text-base text-educational-700 font-medium;
+  }
+
+  /* Responsive medical layout */
+  .medical-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .medical-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+  }
+
+  .medical-section {
+    @apply space-y-6 mb-8;
+  }
+}
+
+/* Print styles for research export */
+@media print {
+  .mode-educational .explanation,
+  .mode-toggle,
+  .nav-educational {
+    @apply hidden;
+  }
+
+  .chart-container {
+    @apply break-inside-avoid;
+  }
+
+  .metric-card {
+    @apply break-inside-avoid shadow-none border border-gray-300;
+  }
+}
+
+/* High contrast mode for accessibility */
+@media (prefers-contrast: high) {
+  :root {
+    --primary-blue: #0033cc;
+    --academic-navy: #000066;
+    --professional-gray: #000000;
+  }
+
+  .card {
+    @apply border-2 border-black;
+  }
+}
