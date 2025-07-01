@@ -19,7 +19,29 @@ services:
       timeout: 5s
       retries: 5
 
-  # News Analytics Service (formerly newsbot)
+  # FastAPI Analytics API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: preventia_api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-preventia}:${POSTGRES_PASSWORD:-preventia123}@postgres:5432/${POSTGRES_DB:-preventia_news}
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - API_RELOAD=false
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  # News Analytics Service (legacy/background processing)
   analytics_service:
     build:
       context: .
@@ -39,8 +61,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    ports:
-      - "8000:8000"  # FastAPI port
 
   # Redis for caching (optional, but recommended for analytics)
   redis:

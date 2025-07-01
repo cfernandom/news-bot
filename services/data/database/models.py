@@ -5,7 +5,7 @@ Hybrid approach: ORM for basic operations, raw SQL for complex analytics
 
 from datetime import date, datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Generic, List, Optional, TypeVar
 
 from pydantic import BaseModel, Field
 from sqlalchemy import (
@@ -39,6 +39,7 @@ class ProcessingStatus(str, Enum):
     PROCESSING = "processing"
     COMPLETED = "completed"
     FAILED = "failed"
+    ANALYZED = "analyzed"  # For backwards compatibility
 
 
 class SentimentLabel(str, Enum):
@@ -54,6 +55,12 @@ class TopicCategory(str, Enum):
     TESTIMONIALS = "testimonials"
     RESEARCH = "research"
     OTHER = "other"
+    GENERAL = "general"  # For backwards compatibility
+    SURGERY = "surgery"
+    CHEMOTHERAPY = "chemotherapy"
+    RADIATION = "radiation"
+    IMMUNOTHERAPY = "immunotherapy"
+    CLINICAL_TRIALS = "clinical_trials"
 
 
 class KeywordType(str, Enum):
@@ -229,7 +236,7 @@ class NewsSourceUpdate(BaseModel):
 
 class NewsSourceResponse(NewsSourceBase):
     id: int
-    validation_status: ValidationStatus
+    validation_status: str
     validation_error: Optional[str] = None
     last_validation_at: Optional[datetime] = None
     created_at: datetime
@@ -257,23 +264,24 @@ class ArticleUpdate(BaseModel):
     content: Optional[str] = None
     summary: Optional[str] = None
     sentiment_score: Optional[float] = None
-    sentiment_label: Optional[SentimentLabel] = None
+    sentiment_label: Optional[str] = None
     sentiment_confidence: Optional[float] = None
-    topic_category: Optional[TopicCategory] = None
+    topic_category: Optional[str] = None
     topic_confidence: Optional[float] = None
-    processing_status: Optional[ProcessingStatus] = None
+    processing_status: Optional[str] = None
 
 
 class ArticleResponse(ArticleBase):
     id: int
     source_id: int
+    source: Optional["NewsSourceResponse"] = None  # Forward reference
     scraped_at: datetime
     sentiment_score: Optional[float] = None
-    sentiment_label: Optional[SentimentLabel] = None
+    sentiment_label: Optional[str] = None
     sentiment_confidence: Optional[float] = None
-    topic_category: Optional[TopicCategory] = None
+    topic_category: Optional[str] = None
     topic_confidence: Optional[float] = None
-    processing_status: ProcessingStatus
+    processing_status: str
     processing_error: Optional[str] = None
     word_count: Optional[int] = None
     created_at: datetime
@@ -328,13 +336,12 @@ class DashboardSummary(BaseModel):
     """Summary data for dashboard overview"""
 
     total_articles: int
-    articles_this_week: int
-    articles_last_week: int
-    growth_percentage: float
-    dominant_language: str
-    most_active_country: str
-    avg_sentiment: float
-    top_topics: List[Dict[str, Any]]
+    recent_articles: int
+    sentiment_distribution: Dict[str, int]
+    topic_distribution: Dict[str, int]
+    active_sources: int
+    avg_sentiment_score: float
+    analysis_period_days: int
 
 
 class TrendAnalysis(BaseModel):
@@ -354,3 +361,17 @@ class GeographicDistribution(BaseModel):
     ]  # [{"country": "Mexico", "count": 25, "sentiment": 0.3}]
     total_countries: int
     most_active_country: str
+
+
+# Generic pagination response model
+T = TypeVar("T")
+
+
+class PaginatedResponse(BaseModel, Generic[T]):
+    """Generic paginated response model."""
+
+    items: List[T]
+    total: int
+    page: int
+    size: int
+    pages: int

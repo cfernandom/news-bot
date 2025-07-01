@@ -20,6 +20,8 @@ sys.path.insert(0, str(project_root))
 from datetime import datetime
 
 from services.data.database.connection import DatabaseManager
+from services.data.database.models import Article as ArticleORM
+from services.data.database.models import NewsSource
 from services.nlp.src.sentiment import SentimentAnalyzer
 from services.shared.models.article import Article
 
@@ -187,3 +189,31 @@ def pytest_collection_modifyitems(config, items):
             for fixture in ["test_db_manager", "clean_database"]
         ):
             item.add_marker(pytest.mark.database)
+
+
+@pytest.fixture
+def api_client():
+    """Provide a FastAPI test client."""
+    from fastapi.testclient import TestClient
+
+    from services.api.main import app
+
+    return TestClient(app)
+
+
+@pytest.fixture
+def sample_article_orm():
+    """Provide a sample ORM article for database testing."""
+    return ArticleORM(
+        id=1,
+        source_id=1,
+        title="Sample API Test Article",
+        url="https://example.com/api-test",
+        content="Sample content for API testing",
+        summary="Sample summary for API testing",
+        published_at=datetime(2024, 1, 15),
+        scraped_at=datetime(2024, 1, 15),
+        processing_status="completed",
+        created_at=datetime(2024, 1, 15),
+        updated_at=datetime(2024, 1, 15),
+    )
