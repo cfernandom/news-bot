@@ -1,61 +1,68 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* Medical Design System for Dual-Mode Interface */
-:root {
-  /* Medical color tokens */
-  --primary-pink: #F8BBD9;
-  --primary-blue: #4A90E2;
-  --academic-navy: #1e3a8a;
-  --professional-gray: #6b7280;
+@theme {
+  --color-primary-pink: #F8BBD9;
+  --color-primary-blue: #4A90E2;
+  --color-academic-navy: #1e3a8a;
+  --color-professional-gray: #6b7280;
 
-  /* Sentiment analysis colors */
-  --positive-sentiment: #d1fae5;
-  --negative-sentiment: #fef2f2;
-  --neutral-sentiment: #f3f4f6;
+  --color-positive-sentiment: #d1fae5;
+  --color-negative-sentiment: #fef2f2;
+  --color-neutral-sentiment: #f3f4f6;
 
-  /* Mode-specific typography */
-  --medical-title: 3rem;
-  --clinical-subtitle: 1.5rem;
-  --metric-value: 2.5rem;
-  --medical-body: 1rem;
+  --color-professional-50: #f8fafc;
+  --color-professional-100: #f1f5f9;
+  --color-professional-200: #e2e8f0;
+  --color-professional-500: #64748b;
+  --color-professional-600: #475569;
+  --color-professional-700: #334155;
+  --color-professional-800: #1e293b;
+  --color-professional-900: #0f172a;
 
-  /* Medical accessibility standards */
-  --focus-ring-color: #4A90E2;
-  --contrast-ratio: 4.5;
+  --color-educational-50: #fef7ff;
+  --color-educational-100: #fce7ff;
+  --color-educational-200: #f9d0fe;
+  --color-educational-500: #a855f7;
+  --color-educational-600: #9333ea;
+  --color-educational-700: #7c3aed;
+  --color-educational-800: #6b21a8;
+  --color-educational-900: #581c87;
 
-  /* Performance targets */
-  --transition-speed: 0.3s;
-  --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --font-family-medical: Inter, system-ui, sans-serif;
+
+  /* Tailwind v4 color palette definitions */
+  --color-primary: var(--color-primary-blue);
+  --color-accent: var(--color-primary-pink);
+  --color-medical: var(--color-academic-navy);
 }
 
 /* Base medical typography */
 @layer base {
   body {
-    @apply font-medical text-professional-gray bg-white;
+    @apply text-gray-600 bg-white;
+    font-family: var(--font-family-medical);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   h1 {
-    @apply text-academic-navy;
-    font-size: var(--medical-title);
+    color: var(--color-academic-navy);
+    font-size: 3rem;
     font-weight: 700;
     line-height: 1.2;
   }
 
   h2 {
-    @apply text-professional-gray;
-    font-size: var(--clinical-subtitle);
+    color: var(--color-professional-gray);
+    font-size: 1.5rem;
     font-weight: 600;
     line-height: 1.3;
   }
 
   .metric-value {
-    @apply text-primary-blue;
-    font-size: var(--metric-value);
+    color: var(--color-primary-blue);
+    font-size: 2.5rem;
     font-weight: 800;
     line-height: 1;
   }
@@ -65,36 +72,45 @@
 @layer components {
   /* Professional mode styles */
   .mode-professional {
-    @apply bg-professional-50 text-professional-800;
+    background-color: var(--color-professional-50);
+    color: var(--color-professional-800);
   }
 
   .mode-professional .card {
-    @apply bg-white border border-professional-200 shadow-sm;
+    @apply bg-white shadow-sm rounded-lg;
+    border: 1px solid var(--color-professional-200);
   }
 
   .mode-professional .metric-card {
-    @apply bg-white border border-professional-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow;
+    @apply bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow;
+    border: 1px solid var(--color-professional-200);
   }
 
   .mode-professional .chart-container {
-    @apply bg-white border border-professional-200 rounded-lg p-6;
+    @apply bg-white rounded-lg p-6;
+    border: 1px solid var(--color-professional-200);
   }
 
   /* Educational mode styles */
   .mode-educational {
-    @apply bg-educational-50 text-educational-800;
+    background-color: var(--color-educational-50);
+    color: var(--color-educational-800);
   }
 
   .mode-educational .card {
-    @apply bg-white border-2 border-educational-200 shadow-lg rounded-xl;
+    @apply bg-white shadow-lg rounded-xl;
+    border: 2px solid var(--color-educational-200);
   }
 
   .mode-educational .metric-card {
-    @apply bg-gradient-to-br from-white to-educational-50 border-2 border-educational-200 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all;
+    @apply bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-all;
+    border: 2px solid var(--color-educational-200);
+    background: linear-gradient(to bottom right, white, var(--color-educational-50));
   }
 
   .mode-educational .chart-container {
-    @apply bg-white border-2 border-educational-200 rounded-xl p-8 shadow-lg;
+    @apply bg-white rounded-xl p-8 shadow-lg;
+    border: 2px solid var(--color-educational-200);
   }
 
   /* Mode toggle component */
@@ -107,52 +123,63 @@
   }
 
   .mode-toggle-label.active {
-    @apply text-primary-blue font-semibold;
+    color: var(--color-primary-blue);
+    @apply font-semibold;
   }
 
   /* Adaptive navigation */
   .nav-professional {
-    @apply bg-white border-b border-professional-200 shadow-sm;
+    @apply bg-white shadow-sm;
+    border-bottom: 1px solid var(--color-professional-200);
   }
 
   .nav-educational {
-    @apply bg-gradient-to-r from-educational-500 to-primary-pink shadow-lg;
+    @apply shadow-lg;
+    background: linear-gradient(to right, var(--color-educational-500), var(--color-primary-pink));
   }
 
   /* Sentiment visualization colors */
   .sentiment-positive {
-    @apply bg-positive-sentiment border-green-300 text-green-800;
+    background-color: var(--color-positive-sentiment);
+    @apply border-green-300 text-green-800;
   }
 
   .sentiment-negative {
-    @apply bg-negative-sentiment border-red-300 text-red-800;
+    background-color: var(--color-negative-sentiment);
+    @apply border-red-300 text-red-800;
   }
 
   .sentiment-neutral {
-    @apply bg-neutral-sentiment border-gray-300 text-gray-800;
+    background-color: var(--color-neutral-sentiment);
+    @apply border-gray-300 text-gray-800;
   }
 
   /* Medical tooltips for educational mode */
   .medical-tooltip {
-    @apply bg-academic-navy text-white p-3 rounded-lg shadow-lg text-sm max-w-xs;
+    background-color: var(--color-academic-navy);
+    @apply text-white p-3 rounded-lg shadow-lg text-sm max-w-xs;
   }
 
   /* Loading states */
   .loading-professional {
-    @apply animate-pulse bg-professional-100;
+    background-color: var(--color-professional-100);
+    @apply animate-pulse;
   }
 
   .loading-educational {
-    @apply animate-pulse bg-gradient-to-r from-educational-100 to-primary-pink;
+    @apply animate-pulse;
+    background: linear-gradient(to right, var(--color-educational-100), var(--color-primary-pink));
   }
 
   /* Accessibility enhancements */
   .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-primary-blue focus:ring-offset-2;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    --tw-ring-color: var(--color-primary-blue);
   }
 
   .skip-link {
-    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-blue text-white p-2 rounded;
+    background-color: var(--color-primary-blue);
+    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 text-white p-2 rounded;
   }
 }
 
@@ -176,11 +203,13 @@
 
   /* Medical data visualization utilities */
   .chart-professional {
-    @apply text-sm text-professional-600;
+    @apply text-sm font-medium;
+    color: var(--color-professional-600);
   }
 
   .chart-educational {
-    @apply text-base text-educational-700 font-medium;
+    @apply text-base font-medium;
+    color: var(--color-educational-700);
   }
 
   /* Responsive medical layout */
@@ -217,9 +246,9 @@
 /* High contrast mode for accessibility */
 @media (prefers-contrast: high) {
   :root {
-    --primary-blue: #0033cc;
-    --academic-navy: #000066;
-    --professional-gray: #000000;
+    --color-primary-blue: #0033cc;
+    --color-academic-navy: #000066;
+    --color-professional-gray: #000000;
   }
 
   .card {
