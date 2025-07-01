@@ -46,6 +46,15 @@ pip install -r requirements.txt
 pre-commit install
 pre-commit install --hook-type commit-msg
 
+# Install gitleaks for security scanning (required for pre-commit hooks)
+wget https://github.com/gitleaks/gitleaks/releases/download/v8.27.2/gitleaks_8.27.2_linux_x64.tar.gz
+tar -xzf gitleaks_8.27.2_linux_x64.tar.gz
+mkdir -p ~/.local/bin && mv gitleaks ~/.local/bin/
+rm gitleaks_8.27.2_linux_x64.tar.gz
+
+# Verify gitleaks installation
+gitleaks version  # Should output: 8.27.2
+
 # Verify automation setup
 pre-commit run --all-files
 ```
@@ -224,9 +233,18 @@ PreventIA maintains **full legal compliance** for academic research:
 All contributions automatically validated through:
 - Code formatting (Black + isort)
 - Quality checks (flake8)
-- Security scanning (gitleaks)
+- Security scanning (gitleaks) - **Note**: Requires local gitleaks installation
 - Documentation quality
 - Test coverage requirements
+
+### Troubleshooting Setup
+If you encounter gitleaks timeout issues during commits:
+```bash
+# Quick fix: Skip gitleaks temporarily
+SKIP=gitleaks git commit -m "your message"
+
+# Permanent fix: Install gitleaks locally (see setup instructions above)
+```
 
 ---
 

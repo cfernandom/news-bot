@@ -258,7 +258,70 @@ git add services/nlp/src/analyzer.py
 git commit -m "fix(nlp): resolve line length issue"
 ```
 
-#### 4. Secret Detection Alert
+#### 4. Gitleaks Installation Timeout Issues
+
+**Problem**: Gitleaks environment installation taking too long and timing out during commits.
+
+```bash
+# ❌ Error
+Command timed out after 2m 0.0s
+[INFO] Installing environment for https://github.com/gitleaks/gitleaks.
+[INFO] Once installed this environment will be reused.
+[INFO] This may take a few minutes...
+```
+
+**Root Cause**: Remote gitleaks repository installation requires downloading and compiling binary, causing timeout.
+
+**✅ Solution**: Use local gitleaks installation instead of remote repository.
+
+```bash
+# Step 1: Install gitleaks binary locally
+wget https://github.com/gitleaks/gitleaks/releases/download/v8.27.2/gitleaks_8.27.2_linux_x64.tar.gz
+tar -xzf gitleaks_8.27.2_linux_x64.tar.gz
+mkdir -p ~/.local/bin && mv gitleaks ~/.local/bin/
+rm gitleaks_8.27.2_linux_x64.tar.gz
+
+# Step 2: Verify installation
+gitleaks version  # Should output: 8.27.2
+
+# Step 3: Update .pre-commit-config.yaml
+# Replace remote gitleaks repo with local configuration:
+```
+
+```yaml
+# OLD configuration (causes timeout)
+- repo: https://github.com/gitleaks/gitleaks
+  rev: v8.27.2
+  hooks:
+    - id: gitleaks
+
+# NEW configuration (uses local binary)
+- repo: local
+  hooks:
+    - id: gitleaks
+      name: Detect hardcoded secrets
+      entry: gitleaks
+      language: system
+      args: ['detect', '--source=.', '-v']
+      stages: [pre-commit]
+```
+
+```bash
+# Step 4: Clean pre-commit cache and test
+pre-commit clean
+git add .pre-commit-config.yaml
+git commit -m "fix(hooks): switch gitleaks to local installation"
+
+# Result: Gitleaks now runs in ~1.5s instead of timing out
+```
+
+**Benefits of Local Installation**:
+- ✅ No environment installation timeouts
+- ✅ Faster execution (~1.5s vs 2+ minutes)
+- ✅ Same security scanning capabilities
+- ✅ Consistent performance across commits
+
+#### 5. Secret Detection Alert
 
 ```bash
 # ❌ Error
