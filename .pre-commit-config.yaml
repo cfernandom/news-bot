@@ -59,12 +59,14 @@ repos:
           - --extend-ignore=E203,W503,E501,E402,E302,F401,F541,F841,E128,E722,E712  # Black compatibility + temporary ignores
           - --exclude=venv,build,dist,.git,__pycache__
 
-  # Security scanning with gitleaks
-  - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.27.2
+  # Security scanning with gitleaks (local installation)
+  - repo: local
     hooks:
       - id: gitleaks
-        description: Scan for secrets and sensitive data
+        name: Detect hardcoded secrets
+        entry: gitleaks
+        language: system
+        args: ['detect', '--source=.', '-v']
         stages: [pre-commit]
 
   # Python security scanning with bandit - TEMPORARILY DISABLED (will fix post-commit)
