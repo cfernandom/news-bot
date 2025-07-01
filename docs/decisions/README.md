@@ -11,6 +11,9 @@ Este directorio contiene todas las decisiones arquitectónicas importantes del p
 | [ADR-003](./ADR-003-migration-strategy.md) | Estrategia de Migración - Scrapers a PostgreSQL | Aceptado | 2025-06-27 | 🟡 Alto |
 | [ADR-004](./ADR-004-nlp-sentiment-analysis.md) | NLP Sentiment Analysis - VADER para Contenido Médico | Aceptado | 2025-06-28 | 🟡 Alto |
 | [ADR-005](./ADR-005-testing-framework-architecture.md) | Testing Framework - pytest con Estructura Profesional | Aceptado | 2025-06-28 | 🟡 Alto |
+| [ADR-006](./ADR-006-legal-compliance-framework.md) | Legal Compliance Framework - GDPR + Robots.txt + Fair Use | Aceptado | 2025-06-30 | 🟡 Alto |
+| [ADR-007](./ADR-007-prompts-strategy-optimization.md) | Prompts Strategy Optimization - Self-Contained Architecture | Aceptado | 2025-06-30 | 🟢 Medio |
+| [ADR-008](./ADR-008-medical-ux-ui-design-strategy.md) | Medical UX/UI Design Strategy - FASE 4 React Dashboard | Aceptado | 2025-07-01 | 🔴 Crítico |
 
 ## 📝 Cómo Usar los ADRs
 
@@ -49,15 +52,15 @@ Este directorio contiene todas las decisiones arquitectónicas importantes del p
 - [ADR-002](./ADR-002-database-architecture.md) - PostgreSQL híbrido (ORM + Raw SQL)
 
 ### Frontend Technology Stack
-- 📋 Pendiente: React + TypeScript decisions
+- [ADR-008](./ADR-008-medical-ux-ui-design-strategy.md) - Medical UX/UI Design Strategy para React Dashboard
 
 ### Infrastructure
 - 📋 Pendiente: Docker deployment strategy
 - 📋 Pendiente: CI/CD pipeline decisions
 
 ### Analytics & AI
-- 📋 Pendiente: Sentiment analysis approach
-- 📋 Pendiente: LLM integration strategy
+- [ADR-004](./ADR-004-nlp-sentiment-analysis.md) - VADER sentiment analysis para contenido médico
+- 📋 Pendiente: LLM integration strategy avanzada
 
 ## 📅 Cronología de Decisiones
 
@@ -65,11 +68,22 @@ Este directorio contiene todas las decisiones arquitectónicas importantes del p
 - **ADR-001**: Redefinición completa del proyecto de newsletter bot a analytics system
 - **ADR-002**: Establecimiento de arquitectura de base de datos PostgreSQL
 
+### 2025-06-28 - Analytics & Testing Foundation
+- **ADR-003**: Estrategia de migración de scrapers a PostgreSQL
+- **ADR-004**: NLP sentiment analysis con VADER para contenido médico
+- **ADR-005**: Testing framework profesional con pytest
+
+### 2025-06-30 - Compliance & Optimization
+- **ADR-006**: Legal compliance framework (GDPR + robots.txt + fair use)
+- **ADR-007**: Prompts strategy optimization con arquitectura self-contained
+
+### 2025-07-01 - Frontend & UX Strategy
+- **ADR-008**: Medical UX/UI design strategy para FASE 4 React Dashboard
+
 ### Próximas Decisiones (Roadmap)
-- **ADR-003**: FastAPI architecture y API design patterns
-- **ADR-004**: Sentiment analysis technology selection
-- **ADR-005**: Frontend architecture (React + state management)
-- **ADR-006**: Deployment y infrastructure strategy
+- **ADR-009**: Deployment y infrastructure strategy (Docker + CI/CD)
+- **ADR-010**: LLM integration strategy avanzada
+- **ADR-011**: Real-time analytics con WebSocket integration
 
 ## 🔗 Referencias Externas
 
@@ -106,6 +120,6 @@ Este directorio contiene todas las decisiones arquitectónicas importantes del p
 - [ ] Criterios de rollback establecidos
 
 ---
-**Última actualización**: 2025-06-27
+**Última actualización**: 2025-07-01
 **Próxima revisión**: 2025-07-27
 **Template**: [adr-template.md](./adr-template.md)

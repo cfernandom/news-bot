@@ -9,11 +9,13 @@
 
 ## 🎯 **Executive Summary**
 
-Plan detallado para implementar el dashboard React de PreventIA News Analytics, basado en el prototipo HTML funcional y la estrategia UX/UI médica documentada. La implementación aprovecha los 20+ endpoints FastAPI existentes y el design system médico definido.
+Plan detallado para implementar el dashboard React de PreventIA News Analytics con **estrategia de público híbrido**, basado en el prototipo HTML funcional y la estrategia UX/UI dual-mode documentada en ADR-008. Como proyecto de investigación académica UCOMPENSAR, implementa **Modo Profesional** y **Modo Educativo** para maximizar impacto científico y social.
 
-**Objetivo**: Migrar dashboard médico HTML a React professional con performance < 3s y accessibility WCAG AA.
+**Objetivo**: Migrar dashboard HTML a React dual-mode con performance < 3s, accessibility WCAG AA+ y máximo impacto de investigación UCOMPENSAR.
 
-**Base técnica**: 106 artículos procesados, sentiment analysis 100%, FastAPI operativo, design system médico definido.
+**Base técnica**: 106 artículos procesados, sentiment analysis 100%, FastAPI operativo, design system dual-mode definido.
+
+**Innovation**: Primera implementación de interfaz adaptativa médica/educativa en proyectos UCOMPENSAR.
 
 ---
 
@@ -21,10 +23,12 @@ Plan detallado para implementar el dashboard React de PreventIA News Analytics, 
 
 ### **Assets Disponibles**
 - ✅ **Prototipo HTML funcional** - `docs/assets/prototypes/dashboard_v0.1.html`
+- ✅ **ADR-008 Hybrid Strategy** - Estrategia dual-mode documentada y aprobada
 - ✅ **20+ FastAPI endpoints** operativos con performance < 5s
 - ✅ **106 artículos analizados** con sentiment + topic classification
-- ✅ **Design system médico** completo documentado
-- ✅ **UX/UI strategy** médica definida para stakeholders UCOMPENSAR
+- ✅ **Design system dual-mode** completo documentado
+- ✅ **UX/UI strategy híbrida** definida para stakeholders UCOMPENSAR
+- ✅ **Público objetivo dual** - Profesionales + Educativo
 - ✅ **Legal compliance** framework implementado
 
 ### **API Endpoints Ready para Integration**
@@ -51,39 +55,55 @@ const EndpointsMapping = {
 };
 ```
 
-### **Prototipo Components Identificados**
+### **Dual-Mode Components Architecture**
 ```typescript
-// Componentes extraídos del HTML prototype
-const PrototypeComponents = {
-  layout: ['Header', 'Navigation', 'Footer'],
+// Componentes adaptivos para dual-mode interface
+const DualModeComponents = {
+  core: [
+    'ModeToggle (Professional ↔ Educational)',
+    'DualModeProvider (Context)',
+    'AdaptiveHeader (mode-aware)',
+    'AdaptiveNavigation (mode-specific)',
+    'AdaptiveFooter (contextual)'
+  ],
 
   kpis: [
-    'ArticleCountCard (106)',
+    'AdaptiveKPICard (technical vs simplified)',
+    'ArticleCountCard (106 articles)',
     'LanguageDistributionCard (64% EN / 36% ES)',
     'TopCountryCard (Estados Unidos)',
     'TopSourceCard (WebMD)'
   ],
 
   visualizations: [
-    'SentimentPieChart (71% Negative, 27% Positive, 2% Neutral)',
-    'WeeklyTrendsLineChart (sentiment evolution)',
-    'TopicsByLanguageBarChart (7 medical categories)',
-    'GeographicMap (4 countries with Leaflet)',
-    'DailyNewsBarChart (articles by day of week)'
+    'AdaptiveSentimentChart (detailed vs explained)',
+    'AdaptiveWeeklyTrends (technical vs guided)',
+    'AdaptiveTopicsChart (clinical vs educational)',
+    'AdaptiveGeographicMap (research vs informative)',
+    'AdaptiveNewsChart (statistical vs accessible)'
   ],
 
   dataManagement: [
-    'FilterPanel (country, language, date, topic)',
-    'ArticlesTable (paginated with sorting)',
-    'ArticleModal (detailed view)',
-    'ExportButtons (PDF, Excel simulation)'
+    'AdaptiveFilterPanel (advanced vs simplified)',
+    'AdaptiveArticlesTable (complete vs summarized)',
+    'AdaptiveArticleModal (technical vs explained)',
+    'AdaptiveExportButtons (research vs educational)'
   ],
 
-  medical: [
-    'SentimentBadges (color-coded medical)',
-    'TopicBadges (7 medical categories)',
-    'SourceCredibilityIndicators',
-    'MedicalDisclaimer components'
+  educational: [
+    'DefinitionsTooltip (medical terms)',
+    'MedicalGlossary (expandable)',
+    'ContextualHelp (mode-specific)',
+    'GuidedTour (educational flow)',
+    'LearningObjectives (educational mode)'
+  ],
+
+  professional: [
+    'AdvancedAnalytics (statistical significance)',
+    'ResearchExport (citations, methodology)',
+    'PeerReviewContext (evidence levels)',
+    'ConfidenceIntervals (medical precision)',
+    'MethodologyDetails (research-grade)'
   ]
 };
 ```
@@ -92,47 +112,64 @@ const PrototypeComponents = {
 
 ## 🏗️ **Technical Architecture**
 
-### **Frontend Stack definido**
+### **Dual-Mode Frontend Stack**
 ```json
 {
   "framework": "React 18 + TypeScript",
-  "stateManagement": "TanStack Query v5 (React Query)",
-  "styling": "Tailwind CSS v3 + Medical Design System",
-  "routing": "React Router v6",
-  "charts": "Recharts v2 (medical-grade)",
-  "maps": "React-Leaflet v4",
-  "forms": "React Hook Form v7",
-  "icons": "Lucide React + Font Awesome Medical",
-  "build": "Vite v5",
-  "testing": "Vitest + React Testing Library",
-  "accessibility": "react-aria + axe-core"
+  "stateManagement": "TanStack Query v5 + Context API (dual-mode)",
+  "styling": "Tailwind CSS v3 + Dual Design System",
+  "routing": "React Router v6 + mode-aware routing",
+  "charts": "Recharts v2 (adaptive medical visualizations)",
+  "maps": "React-Leaflet v4 (contextual geographic data)",
+  "forms": "React Hook Form v7 + adaptive validation",
+  "icons": "Lucide React + Font Awesome Medical + Educational",
+  "tooltips": "Floating UI (medical definitions)",
+  "accessibility": "react-aria + axe-core (WCAG AA+ dual-mode)",
+  "build": "Vite v5 + dual-mode optimization",
+  "testing": "Vitest + React Testing Library (dual-mode testing)",
+  "performance": "React DevTools Profiler + dual-mode metrics"
 }
 ```
 
-### **Project Structure**
+### **Dual-Mode Project Structure**
 ```
 frontend/
 ├── public/
 │   ├── index.html
-│   └── medical-icons/
+│   ├── medical-icons/
+│   └── educational-icons/
 ├── src/
 │   ├── components/
+│   │   ├── core/
+│   │   │   ├── ModeToggle.tsx
+│   │   │   ├── DualModeProvider.tsx
+│   │   │   └── AdaptiveWrapper.tsx
 │   │   ├── layout/
-│   │   │   ├── Header.tsx
-│   │   │   ├── Navigation.tsx
-│   │   │   └── Footer.tsx
+│   │   │   ├── AdaptiveHeader.tsx
+│   │   │   ├── AdaptiveNavigation.tsx
+│   │   │   └── AdaptiveFooter.tsx
 │   │   ├── dashboard/
-│   │   │   ├── KPICard.tsx
-│   │   │   ├── KPIGrid.tsx
-│   │   │   ├── SentimentChart.tsx
-│   │   │   ├── GeographicMap.tsx
-│   │   │   ├── TopicsChart.tsx
-│   │   │   └── TrendsChart.tsx
+│   │   │   ├── adaptive/
+│   │   │   │   ├── AdaptiveKPICard.tsx
+│   │   │   │   ├── AdaptiveSentimentChart.tsx
+│   │   │   │   ├── AdaptiveGeographicMap.tsx
+│   │   │   │   ├── AdaptiveTopicsChart.tsx
+│   │   │   │   └── AdaptiveTrendsChart.tsx
+│   │   │   ├── professional/
+│   │   │   │   ├── AdvancedAnalytics.tsx
+│   │   │   │   ├── ResearchExport.tsx
+│   │   │   │   ├── PeerReviewContext.tsx
+│   │   │   │   └── MethodologyDetails.tsx
+│   │   │   └── educational/
+│   │   │       ├── DefinitionsTooltip.tsx
+│   │   │       ├── MedicalGlossary.tsx
+│   │   │       ├── GuidedTour.tsx
+│   │   │       └── LearningObjectives.tsx
 │   │   ├── articles/
-│   │   │   ├── ArticlesTable.tsx
-│   │   │   ├── ArticleModal.tsx
-│   │   │   ├── FilterPanel.tsx
-│   │   │   └── ExportButton.tsx
+│   │   │   ├── AdaptiveArticlesTable.tsx
+│   │   │   ├── AdaptiveArticleModal.tsx
+│   │   │   ├── AdaptiveFilterPanel.tsx
+│   │   │   └── AdaptiveExportButton.tsx
 │   │   ├── medical/
 │   │   │   ├── MedicalBadge.tsx
 │   │   │   ├── SentimentBadge.tsx
@@ -143,51 +180,64 @@ frontend/
 │   │       ├── ErrorBoundary.tsx
 │   │       ├── Toast.tsx
 │   │       └── Modal.tsx
+│   ├── contexts/
+│   │   ├── DualModeContext.tsx
+│   │   ├── UserModeContext.tsx
+│   │   └── AccessibilityContext.tsx
 │   ├── hooks/
 │   │   ├── useApi.ts
-│   │   ├── useMedicalFilters.ts
+│   │   ├── useDualMode.ts
+│   │   ├── useAdaptiveFilters.ts
 │   │   ├── usePerformanceTracking.ts
-│   │   └── useAccessibility.ts
+│   │   ├── useAccessibility.ts
+│   │   └── useEducationalMode.ts
 │   ├── services/
 │   │   ├── api.ts
 │   │   ├── analytics.ts
 │   │   ├── articles.ts
-│   │   └── export.ts
+│   │   ├── export.ts
+│   │   └── dualMode.ts
 │   ├── types/
+│   │   ├── dualMode.ts
 │   │   ├── medical.ts
+│   │   ├── educational.ts
 │   │   ├── analytics.ts
 │   │   ├── articles.ts
 │   │   └── api.ts
 │   ├── utils/
-│   │   ├── medical-formatting.ts
+│   │   ├── adaptive-formatting.ts
+│   │   ├── medical-terminology.ts
+│   │   ├── educational-simplification.ts
 │   │   ├── date-utils.ts
 │   │   ├── export-utils.ts
 │   │   └── accessibility.ts
 │   ├── styles/
 │   │   ├── globals.css
-│   │   ├── medical-components.css
+│   │   ├── dual-mode-components.css
+│   │   ├── professional-theme.css
+│   │   ├── educational-theme.css
 │   │   └── accessibility.css
 │   └── App.tsx
 ├── package.json
-├── tailwind.config.js (medical theme)
+├── tailwind.config.js (dual-mode theme)
 ├── vite.config.ts
 └── tsconfig.json
 ```
 
 ---
 
-## 📅 **Implementation Timeline**
+## 📅 **Dual-Mode Implementation Timeline (4 Semanas)**
 
-### **Week 1: Foundation & Core (Days 1-7)**
+### **Week 1: Dual Foundation (2025-07-08)**
 
-#### **Day 1-2: Project Setup & Medical Design System**
+#### **Day 1-2: Project Setup & Dual-Mode Design System**
 ```bash
 # Setup Commands
 npm create vite@latest preventia-dashboard --template react-ts
 cd preventia-dashboard
 npm install
 
-# Medical Dependencies
+# Dual-Mode Dependencies
 npm install @tanstack/react-query @tanstack/react-query-devtools
 npm install react-router-dom react-hook-form
 npm install tailwindcss @tailwindcss/forms @tailwindcss/typography
@@ -196,24 +246,1244 @@ npm install lucide-react @heroicons/react
 npm install axios clsx tailwind-merge
 npm install @testing-library/react @testing-library/jest-dom vitest
 
-# Medical Accessibility
-npm install react-aria @axe-core/react
+# Dual-Mode Specific
+npm install @floating-ui/react  # Medical definitions tooltips
+npm install react-aria @axe-core/react  # Dual accessibility
+npm install framer-motion  # Mode transitions
+npm install react-hotkeys-hook  # Professional keyboard shortcuts
 npm install @types/leaflet
 ```
 
 **Deliverables Day 1-2:**
-- ✅ Project initialized with medical stack
-- ✅ Tailwind medical theme configured
-- ✅ Medical design system tokens implemented
-- ✅ Basic folder structure created
-- ✅ TypeScript medical types defined
+- ✅ Project initialized with dual-mode stack
+- ✅ Tailwind dual-mode theme configured (professional + educational)
+- ✅ Dual design system tokens implemented
+- ✅ DualModeProvider context created
+- ✅ ModeToggle component implemented
+- ✅ Basic adaptive folder structure created
+- ✅ TypeScript dual-mode types defined
 
-#### **Day 3-4: Core Medical Components**
-**Priority: KPI Cards + Medical Layout**
+#### **Day 3-4: Core Dual-Mode Infrastructure**
+**Priority: Mode Toggle + Adaptive Layout Foundation**
 
 ```typescript
-// KPICard.tsx - Core medical metric display
-interface KPICardProps {
+// DualModeContext.tsx - Core dual-mode state management
+interface DualModeContextType {
+  mode: 'professional' | 'educational';
+  toggleMode: () => void;
+  userPreferences: UserPreferences;
+  updatePreferences: (prefs: Partial<UserPreferences>) => void;
+}
+
+// AdaptiveWrapper.tsx - Component adaptation engine
+interface AdaptiveWrapperProps {
+  children: React.ReactNode;
+  professionalVariant: React.ComponentType;
+  educationalVariant: React.ComponentType;
+  fallback?: React.ComponentType;
+}
+
+// ModeToggle.tsx - Professional ↔ Educational switch
+const ModeToggle = () => {
+  const { mode, toggleMode } = useDualMode();
+
+  return (
+    <motion.div className="mode-toggle">
+      <span className={mode === 'professional' ? 'active' : ''}>
+        Modo Profesional
+      </span>
+      <Switch checked={mode === 'educational'} onChange={toggleMode} />
+      <span className={mode === 'educational' ? 'active' : ''}>
+        Modo Educativo
+      </span>
+    </motion.div>
+  );
+};
+```
+
+**Deliverables Day 3-4:**
+- ✅ DualModeProvider context functioning
+- ✅ ModeToggle with smooth transitions
+- ✅ AdaptiveWrapper component engine
+- ✅ Basic adaptive layout structure
+- ✅ Mode persistence in localStorage
+
+#### **Day 5-6: API Integration & Data Layer**
+**Priority: FastAPI connection + dual-mode data adaptation**
+
+```typescript
+// api.ts - Dual-mode API client
+class DualModeApiClient {
+  private baseURL = 'http://localhost:8000/api';
+
+  async getAnalyticsSummary(mode: 'professional' | 'educational'): Promise<AnalyticsSummary> {
+    const response = await fetch(`${this.baseURL}/analytics/summary`);
+    const data = await response.json();
+
+    // Adapt data based on mode
+    return mode === 'professional'
+      ? this.formatProfessional(data)
+      : this.formatEducational(data);
+  }
+
+  private formatProfessional(data: any): AnalyticsSummary {
+    return {
+      ...data,
+      terminologyLevel: 'medical',
+      showConfidenceIntervals: true,
+      showMethodology: true
+    };
+  }
+
+  private formatEducational(data: any): AnalyticsSummary {
+    return {
+      ...data,
+      terminologyLevel: 'accessible',
+      includeExplanations: true,
+      showSimplifiedMetrics: true
+    };
+  }
+}
+
+// useDualModeData.ts - TanStack Query with dual adaptation
+export const useDualAnalytics = () => {
+  const { mode } = useDualMode();
+
+  return useQuery({
+    queryKey: ['analytics', mode],
+    queryFn: () => dualApiClient.getAnalyticsSummary(mode),
+    staleTime: 5 * 60 * 1000, // 5 min cache
+  });
+};
+```
+
+**Deliverables Day 5-6:**
+- ✅ API client with dual-mode data adaptation
+- ✅ TanStack Query hooks for both modes
+- ✅ Error handling for both audiences
+- ✅ Loading states adapted to user context
+- ✅ Real data flowing to adaptive components
+
+#### **Day 7: First Adaptive Components**
+**Priority: AdaptiveKPICard + basic adaptive navigation**
+
+```typescript
+// AdaptiveKPICard.tsx - Dual-mode metric display
+interface AdaptiveKPICardProps {
+  title: string;
+  value: number | string;
+  mode: 'professional' | 'educational';
+  explanation?: string; // Educational mode
+  technicalDetails?: string; // Professional mode
+  confidenceInterval?: [number, number]; // Professional mode
+}
+
+const AdaptiveKPICard: React.FC<AdaptiveKPICardProps> = ({
+  title, value, mode, explanation, technicalDetails, confidenceInterval
+}) => {
+  if (mode === 'professional') {
+    return (
+      <div className="kpi-card professional">
+        <h3 className="text-lg font-semibold text-academic-navy">{title}</h3>
+        <div className="value-display">
+          <span className="text-3xl font-bold text-primary-blue">{value}</span>
+          {confidenceInterval && (
+            <span className="text-sm text-gray-600">
+              CI: [{confidenceInterval[0]}, {confidenceInterval[1]}]
+            </span>
+          )}
+        </div>
+        {technicalDetails && (
+          <p className="text-sm text-gray-700">{technicalDetails}</p>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="kpi-card educational">
+      <h3 className="text-lg font-medium text-gray-800">{title}</h3>
+      <div className="value-display">
+        <span className="text-2xl font-semibold text-primary-pink">{value}</span>
+      </div>
+      {explanation && (
+        <div className="explanation">
+          <DefinitionTooltip term={title} definition={explanation} />
+          <p className="text-sm text-gray-600 mt-2">{explanation}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+```
+
+**Deliverables Day 7:**
+- ✅ AdaptiveKPICard functioning in both modes
+- ✅ Basic adaptive navigation structure
+- ✅ DefinitionTooltip component for educational mode
+- ✅ Professional vs educational styling differentiation
+- ✅ First end-to-end dual-mode user experience
+
+**Week 1 Success Criteria:**
+- [ ] Mode toggle functions smoothly between professional/educational
+- [ ] KPI cards display correctly in both modes
+- [ ] API data loads and adapts based on mode
+- [ ] Basic dual-mode navigation working
+- [ ] Performance < 3s for initial load in both modes
+
+---
+
+### **Week 2: Professional Mode Implementation (2025-07-15)**
+
+#### **Day 8-9: Advanced Professional Components**
+**Priority: Research-grade analytics for medical professionals**
+
+```typescript
+// AdvancedAnalytics.tsx - Professional statistical analysis
+interface AdvancedAnalyticsProps {
+  data: AnalyticsData;
+  showConfidenceIntervals: boolean;
+  showStatisticalSignificance: boolean;
+}
+
+const AdvancedAnalytics: React.FC<AdvancedAnalyticsProps> = ({ data }) => {
+  return (
+    <div className="professional-analytics">
+      <StatisticalSummary data={data} />
+      <ConfidenceIntervals metrics={data.metrics} />
+      <SignificanceTests results={data.tests} />
+      <MethodologyDetails methods={data.methodology} />
+    </div>
+  );
+};
+
+// ProfessionalSentimentChart.tsx - Medical-grade sentiment visualization
+const ProfessionalSentimentChart = () => {
+  return (
+    <div className="professional-chart">
+      <ResponsiveContainer width="100%" height={400}>
+        <PieChart>
+          <Pie
+            data={sentimentData}
+            dataKey="value"
+            nameKey="sentiment"
+            cx="50%"
+            cy="50%"
+            outerRadius={120}
+            label={({ name, value, percentage }) =>
+              `${name}: ${value} (${percentage.toFixed(1)}%, CI: ±${confidenceMargin}%)`
+            }
+          />
+          <Tooltip content={<ProfessionalTooltip />} />
+          <Legend content={<ProfessionalLegend />} />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
+```
+
+**Deliverables Day 8-9:**
+- ✅ Advanced analytics dashboard for professionals
+- ✅ Statistical significance indicators
+- ✅ Confidence intervals display
+- ✅ Methodology details sections
+- ✅ Professional-grade chart tooltips and legends
+
+#### **Day 10-11: Research Export & Citation System**
+**Priority: Academic research functionality**
+
+```typescript
+// ResearchExport.tsx - Academic export functionality
+interface ResearchExportProps {
+  data: AnalyticsData;
+  format: 'pdf' | 'excel' | 'csv' | 'bibtex';
+}
+
+const ResearchExport: React.FC<ResearchExportProps> = ({ data, format }) => {
+  const generateCitation = () => {
+    return {
+      apa: "Moreno, C. F. (2025). PreventIA News Analytics: Sentiment Analysis of Breast Cancer Media Coverage. UCOMPENSAR Research.",
+      mla: "Moreno, Cristhian Fernando. \"PreventIA News Analytics.\" UCOMPENSAR, 2025.",
+      vancouver: "Moreno CF. PreventIA News Analytics: Sentiment Analysis of Breast Cancer Media Coverage. UCOMPENSAR Research. 2025."
+    };
+  };
+
+  const exportData = async () => {
+    switch (format) {
+      case 'pdf':
+        return generatePDFReport(data, generateCitation());
+      case 'excel':
+        return generateExcelWorkbook(data);
+      case 'bibtex':
+        return generateBibTeX(generateCitation());
+      default:
+        return generateCSV(data);
+    }
+  };
+
+  return (
+    <div className="research-export">
+      <ExportOptions onExport={exportData} />
+      <CitationGenerator citations={generateCitation()} />
+      <MethodologySection methodology={data.methodology} />
+    </div>
+  );
+};
+
+// PeerReviewContext.tsx - Evidence levels and quality indicators
+const PeerReviewContext = ({ article }: { article: Article }) => {
+  const evidenceLevel = calculateEvidenceLevel(article);
+  const qualityScore = calculateQualityScore(article);
+
+  return (
+    <div className="peer-review-context">
+      <EvidenceLevel level={evidenceLevel} />
+      <QualityIndicators score={qualityScore} />
+      <SourceCredibility source={article.source} />
+      <BiasAssessment content={article.content} />
+    </div>
+  );
+};
+```
+
+**Deliverables Day 10-11:**
+- ✅ PDF/Excel export with academic formatting
+- ✅ Citation generation (APA, MLA, Vancouver)
+- ✅ Methodology documentation
+- ✅ Evidence level indicators
+- ✅ Source credibility assessment
+
+#### **Day 12-13: Professional Data Tables & Filtering**
+**Priority: Advanced filtering and professional data management**
+
+```typescript
+// ProfessionalArticlesTable.tsx - Research-grade data table
+const ProfessionalArticlesTable = () => {
+  const [sortConfig, setSortConfig] = useState<SortConfig>();
+  const [filters, setFilters] = useState<ProfessionalFilters>({
+    evidenceLevel: 'all',
+    statisticalSignificance: false,
+    peerReviewed: false,
+    confidenceInterval: [0.95, 1.0],
+    sampleSize: { min: 0, max: Infinity }
+  });
+
+  return (
+    <div className="professional-table">
+      <AdvancedFilterPanel
+        filters={filters}
+        onFiltersChange={setFilters}
+      />
+      <DataTable
+        columns={professionalColumns}
+        data={filteredData}
+        sortConfig={sortConfig}
+        onSort={setSortConfig}
+        renderRow={ProfessionalTableRow}
+      />
+      <StatisticalSummary data={filteredData} />
+    </div>
+  );
+};
+
+// AdvancedFilterPanel.tsx - Professional filtering options
+const AdvancedFilterPanel = ({ filters, onFiltersChange }) => {
+  return (
+    <div className="advanced-filters">
+      <FilterGroup title="Statistical Criteria">
+        <ConfidenceIntervalSlider />
+        <SampleSizeRange />
+        <SignificanceLevel />
+      </FilterGroup>
+
+      <FilterGroup title="Evidence Quality">
+        <EvidenceLevelSelect />
+        <PeerReviewedToggle />
+        <SourceCredibilityFilter />
+      </FilterGroup>
+
+      <FilterGroup title="Methodological">
+        <StudyDesignFilter />
+        <BiasRiskFilter />
+        <ReplicationStatusFilter />
+      </FilterGroup>
+    </div>
+  );
+};
+```
+
+**Deliverables Day 12-13:**
+- ✅ Advanced filtering system for professionals
+- ✅ Statistical criteria filters
+- ✅ Evidence quality indicators
+- ✅ Professional data table with sorting
+- ✅ Real-time statistical summaries
+
+#### **Day 14: Professional Mode Polish & Testing**
+**Priority: Professional user experience optimization**
+
+**Deliverables Day 14:**
+- ✅ Professional mode fully functional
+- ✅ All professional components polished
+- ✅ Professional keyboard shortcuts implemented
+- ✅ Professional accessibility features
+- ✅ Professional mode performance optimization
+
+**Week 2 Success Criteria:**
+- [ ] Professional mode provides research-grade analytics
+- [ ] Export functionality works for academic use
+- [ ] Advanced filtering meets professional needs
+- [ ] Performance < 3s for professional complex queries
+- [ ] Statistical accuracy verified
+
+---
+
+### **Week 3: Educational Mode Implementation (2025-07-22)**
+
+#### **Day 15-16: Educational Interface Foundation**
+**Priority: Accessible and guided educational experience**
+
+```typescript
+// EducationalWrapper.tsx - Simplified interface wrapper
+const EducationalWrapper = ({ children, concept, explanation }) => {
+  return (
+    <div className="educational-wrapper">
+      <ConceptHeader concept={concept} />
+      <div className="simplified-content">
+        {children}
+      </div>
+      <EducationalFooter explanation={explanation} />
+    </div>
+  );
+};
+
+// MedicalGlossary.tsx - Expandable medical definitions
+const MedicalGlossary = () => {
+  const [selectedTerm, setSelectedTerm] = useState(null);
+
+  const medicalTerms = {
+    'sentiment_analysis': {
+      simple: 'Análisis de si una noticia es positiva o negativa',
+      detailed: 'Técnica que usa inteligencia artificial para identificar emociones en textos médicos'
+    },
+    'confidence_interval': {
+      simple: 'Qué tan seguros estamos del resultado',
+      detailed: 'Rango estadístico que indica la precisión de una medición científica'
+    }
+  };
+
+  return (
+    <div className="medical-glossary">
+      <GlossarySearch onTermSelect={setSelectedTerm} />
+      <TermsList terms={medicalTerms} />
+      {selectedTerm && (
+        <TermDefinition term={selectedTerm} />
+      )}
+    </div>
+  );
+};
+
+// DefinitionsTooltip.tsx - Contextual help for medical terms
+const DefinitionsTooltip = ({ term, definition, children }) => {
+  return (
+    <FloatingUI
+      content={
+        <div className="definition-tooltip">
+          <h4 className="font-semibold">{term}</h4>
+          <p className="text-sm">{definition}</p>
+          <a href={`/glossary/${term}`} className="learn-more">
+            Aprender más →
+          </a>
+        </div>
+      }
+      placement="top"
+    >
+      <span className="underline decoration-dotted cursor-help">
+        {children}
+      </span>
+    </FloatingUI>
+  );
+};
+```
+
+**Deliverables Day 15-16:**
+- ✅ Educational wrapper components
+- ✅ Medical glossary with search
+- ✅ Contextual definitions tooltips
+- ✅ Simplified terminology system
+- ✅ Educational navigation structure
+
+#### **Day 17-18: Guided Learning Experience**
+**Priority: Educational tour and learning objectives**
+
+```typescript
+// GuidedTour.tsx - Step-by-step educational experience
+const GuidedTour = () => {
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const tourSteps = [
+    {
+      target: '.kpi-cards',
+      title: '¿Qué son las métricas de salud?',
+      content: 'Estas tarjetas muestran información importante sobre noticias de cáncer de mama',
+      explanation: 'Las métricas nos ayudan a entender patrones en la información médica'
+    },
+    {
+      target: '.sentiment-chart',
+      title: 'Análisis de sentimientos',
+      content: 'Este gráfico muestra si las noticias son positivas o negativas',
+      explanation: 'Es importante para entender cómo se comunica la información médica'
+    }
+  ];
+
+  return (
+    <Joyride
+      steps={tourSteps}
+      run={true}
+      continuous={true}
+      showProgress={true}
+      showSkipButton={true}
+      callback={handleTourCallback}
+      styles={{
+        options: {
+          primaryColor: '#F8BBD9', // Medical pink
+        }
+      }}
+    />
+  );
+};
+
+// LearningObjectives.tsx - Educational goals for each section
+const LearningObjectives = ({ section }) => {
+  const objectives = {
+    dashboard: [
+      'Entender qué información muestran las métricas de salud',
+      'Aprender a interpretar gráficos médicos básicos',
+      'Conocer fuentes confiables de información médica'
+    ],
+    sentiment: [
+      'Comprender qué es el análisis de sentimientos',
+      'Identificar noticias positivas vs negativas',
+      'Evaluar la calidad de información médica'
+    ]
+  };
+
+  return (
+    <div className="learning-objectives">
+      <h3 className="educational-heading">Objetivos de Aprendizaje</h3>
+      <ul className="objectives-list">
+        {objectives[section]?.map((objective, index) => (
+          <li key={index} className="objective-item">
+            <CheckIcon className="complete-icon" />
+            {objective}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+```
+
+**Deliverables Day 17-18:**
+- ✅ Guided tour system implemented
+- ✅ Learning objectives for each section
+- ✅ Progressive disclosure of information
+- ✅ Educational progress tracking
+- ✅ Contextual help system
+
+#### **Day 19-20: Educational Visualizations**
+**Priority: Simplified and explained charts**
+
+```typescript
+// EducationalSentimentChart.tsx - Simplified visualization with explanations
+const EducationalSentimentChart = () => {
+  const [showExplanation, setShowExplanation] = useState(false);
+
+  return (
+    <div className="educational-chart">
+      <div className="chart-header">
+        <h3>Análisis de Sentimientos en Noticias Médicas</h3>
+        <button
+          onClick={() => setShowExplanation(!showExplanation)}
+          className="explain-button"
+        >
+          ¿Qué significa esto?
+        </button>
+      </div>
+
+      {showExplanation && (
+        <div className="explanation-panel">
+          <h4>¿Qué es el análisis de sentimientos?</h4>
+          <p>Es una técnica que nos ayuda a entender si una noticia médica
+             transmite emociones positivas, negativas o neutrales.</p>
+
+          <h4>¿Por qué es importante?</h4>
+          <p>Nos ayuda a entender cómo se comunica la información médica
+             y su posible impacto en los pacientes.</p>
+        </div>
+      )}
+
+      <SimplifiedPieChart
+        data={sentimentData}
+        showLabels={true}
+        showPercentages={true}
+        colors={educationalColors}
+      />
+
+      <ChartSummary
+        insights={[
+          'La mayoría de noticias son informativas (neutral)',
+          'Las noticias positivas hablan de avances médicos',
+          'Las noticias negativas discuten riesgos o problemas'
+        ]}
+      />
+    </div>
+  );
+};
+
+// InteractiveMap.tsx - Educational geographic visualization
+const InteractiveMap = () => {
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
+  return (
+    <div className="educational-map">
+      <MapLegend
+        title="Fuentes de Información Médica por País"
+        explanation="Este mapa muestra de dónde vienen las noticias médicas que analizamos"
+      />
+
+      <Map
+        center={[20, 0]}
+        zoom={2}
+        style={{ height: '400px' }}
+      >
+        {countryData.map(country => (
+          <CountryMarker
+            key={country.code}
+            country={country}
+            onClick={setSelectedCountry}
+            simplified={true}
+          />
+        ))}
+      </Map>
+
+      {selectedCountry && (
+        <CountryInfo
+          country={selectedCountry}
+          educationalMode={true}
+        />
+      )}
+    </div>
+  );
+};
+```
+
+**Deliverables Day 19-20:**
+- ✅ Simplified educational charts
+- ✅ Interactive explanations
+- ✅ Educational color schemes
+- ✅ Chart summaries with insights
+- ✅ Interactive educational map
+
+#### **Day 21: Educational Mode Polish & Integration**
+**Priority: Complete educational experience**
+
+**Deliverables Day 21:**
+- ✅ Educational mode fully functional
+- ✅ All educational components integrated
+- ✅ Educational accessibility features
+- ✅ Educational mode performance optimization
+- ✅ Educational content validation
+
+**Week 3 Success Criteria:**
+- [ ] Educational mode provides clear, accessible information
+- [ ] Guided tour helps users understand medical concepts
+- [ ] All medical terms have accessible explanations
+- [ ] Educational visualizations are intuitive
+- [ ] Learning objectives are achievable
+
+---
+
+### **Week 4: Integration, Testing & Production (2025-07-29)**
+
+#### **Day 22-23: Dual-Mode Integration & Testing**
+**Priority: Seamless mode switching and comprehensive testing**
+
+```typescript
+// DualModeIntegration.test.tsx - Comprehensive dual-mode testing
+describe('Dual Mode Integration', () => {
+  test('mode toggle preserves user data', async () => {
+    const { user } = render(<DashboardApp />);
+
+    // Set filters in professional mode
+    await user.click(screen.getByRole('combobox', { name: /evidence level/i }));
+    await user.selectOption(screen.getByRole('option', { name: /high/i }));
+
+    // Switch to educational mode
+    await user.click(screen.getByRole('switch', { name: /modo educativo/i }));
+
+    // Switch back to professional mode
+    await user.click(screen.getByRole('switch', { name: /modo profesional/i }));
+
+    // Verify filters are preserved
+    expect(screen.getByDisplayValue('high')).toBeInTheDocument();
+  });
+
+  test('educational mode shows simplified content', async () => {
+    render(<DashboardApp initialMode="educational" />);
+
+    expect(screen.getByText(/análisis de sentimientos/i)).toBeInTheDocument();
+    expect(screen.queryByText(/confidence interval/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /qué significa esto/i })).toBeInTheDocument();
+  });
+
+  test('professional mode shows advanced analytics', async () => {
+    render(<DashboardApp initialMode="professional" />);
+
+    expect(screen.getByText(/statistical significance/i)).toBeInTheDocument();
+    expect(screen.getByText(/confidence interval/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /export research/i })).toBeInTheDocument();
+  });
+});
+
+// PerformanceTesting.test.tsx - Dual-mode performance validation
+describe('Performance Testing', () => {
+  test('professional mode loads within 3s', async () => {
+    const startTime = performance.now();
+    render(<DashboardApp initialMode="professional" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dashboard-loaded')).toBeInTheDocument();
+    });
+
+    const loadTime = performance.now() - startTime;
+    expect(loadTime).toBeLessThan(3000);
+  });
+
+  test('educational mode loads within 3s', async () => {
+    const startTime = performance.now();
+    render(<DashboardApp initialMode="educational" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dashboard-loaded')).toBeInTheDocument();
+    });
+
+    const loadTime = performance.now() - startTime;
+    expect(loadTime).toBeLessThan(3000);
+  });
+});
+```
+
+**Deliverables Day 22-23:**
+- ✅ Comprehensive dual-mode testing suite
+- ✅ Performance testing for both modes
+- ✅ User experience testing
+- ✅ Data persistence testing
+- ✅ Accessibility testing (WCAG AA+)
+
+#### **Day 24-25: Accessibility & Polish**
+**Priority: WCAG 2.1 AA+ compliance and final UX polish**
+
+```typescript
+// AccessibilityAudit.test.tsx - WCAG compliance testing
+describe('Accessibility Compliance', () => {
+  test('professional mode meets WCAG AA+ standards', async () => {
+    const { container } = render(<DashboardApp initialMode="professional" />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+
+  test('educational mode meets WCAG AA+ standards', async () => {
+    const { container } = render(<DashboardApp initialMode="educational" />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+
+  test('keyboard navigation works in both modes', async () => {
+    const user = userEvent.setup();
+    render(<DashboardApp />);
+
+    // Test tab navigation
+    await user.keyboard('{Tab}');
+    expect(screen.getByRole('switch', { name: /modo/i })).toHaveFocus();
+
+    // Test mode switching with keyboard
+    await user.keyboard('{Space}');
+    expect(screen.getByText(/modo educativo activo/i)).toBeInTheDocument();
+  });
+});
+
+// FinalPolish.tsx - Production-ready optimizations
+const ProductionOptimizations = {
+  // Code splitting by mode
+  ProfessionalMode: lazy(() => import('./modes/ProfessionalMode')),
+  EducationalMode: lazy(() => import('./modes/EducationalMode')),
+
+  // Performance optimizations
+  memoizeComponents: true,
+  enableServiceWorker: true,
+  optimizeImages: true,
+
+  // Accessibility enhancements
+  screenReaderSupport: true,
+  keyboardShortcuts: true,
+  highContrastMode: true,
+
+  // Analytics
+  trackModeUsage: true,
+  trackUserJourney: true,
+  trackPerformanceMetrics: true
+};
+```
+
+**Deliverables Day 24-25:**
+- ✅ WCAG 2.1 AA+ compliance verified
+- ✅ Keyboard navigation perfected
+- ✅ Screen reader support optimized
+- ✅ High contrast mode implemented
+- ✅ Final UX polish applied
+
+#### **Day 26-27: User Testing & Validation**
+**Priority: Stakeholder validation with UCOMPENSAR community**
+
+```typescript
+// UserTesting.plan.ts - Structured user testing approach
+const UserTestingPlan = {
+  professionalUsers: {
+    participants: ['medical_professionals', 'researchers', 'academic_staff'],
+    tasks: [
+      'Find statistical significance of sentiment trends',
+      'Export data for academic publication',
+      'Navigate advanced filtering options',
+      'Interpret confidence intervals'
+    ],
+    successCriteria: {
+      taskCompletion: '>90%',
+      satisfaction: '>4.5/5',
+      efficiency: '<60s per task'
+    }
+  },
+
+  educationalUsers: {
+    participants: ['medical_students', 'educated_public', 'healthcare_students'],
+    tasks: [
+      'Understand what sentiment analysis means',
+      'Learn about medical information sources',
+      'Use guided tour to explore dashboard',
+      'Find and understand medical definitions'
+    ],
+    successCriteria: {
+      comprehension: '>85%',
+      satisfaction: '>4.0/5',
+      learningObjectives: '>80% achieved'
+    }
+  }
+};
+
+// UserFeedback.component.tsx - Integrated feedback collection
+const UserFeedbackCollector = () => {
+  const { mode } = useDualMode();
+
+  const collectFeedback = async (feedback: UserFeedback) => {
+    await analytics.track('user_feedback', {
+      mode,
+      rating: feedback.rating,
+      category: feedback.category,
+      improvements: feedback.improvements,
+      timestamp: new Date().toISOString()
+    });
+  };
+
+  return (
+    <FeedbackModal
+      mode={mode}
+      onSubmit={collectFeedback}
+      questions={mode === 'professional' ? professionalQuestions : educationalQuestions}
+    />
+  );
+};
+```
+
+**Deliverables Day 26-27:**
+- ✅ User testing completed with both audiences
+- ✅ Feedback collection system implemented
+- ✅ User satisfaction metrics gathered
+- ✅ Performance validation with real users
+- ✅ Accessibility validation with diverse users
+
+#### **Day 28: Production Deployment & Launch**
+**Priority: Production deployment and monitoring setup**
+
+```typescript
+// Production.config.ts - Production deployment configuration
+const ProductionConfig = {
+  deployment: {
+    platform: 'Docker + nginx',
+    environment: 'production',
+    domain: 'preventia.ucompensar.edu.co',
+    ssl: true,
+    cdn: true
+  },
+
+  monitoring: {
+    performance: 'Web Vitals + Lighthouse',
+    errors: 'Sentry error tracking',
+    analytics: 'Google Analytics + custom dual-mode tracking',
+    uptime: '99.9% SLA target'
+  },
+
+  security: {
+    contentSecurityPolicy: true,
+    httpsOnly: true,
+    securityHeaders: true,
+    accessLogging: true
+  },
+
+  backup: {
+    userPreferences: 'daily backup',
+    usageAnalytics: 'real-time sync',
+    performanceMetrics: 'continuous monitoring'
+  }
+};
+
+// Deployment.script.sh - Automated deployment
+#!/bin/bash
+echo "🚀 Deploying PreventIA Dual-Mode Dashboard..."
+
+# Build dual-mode application
+npm run build:dual-mode
+
+# Run final tests
+npm run test:production
+
+# Deploy to production
+docker build -t preventia-dashboard:dual-mode .
+docker push registry.ucompensar.edu.co/preventia-dashboard:dual-mode
+
+# Update production environment
+kubectl apply -f k8s/production/
+kubectl rollout status deployment/preventia-dashboard
+
+echo "✅ Dual-Mode Dashboard deployed successfully!"
+echo "🔗 Professional Mode: https://preventia.ucompensar.edu.co/?mode=professional"
+echo "🎓 Educational Mode: https://preventia.ucompensar.edu.co/?mode=educational"
+```
+
+**Deliverables Day 28:**
+- ✅ Production deployment completed
+- ✅ Monitoring and analytics configured
+- ✅ Security measures implemented
+- ✅ Backup systems operational
+- ✅ Documentation updated
+- ✅ UCOMPENSAR team training completed
+
+**Week 4 Success Criteria:**
+- [ ] Both modes pass all tests with >95% success rate
+- [ ] WCAG 2.1 AA+ compliance verified across both modes
+- [ ] User satisfaction >4.5/5 (professional) and >4.0/5 (educational)
+- [ ] Performance <3s for both modes in production
+- [ ] Production deployment successful with monitoring active
+
+---
+
+## 📊 **Success Metrics & Validation**
+
+### **Dual-Mode Performance Targets**
+
+#### **Technical Performance**
+- **Load Time**: <3s for initial dashboard load (both modes)
+- **Mode Switching**: <500ms transition time
+- **API Response**: <2s for all data queries
+- **Memory Usage**: <100MB baseline memory footprint
+- **Bundle Size**: <2MB total (with code splitting)
+
+#### **User Experience Metrics**
+- **Professional Mode**:
+  - Task completion rate: >90%
+  - User satisfaction: >4.5/5
+  - Feature discovery: >80%
+  - Research workflow efficiency: >85%
+
+- **Educational Mode**:
+  - Comprehension rate: >85%
+  - Learning objective achievement: >80%
+  - User satisfaction: >4.0/5
+  - Concept retention: >75%
+
+#### **Accessibility Compliance**
+- **WCAG 2.1 AA+**: 100% compliance for both modes
+- **Keyboard Navigation**: Full functionality without mouse
+- **Screen Reader Support**: Complete content accessibility
+- **Color Contrast**: >4.5:1 ratio for all text
+- **Focus Management**: Clear focus indicators throughout
+
+### **Research Impact Metrics**
+
+#### **Academic Value**
+- **Publication Potential**: Data structured for academic papers
+- **Citation Ready**: Proper attribution and methodology documentation
+- **Reproducibility**: All analyses documentd and replicable
+- **Research Export**: PDF, Excel, BibTeX export functionality
+
+#### **Educational Impact**
+- **Knowledge Transfer**: Medical concepts accessible to broader audience
+- **Learning Outcomes**: Measurable educational objectives achieved
+- **Engagement**: >70% users explore multiple sections
+- **Retention**: >60% return visits within 30 days
+
+#### **Social Impact**
+- **Reach**: Serving both professional and educational communities
+- **Accessibility**: Universal design principles implemented
+- **Inclusivity**: Multiple language support (ES/EN)
+- **Sustainability**: Maintainable dual-mode architecture
+
+---
+
+## 🔧 **Testing Strategy**
+
+### **Dual-Mode Testing Approach**
+
+#### **Unit Testing (Jest + React Testing Library)**
+```bash
+# Run all dual-mode tests
+npm run test:dual-mode
+
+# Test professional mode components
+npm run test:professional
+
+# Test educational mode components
+npm run test:educational
+
+# Test mode switching logic
+npm run test:mode-switching
+```
+
+#### **Integration Testing**
+```typescript
+// Integration test example
+describe('Dual Mode Integration', () => {
+  test('data consistency across mode switches', async () => {
+    const { user } = renderDashboard();
+
+    // Apply filters in professional mode
+    await user.click(professionalFilter);
+
+    // Switch to educational mode
+    await user.click(modeToggle);
+
+    // Verify data remains filtered appropriately
+    expect(educationalView).toShowFilteredData();
+
+    // Switch back and verify professional filters persist
+    await user.click(modeToggle);
+    expect(professionalFilter).toBeSelected();
+  });
+});
+```
+
+#### **Accessibility Testing (axe-core)**
+```bash
+# Automated accessibility testing
+npm run test:a11y:professional
+npm run test:a11y:educational
+npm run test:a11y:mode-switching
+```
+
+#### **Performance Testing (Lighthouse)**
+```bash
+# Performance testing for both modes
+npm run lighthouse:professional
+npm run lighthouse:educational
+npm run lighthouse:mode-switching
+```
+
+#### **User Testing Protocol**
+1. **Professional User Testing**:
+   - Medical professionals (5 participants)
+   - Researchers (5 participants)
+   - Academic staff (3 participants)
+
+2. **Educational User Testing**:
+   - Medical students (8 participants)
+   - Educated public (7 participants)
+   - Healthcare students (5 participants)
+
+3. **Accessibility Testing**:
+   - Screen reader users (3 participants)
+   - Keyboard-only users (3 participants)
+   - Users with cognitive disabilities (2 participants)
+
+---
+
+## 🚀 **Deployment Strategy**
+
+### **Production Architecture**
+
+#### **Infrastructure**
+```yaml
+# docker-compose.production.yml
+version: '3.8'
+services:
+  preventia-dashboard:
+    image: preventia-dashboard:dual-mode
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=https://api.preventia.ucompensar.edu.co
+      - REACT_APP_MODE_ANALYTICS=enabled
+    volumes:
+      - ssl-certs:/etc/ssl/certs
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ssl-certs:/etc/ssl/certs
+    depends_on:
+      - preventia-dashboard
+```
+
+#### **Performance Optimizations**
+- **Code Splitting**: Separate bundles for professional/educational modes
+- **Service Worker**: Offline functionality and caching
+- **CDN**: Static assets served via CDN
+- **Image Optimization**: WebP format with fallbacks
+- **Bundle Analysis**: Regular bundle size monitoring
+
+#### **Monitoring & Analytics**
+```typescript
+// Analytics configuration
+const AnalyticsConfig = {
+  googleAnalytics: {
+    trackingId: 'GA-UCOMPENSAR-PREVENTIA',
+    customDimensions: {
+      userMode: 'dimension1',
+      institutionAffiliation: 'dimension2',
+      accessibilityFeatures: 'dimension3'
+    }
+  },
+
+  customAnalytics: {
+    modeUsage: 'track professional vs educational usage',
+    featureAdoption: 'track feature discovery and usage',
+    learningOutcomes: 'track educational objective completion',
+    researchUsage: 'track export and citation usage'
+  }
+};
+```
+
+---
+
+## 📖 **References & Documentation**
+
+### **Technical References**
+- [React 18 Concurrent Features](https://react.dev/blog/2022/03/29/react-v18)
+- [TanStack Query v5](https://tanstack.com/query/latest/docs/react/overview)
+- [Tailwind CSS v3 Design System](https://tailwindcss.com/docs/utility-first)
+- [React-Aria Accessibility](https://react-spectrum.adobe.com/react-aria/)
+- [WCAG 2.1 AA Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+
+### **Medical UX References**
+- [Medical Interface Design Principles](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6371158/)
+- [Healthcare Data Visualization Best Practices](https://www.healthit.gov/topic/usability-and-user-experience)
+- [Accessible Medical Information Design](https://www.cdc.gov/healthliteracy/developmaterials/index.html)
+
+### **Educational Design References**
+- [Universal Design for Learning](https://www.cast.org/impact/universal-design-for-learning-udl)
+- [Cognitive Load Theory in Interface Design](https://www.interaction-design.org/literature/article/cognitive-load-theory)
+- [Medical Education Technology Standards](https://www.aamc.org/initiatives/meded/)
+
+### **Related Documentation**
+- [ADR-008: Medical UX/UI Design Strategy](../decisions/ADR-008-medical-ux-ui-design-strategy.md)
+- [Medical Design System Specification](../product/design-system.md)
+- [UX/UI Strategy Document](../product/ux-ui-strategy.md)
+- [FastAPI Integration Guide](../api/services/nlp-api.md)
+
+---
+
+## 🎯 **Project Impact & Innovation**
+
+### **Academic Innovation**
+- **First Dual-Mode Medical Interface**: Pioneer implementation at UCOMPENSAR
+- **Knowledge Translation**: Bridge between professional and educational contexts
+- **Research Methodology**: Reproducible analytics with academic standards
+- **Open Science**: Transparent methodology and data accessibility
+
+### **Technical Innovation**
+- **Adaptive Component Architecture**: Reusable dual-mode component system
+- **Context-Aware UX**: Interface adapts to user expertise level
+- **Performance Optimization**: Sub-3s load times for complex medical data
+- **Accessibility Excellence**: WCAG 2.1 AA+ compliance across all modes
+
+### **Social Impact**
+- **Health Literacy**: Making medical research accessible to broader audience
+- **Educational Equity**: Equal access to medical information regardless of expertise
+- **Research Democratization**: Professional tools available to students and public
+- **Institutional Excellence**: Showcasing UCOMPENSAR's commitment to innovation
+
+### **Future Scalability**
+- **Modular Architecture**: Easy extension to other medical domains
+- **Multi-language Support**: Framework for additional language implementations
+- **AI Integration**: Foundation for machine learning feature additions
+- **Cross-platform**: Responsive design supports mobile and tablet usage
+
+---
+
+**Plan implementación preparado por**: Cristhian Fernando Moreno Manrique, UCOMPENSAR
+**Estrategia validada por**: ADR-008 Medical UX/UI Design Strategy
+**Implementación target**: 4 semanas comenzando 2025-07-08
+**Revisión programada**: 2025-08-01 (post-deployment evaluation)
+
+---
+
+*Este plan implementa la primera interfaz dual-mode médica/educativa en proyectos UCOMPENSAR, maximizando el impacto de investigación a través de estrategia de público híbrido que mantiene rigor científico mientras genera valor educativo y social.*
+
+#### **Day 1-2: Project Setup & Dual-Mode Design System**
+```bash
+# Setup Commands
+npm create vite@latest preventia-dashboard --template react-ts
+cd preventia-dashboard
+npm install
+
+# Dual-Mode Dependencies
+npm install @tanstack/react-query @tanstack/react-query-devtools
+npm install react-router-dom react-hook-form
+npm install tailwindcss @tailwindcss/forms @tailwindcss/typography
+npm install recharts react-leaflet leaflet
+npm install lucide-react @heroicons/react
+npm install axios clsx tailwind-merge
+npm install @testing-library/react @testing-library/jest-dom vitest
+
+# Dual-Mode Specific
+npm install @floating-ui/react  # Medical definitions tooltips
+npm install react-aria @axe-core/react  # Dual accessibility
+npm install framer-motion  # Mode transitions
+npm install react-hotkeys-hook  # Professional keyboard shortcuts
+npm install @types/leaflet
+```
+
+**Deliverables Day 1-2:**
+- ✅ Project initialized with dual-mode stack
+- ✅ Tailwind dual-mode theme configured (professional + educational)
+- ✅ Dual design system tokens implemented
+- ✅ DualModeProvider context created
+- ✅ ModeToggle component implemented
+- ✅ Basic adaptive folder structure created
+- ✅ TypeScript dual-mode types defined
+
+#### **Day 3-4: Core Adaptive Components**
+**Priority: AdaptiveKPICard + Dual Layout Foundation**
+
+```typescript
+// AdaptiveKPICard.tsx - Dual-mode metric display
+interface AdaptiveKPICardProps {
   title: string;
   value: number | string;
   subtitle?: string;
@@ -224,6 +1494,9 @@ interface KPICardProps {
   };
   icon: string;
   loading?: boolean;
+  mode: 'professional' | 'educational';
+  explanation?: string; // Educational mode explanation
+  technicalDetails?: string; // Professional mode details
   onClick?: () => void;
 }
 
