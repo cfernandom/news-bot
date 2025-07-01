@@ -1,0 +1,2537 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PreventIA - Prevención y Detección Temprana del Cáncer de Seno</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-pink: #F8BBD9;
+            --primary-blue: #4A90E2;
+            --light-gray: #F5F5F5;
+            --dark-gray: #666666;
+            --white: #FFFFFF;
+            --gradient: linear-gradient(135deg, #F8BBD9 0%, #4A90E2 100%);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-gray);
+            background-color: var(--white);
+        }
+
+        /* Header */
+        header {
+            background: var(--gradient);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: var(--white);
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            font-size: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .mobile-menu {
+            display: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 80px;
+        }
+
+        .page {
+            display: none;
+            min-height: calc(100vh - 160px);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            background: var(--gradient);
+            color: var(--white);
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: slideInUp 1s ease-out;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            animation: slideInUp 1s ease-out 0.3s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--white);
+            color: var(--primary-blue);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            animation: slideInUp 1s ease-out 0.6s both;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Image Carousel */
+        .carousel-container {
+            position: relative;
+            max-width: 100%;
+            margin: 2rem auto;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            position: relative;
+            background: var(--light-gray);
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .carousel-slide h3 {
+            color: var(--primary-blue);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .carousel-slide p {
+            font-size: 1.1rem;
+            max-width: 600px;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--primary-blue);
+            transition: all 0.3s ease;
+        }
+
+        .carousel-nav:hover {
+            background: var(--white);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-nav.prev {
+            left: 20px;
+        }
+
+        .carousel-nav.next {
+            right: 20px;
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: var(--white);
+            transform: scale(1.2);
+        }
+
+        /* Info Cards */
+        .info-section {
+            padding: 4rem 2rem;
+            background-color: var(--light-gray);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 3rem;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary-pink);
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .info-card i {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .info-card h3 {
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Emergency Section */
+        .emergency-section {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+            color: var(--white);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .emergency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .emergency-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .emergency-card i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .emergency-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .emergency-card a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Project Progress */
+        .progress-section {
+            padding: 4rem 2rem;
+        }
+
+        .progress-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 2rem;
+            color: var(--white);
+            font-size: 1.5rem;
+        }
+
+        .progress-content h3 {
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Partners Section */
+        .partners-section {
+            background: var(--light-gray);
+            padding: 4rem 2rem;
+        }
+
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .partner-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .partner-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .partner-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--gradient);
+            color: var(--white);
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-pink);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--white);
+            color: var(--primary-blue);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            nav {
+                display: none;
+            }
+
+            nav.active {
+                display: block;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--gradient);
+                padding: 1rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .carousel-nav {
+                width: 40px;
+                height: 40px;
+            }
+
+            .carousel-nav.prev {
+                left: 10px;
+            }
+
+            .carousel-nav.next {
+                right: 10px;
+            }
+
+            .progress-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .progress-icon {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Additional Styles for Information Pages */
+        .content-section {
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .content-section h2 {
+            color: var(--primary-blue);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid var(--primary-pink);
+            padding-bottom: 0.5rem;
+        }
+
+        .content-section h3 {
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem 0;
+        }
+
+        .content-section ul {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, var(--primary-pink), var(--primary-blue));
+            color: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: #FFE5E5;
+            border-left: 5px solid #FF6B6B;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 15px 15px 0;
+        }
+
+        .step-by-step {
+            counter-reset: step-counter;
+        }
+
+        .step {
+            counter-increment: step-counter;
+            background: var(--light-gray);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 15px;
+            position: relative;
+            padding-left: 4rem;
+        }
+
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-blue);
+            color: var(--white);
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .institutions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .institution-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .institution-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .institution-card h4 {
+            color: var(--primary-blue);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .institution-card .contact-info {
+            margin-top: 1rem;
+        }
+
+        .institution-card .contact-info p {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .institution-card .contact-info i {
+            margin-right: 0.5rem;
+            color: var(--primary-pink);
+            width: 20px;
+        }
+
+        .badge {
+            background: var(--primary-pink);
+            color: var(--primary-blue);
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .badge-neutral {
+            background: #eee;
+            color: var(--dark-gray);
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+        }
+
+        .badge-positive {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+        }
+
+        .badge-negative {
+            background: #fef2f2;
+            color: #991b1b;
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+        }
+
+        #modal.hidden {
+            display: none !important;
+        }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="icon" href="https://preventia-wp.cfernandom.dev/wp-content/uploads/2025/04/cropped-Frame-71-32x32.png" type="image/png">
+
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <a href="javascript:void(0)" class="logo" onclick="showPage('home')" style="margin-bottom: 1rem;">
+                <img src="https://preventia-wp.cfernandom.dev/wp-content/uploads/2025/05/image-45.png"
+                    alt="PreventIA logo" style="height: 40px; margin-right: 0.5rem;">
+            </a>
+
+            <div class="mobile-menu" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <nav id="nav-menu">
+                <ul>
+                    <li><a href="javascript:void(0)" onclick="showPage('home')" class="nav-link active">Inicio</a></li>
+                    <li><a href="javascript:void(0)" onclick="showPage('about')" class="nav-link">Sobre el Cáncer</a>
+                    </li>
+                    <li><a href="javascript:void(0)" onclick="showPage('prevention')" class="nav-link">Prevención</a>
+                    </li>
+                    <li><a href="javascript:void(0)" onclick="showPage('self-exam')" class="nav-link">Autoexamen</a>
+                    </li>
+                    <li><a href="javascript:void(0)" onclick="showPage('institutions')"
+                            class="nav-link">Instituciones</a></li>
+                    <li><a href="javascript:void(0)" onclick="showPage('project')" class="nav-link">Proyecto</a></li>
+                    <li><a href="javascript:void(0)" onclick="showPage('contact')" class="nav-link">Contacto</a></li>
+                    <li><a href="javascript:void(0)" onclick="showPage('noticias')" class="nav-link">Noticias</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- HOME PAGE -->
+        <div id="home" class="page active">
+            <section class="hero-banner">
+                <div class="hero-content">
+                    <h1>PreventIA</h1>
+                    <p>Tecnología e Inteligencia Artificial para la Prevención y Detección Temprana del Cáncer de Seno
+                    </p>
+                    <a href="javascript:void(0)" class="cta-button" onclick="showPage('about')">Conoce Más</a>
+                </div>
+            </section>
+
+            <section class="container">
+                <div class="carousel-container">
+                    <div class="carousel" id="carousel">
+                        <div class="carousel-slide">
+                            <i class="fas fa-microscope"
+                                style="font-size: 4rem; color: var(--primary-blue); margin-bottom: 1rem;"></i>
+                            <h3>Detección Temprana Salva Vidas</h3>
+                            <p>El cáncer de seno detectado en sus primeras etapas tiene una tasa de supervivencia del
+                                99%. La detección temprana es clave para un tratamiento exitoso.</p>
+                        </div>
+                        <div class="carousel-slide">
+                            <i class="fas fa-robot"
+                                style="font-size: 4rem; color: var(--primary-blue); margin-bottom: 1rem;"></i>
+                            <h3>Inteligencia Artificial en Medicina</h3>
+                            <p>PreventIA utiliza algoritmos avanzados de IA para mejorar la precisión del diagnóstico y
+                                optimizar los tratamientos personalizados.</p>
+                        </div>
+                        <div class="carousel-slide">
+                            <i class="fas fa-users"
+                                style="font-size: 4rem; color: var(--primary-blue); margin-bottom: 1rem;"></i>
+                            <h3>Educación y Prevención</h3>
+                            <p>Empoderamos a las mujeres con información y herramientas para la prevención, detección
+                                temprana y cuidado de su salud mamaria.</p>
+                        </div>
+                        <div class="carousel-slide">
+                            <i class="fas fa-chart-line"
+                                style="font-size: 4rem; color: var(--primary-blue); margin-bottom: 1rem;"></i>
+                            <h3>Investigación Innovadora</h3>
+                            <p>Desarrollamos modelos predictivos y sistemas de análisis que contribuyen al avance
+                                científico en oncología mamaria.</p>
+                        </div>
+                    </div>
+                    <button class="carousel-nav prev" onclick="prevSlide()">❮</button>
+                    <button class="carousel-nav next" onclick="nextSlide()">❯</button>
+                    <div class="carousel-indicators">
+                        <span class="indicator active" onclick="currentSlide(1)"></span>
+                        <span class="indicator" onclick="currentSlide(2)"></span>
+                        <span class="indicator" onclick="currentSlide(3)"></span>
+                        <span class="indicator" onclick="currentSlide(4)"></span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <div class="container">
+                    <h2 class="section-title">Información Importante</h2>
+                    <div class="cards-grid">
+                        <div class="info-card">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Señales de Alerta</h3>
+                            <p>Conoce los síntomas y signos que debes vigilar: cambios en el tamaño o forma del seno,
+                                secreción del pezón, endurecimiento o bultos.</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-calendar-check"></i>
+                            <h3>Exámenes Regulares</h3>
+                            <p>La mamografía anual después de los 40 años y el autoexamen mensual son fundamentales para
+                                la detección temprana.</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-heart"></i>
+                            <h3>Vida Saludable</h3>
+                            <p>Mantén un estilo de vida saludable: ejercicio regular, alimentación balanceada y evita el
+                                consumo excesivo de alcohol.</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-user-md"></i>
+                            <h3>Consulta Médica</h3>
+                            <p>Mantén comunicación regular con tu médico y no dudes en consultarle cualquier cambio que
+                                notes en tus senos.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="emergency-section">
+                <div class="container">
+                    <h2>Líneas de Emergencia y Apoyo</h2>
+                    <div class="emergency-grid">
+                        <div class="emergency-card">
+                            <i class="fas fa-phone-alt"></i>
+                            <h3>Línea Nacional</h3>
+                            <a href="tel:123">123 - Emergencias</a>
+                        </div>
+                        <div class="emergency-card">
+                            <i class="fas fa-hospital"></i>
+                            <h3>Liga Contra el Cáncer</h3>
+                            <a href="tel:018000423000">01-8000-423-000</a>
+                        </div>
+                        <div class="emergency-card">
+                            <i class="fas fa-hands-helping"></i>
+                            <h3>Apoyo Emocional</h3>
+                            <a href="tel:018000113012">01-8000-113-012</a>
+                        </div>
+                        <div class="emergency-card">
+                            <i class="fas fa-info-circle"></i>
+                            <h3>Información EPS</h3>
+                            <a href="tel:018000951097">01-8000-951-097</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="progress-section">
+                <div class="container">
+                    <h2 class="section-title">Avances del Proyecto</h2>
+                    <div class="progress-item">
+                        <div class="progress-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="progress-content">
+                            <h3>Algoritmos de IA Desarrollados</h3>
+                            <p>Implementación exitosa de algoritmos de aprendizaje automático para el análisis de
+                                imágenes mamográficas con una precisión del 94%.</p>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="progress-content">
+                            <h3>Base de Datos de Pacientes</h3>
+                            <p>Recopilación y análisis de más de 10,000 casos para entrenamiento de modelos predictivos
+                                y validación de resultados.</p>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="progress-content">
+                            <h3>Modelos Predictivos</h3>
+                            <p>Desarrollo de simulaciones basadas en agentes para predecir tiempos de diagnóstico y
+                                probabilidades de supervivencia.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="partners-section">
+                <div class="container">
+                    <h2 class="section-title">Instituciones Aliadas</h2>
+                    <div class="partners-grid">
+                        <div class="partner-card">
+                            <div class="partner-logo">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <h4>Fundación Universitaria Compensar</h4>
+                            <p>Facultad de Ingeniería</p>
+                        </div>
+                        <div class="partner-card">
+                            <div class="partner-logo">
+                                <i class="fas fa-hospital"></i>
+                            </div>
+                            <h4>Instituto Nacional de Cancerología</h4>
+                            <p>Investigación Oncológica</p>
+                        </div>
+                        <div class="partner-card">
+                            <div class="partner-logo">
+                                <i class="fas fa-microscope"></i>
+                            </div>
+                            <h4>Liga Colombiana Contra el Cáncer</h4>
+                            <p>Prevención y Educación</p>
+                        </div>
+                        <div class="partner-card">
+                            <div class="partner-logo">
+                                <i class="fas fa-laptop-code"></i>
+                            </div>
+                            <h4>Centro de IA Médica</h4>
+                            <p>Desarrollo Tecnológico</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ABOUT CANCER PAGE -->
+        <div id="about" class="page">
+            <section class="hero-banner">
+                <div class="hero-content">
+                    <h1>Sobre el Cáncer de Seno</h1>
+                    <p>Información esencial que toda mujer debe conocer</p>
+                </div>
+            </section>
+
+            <div class="content-section">
+                <h2>¿Qué es el Cáncer de Seno?</h2>
+                <p>El cáncer de seno es una enfermedad en la cual las células del tejido mamario crecen sin control.
+                    Existen diferentes tipos de cáncer de seno, dependiendo de qué células se vuelven cancerosas.</p>
+
+                <div class="highlight-box">
+                    <h3>Datos Importantes</h3>
+                    <ul>
+                        <li><strong>1 de cada 8 mujeres</strong> desarrollará cáncer de seno durante su vida</li>
+                        <li>Es el <strong>segundo cáncer más común</strong> en mujeres</li>
+                        <li>La <strong>detección temprana</strong> mejora significativamente el pronóstico</li>
+                        <li>También puede afectar a <strong>hombres</strong>, aunque es menos común</li>
+                    </ul>
+                </div>
+
+                <h3>Tipos de Cáncer de Seno</h3>
+                <ul>
+                    <li><strong>Carcinoma ductal invasivo (CDI):</strong> Comienza en los conductos lácteos y se
+                        extiende al tejido mamario circundante</li>
+                    <li><strong>Carcinoma lobular invasivo (CLI):</strong> Comienza en los lobulillos y puede extenderse
+                        a tejidos cercanos</li>
+                    <li><strong>Carcinoma ductal in situ (CDIS):</strong> Células anormales en el revestimiento de los
+                        conductos lácteos</li>
+                    <li><strong>Cáncer inflamatorio de mama:</strong> Tipo agresivo que causa enrojecimiento e hinchazón
+                    </li>
+                </ul>
+
+                <h3>Factores de Riesgo</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h4>Edad</h4>
+                        <p>El riesgo aumenta con la edad, especialmente después de los 50 años</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-dna"></i>
+                        <h4>Historia Familiar</h4>
+                        <p>Antecedentes familiares de cáncer de seno u ovario</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-venus"></i>
+                        <h4>Hormonas</h4>
+                        <p>Exposición prolongada a estrógenos</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-heart"></i>
+                        <h4>Estilo de Vida</h4>
+                        <p>Sedentarismo, alcohol y obesidad pueden aumentar el riesgo</p>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Importante</h3>
+                    <p>Tener factores de riesgo no significa que desarrollarás cáncer. Muchas mujeres con factores de
+                        riesgo nunca desarrollan la enfermedad, mientras que otras sin factores de riesgo conocidos sí
+                        la desarrollan.</p>
+                </div>
+
+                <h3>Estadísticas en Colombia</h3>
+                <p>Según el Instituto Nacional de Cancerología:</p>
+                <ul>
+                    <li>Se diagnostican aproximadamente <strong>15,509 casos nuevos</strong> al año</li>
+                    <li>Es la <strong>primera causa de muerte</strong> por cáncer en mujeres colombianas</li>
+                    <li>La edad promedio de diagnóstico es <strong>57 años</strong></li>
+                    <li>La supervivencia a 5 años es del <strong>89%</strong> cuando se detecta temprano</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- PREVENTION PAGE -->
+        <div id="prevention" class="page">
+            <section class="hero-banner">
+                <div class="hero-content">
+                    <h1>Prevención del Cáncer de Seno</h1>
+                    <p>Acciones que puedes tomar para reducir tu riesgo</p>
+                </div>
+            </section>
+
+            <div class="content-section">
+                <h2>Señales de Alerta</h2>
+                <div class="warning-box">
+                    <h3><i class="fas fa-eye"></i> Observa estos cambios:</h3>
+                    <ul>
+                        <li>Bulto o masa en el seno o axila</li>
+                        <li>Cambio en el tamaño o forma del seno</li>
+                        <li>Secreción del pezón (especialmente si es sanguinolenta)</li>
+                        <li>Cambios en la piel del seno (enrojecimiento, descamación)</li>
+                        <li>Inversión del pezón</li>
+                        <li>Dolor persistente en el seno o axila</li>
+                        <li>Hinchazón de parte o todo el seno</li>
+                        <li>Irritación o formación de hoyuelos en la piel</li>
+                    </ul>
+                </div>
+
+                <h2>Hábitos de Vida Saludable</h2>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <i class="fas fa-running"></i>
+                        <h3>Ejercicio Regular</h3>
+                        <p>Al menos 150 minutos de actividad moderada por semana. El ejercicio reduce el riesgo hasta en
+                            un 25%.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-apple-alt"></i>
+                        <h3>Alimentación Balanceada</h3>
+                        <p>Dieta rica en frutas, verduras, granos integrales. Limita las grasas saturadas y procesados.
+                        </p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-weight"></i>
+                        <h3>Peso Saludable</h3>
+                        <p>Mantener un peso corporal saludable, especialmente después de la menopausia.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-wine-glass"></i>
+                        <h3>Limitar Alcohol</h3>
+                        <p>El consumo de alcohol aumenta el riesgo. Limita a una bebida por día máximo.</p>
+                    </div>
+                </div>
+
+                <h3>Recomendaciones de Tamizaje</h3>
+                <div class="step-by-step">
+                    <div class="step">
+                        <h4>20-39 años</h4>
+                        <p>Autoexamen mensual y examen clínico anual por profesional de salud</p>
+                    </div>
+                    <div class="step">
+                        <h4>40-49 años</h4>
+                        <p>Mamografía anual + autoexamen mensual + examen clínico anual</p>
+                    </div>
+                    <div class="step">
+                        <h4>50-69 años</h4>
+                        <p>Mamografía cada 1-2 años + autoexamen mensual + examen clínico anual</p>
+                    </div>
+                    <div class="step">
+                        <h4>70+ años</h4>
+                        <p>Consultar con médico sobre frecuencia de mamografías según estado de salud</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>¿Sabías que?</h3>
+                    <p>Las mujeres que hacen ejercicio regularmente tienen un 25% menos riesgo de desarrollar cáncer de
+                        seno. La actividad física ayuda a mantener un peso saludable y equilibra las hormonas.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SELF EXAM PAGE -->
+        <div id="self-exam" class="page">
+            <section class="hero-banner">
+                <div class="hero-content">
+                    <h1>Autoexamen de Seno</h1>
+                    <p>Aprende la técnica correcta paso a paso</p>
+                </div>
+            </section>
+
+            <div class="content-section">
+                <h2>¿Por qué es importante?</h2>
+                <p>El autoexamen de seno te ayuda a conocer cómo se ven y se sienten normalmente tus senos, para que
+                    puedas identificar cualquier cambio y consultarlo con tu médico.</p>
+
+                <div class="highlight-box">
+                    <h3><i class="fas fa-calendar"></i> Cuándo hacerlo</h3>
+                    <ul>
+                        <li><strong>Mujeres que menstrúan:</strong> 3-5 días después de que termine la menstruación</li>
+                        <li><strong>Mujeres que no menstrúan:</strong> El mismo día cada mes</li>
+                        <li><strong>Frecuencia:</strong> Una vez al mes</li>
+                    </ul>
+                </div>
+
+                <h2>Técnica del Autoexamen</h2>
+
+                <h3>Paso 1: Observación frente al espejo</h3>
+                <div class="step-by-step">
+                    <div class="step">
+                        <h4>Con los brazos a los lados</h4>
+                        <p>Observa tus senos en el espejo. Busca cambios en tamaño, forma, contorno o simetría.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Con los brazos levantados</h4>
+                        <p>Levanta los brazos por encima de la cabeza y observa los mismos cambios.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Con las manos en las caderas</h4>
+                        <p>Presiona firmemente las manos en las caderas y observa si hay contracciones musculares.</p>
+                    </div>
+                </div>
+
+                <h3>Paso 2: Examen acostada</h3>
+                <div class="step-by-step">
+                    <div class="step">
+                        <h4>Posición</h4>
+                        <p>Acuéstate y coloca una almohada bajo el hombro derecho. Pon el brazo derecho detrás de la
+                            cabeza.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Técnica de palpación</h4>
+                        <p>Usa las yemas de los tres dedos medios de la mano izquierda para examinar el seno derecho.
+                        </p>
+                    </div>
+                    <div class="step">
+                        <h4>Patrón de movimiento</h4>
+                        <p>Haz movimientos circulares del tamaño de una moneda, variando la presión de suave a firme.
+                        </p>
+                    </div>
+                    <div class="step">
+                        <h4>Área a examinar</h4>
+                        <p>Examina desde la clavícula hasta la parte inferior del sostén y desde la axila hasta el
+                            esternón.</p>
+                    </div>
+                </div>
+
+                <h3>Paso 3: Examen de pie o en la ducha</h3>
+                <div class="step-by-step">
+                    <div class="step">
+                        <h4>En la ducha</h4>
+                        <p>Muchas mujeres prefieren hacer este examen en la ducha porque las manos se deslizan
+                            fácilmente sobre la piel mojada.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Misma técnica</h4>
+                        <p>Usa la misma técnica de palpación que usaste acostada, examinando cada seno con la mano
+                            opuesta.</p>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3><i class="fas fa-exclamation-triangle"></i> ¿Cuándo consultar al médico?</h3>
+                    <ul>
+                        <li>Cualquier bulto o masa nueva</li>
+                        <li>Cambios en el tamaño o forma del seno</li>
+                        <li>Secreción del pezón</li>
+                        <li>Cambios en la piel (enrojecimiento, descamación, hoyuelos)</li>
+                        <li>Dolor persistente</li>
+                        <li>Cualquier cambio que te preocupe</li>
+                    </ul>
+                    <p><strong>Recuerda:</strong> La mayoría de los cambios en los senos NO son cáncer, pero es
+                        importante que un profesional los evalúe.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- INSTITUTIONS PAGE -->
+        <div id="institutions" class="page">
+            <section class="hero-banner">
+                <div class="hero-content">
+                    <h1>Instituciones de Apoyo</h1>
+                    <p>Centros de atención y organizaciones de ayuda</p>
+                </div>
+            </section>
+
+            <div class="content-section">
+                <h2>Instituciones de Salud Especializadas</h2>
+                <div class="institutions-grid">
+                    <div class="institution-card">
+                        <h4><i class="fas fa-hospital"></i> Instituto Nacional de Cancerología</h4>
+                        <p>Centro de referencia nacional para el tratamiento del cáncer en Colombia.</p>
+                        <div class="contact-info">
+                            <p><i class="fas fa-map-marker-alt"></i> Calle 1 # 9-85, Bogotá</p>
+                            <p><i class="fas fa-phone"></i> (601) 334-0959</p>
+                            <p><i class="fas fa-globe"></i> www.cancer.gov.co</p>
+                        </div>
+                    </div>
+
+                    <div class="institution-card">
+                        <h4><i class="fas fa-heart"></i> Liga Colombiana Contra el Cáncer</h4>
+                        <p>Organización dedicada a la prevención, detección temprana y apoyo integral.</p>
+                        <div class="contact-info">
+                            <p><i class="fas fa-map-marker-alt"></i> Calle 95 # 47A-18, Bogotá</p>
+                            <p><i class="fas fa-phone"></i> (601) 744-4041</p>
+                            <p><i class="fas fa-globe"></i> www.ligacancercolombia.org</p>
+                        </div>
+                    </div>
+
+                    <div class="institution-card">
+                        <h4><i class="fas fa-hospital-alt"></i> Hospital San Juan de Dios</h4>
+                        <p>Centro de atención oncológica con programas de detección temprana.</p>
+                        <div class="contact-info">
+                            <p><i class="fas fa-map-marker-alt"></i> Carrera 10 # 1-66, Bogotá</p>
+                            <p><i class="fas fa-phone"></i> (601) 364-4444</p>
+                            <p><i class="fas fa-envelope"></i> info@hsjd.org.co</p>
+                        </div>
+                    </div>
+
+                    <div class="institution-card">
+                        <h4><i class="fas fa-user-md"></i> Fundación Santa Fe de Bogotá</h4>
+                        <p>Centro médico con unidad especializada en cáncer de mama.</p>
+                        <div class="contact-info">
+                            <p><i class="fas fa-map-marker-alt"></i> Calle 119 # 7-75, Bogotá</p>
+                            <p><i class="fas fa-phone"></i> (601) 603-0303</p>
+                            <p><i class="fas fa-globe"></i> www.fsfb.org.co</p>
+                        </div>
+                    </div>
+
+                    <div class="institution-card">
+                        <h4><i class="fas fa-hands-helping"></i> Fundación Simmon</h4>
+                        <p>Apoyo integral a pacientes con cáncer y sus familias.</p>
+                        <div class="contact-info">
+                            <p><i class="fas fa-map-marker-alt"></i> Calle 67 # 7-94, Bogotá</p>
+                            <p><i class="fas fa-phone"></i> (601) 249-4040</p>
+                            <p><i class="fas fa-envelope"></i> contacto@simmon.org.co</p>
+                        </div>
+                    </div>
+
+                    <div class="institution-card">
+                        <h4><i class="fas fa-ribbon"></i> Fundación Alma</h4>
+                        <p>Organización dedicada al apoyo emocional y psicológico.</p>
+                        <div class="contact-info">
+                            <p><i class="fas fa-map-marker-alt"></i> Carrera 15 # 93-07, Bogotá</p>
+                            <p><i class="fas fa-phone"></i> (601) 610-8080</p>
+                            <p><i class="fas fa-envelope"></i> info@fundacionalma.org</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Información sobre EPS</h2>
+                <div class="highlight-box">
+                    <h3><i class="fas fa-info-circle"></i> Derechos en tu EPS</h3>
+                    <ul>
+                        <li><strong>Exámenes de tamizaje:</strong> Mamografía cubierta según edad y protocolo</li>
+                        <li><strong>Consulta especializada:</strong> Referencia a oncología cuando sea necesario</li>
+                        <li><strong>Tratamiento integral:</strong> Cobertura completa del tratamiento oncológico</li>
+                        <li><strong>Apoyo psicológico:</strong> Atención en salud mental durante el tratamiento</li>
+                        <li><strong>Medicamentos:</strong> Acceso a medicamentos oncológicos del POS</li>
+                    </ul>
+                </div>
+
+                <h3>Principales EPS en Colombia</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <h4>Compensar EPS</h4>
+                        <p><i class="fas fa-phone"></i> (601) 444-4444<br>
+                            <i class="fas fa-globe"></i> www.compensar.com
+                        </p>
+                    </div>
+                    <div class="info-card">
+                        <h4>Sura EPS</h4>
+                        <p><i class="fas fa-phone"></i> (601) 560-1111<br>
+                            <i class="fas fa-globe"></i> www.eps.sura.com
+                        </p>
+                    </div>
+                    <div class="info-card">
+                        <h4>Nueva EPS</h4>
+                        <p><i class="fas fa-phone"></i> (601) 651-5000<br>
+                            <i class="fas fa-globe"></i> www.nuevaeps.com.co
+                        </p>
+                    </div>
+                    <div class="info-card">
+                        <h4>Sanitas EPS</h4>
+                        <p><i class="fas fa-phone"></i> (601) 545-5555<br>
+                            <i class="fas fa-globe"></i> www.sanitas.com.co
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROJECT PAGE -->
+        <div id="project" class="page">
+            <section class="hero-banner">
+                <div class="hero-content">
+                    <h1>Proyecto PreventIA</h1>
+                    <p>Innovación tecnológica para salvar vidas</p>
+                </div>
+            </section>
+
+            <div class="content-section">
+                <h2>Sobre el Proyecto</h2>
+                <p>PreventIA es un proyecto de investigación innovador que combina inteligencia artificial,
+                    procesamiento digital de imágenes y simulación basada en agentes para mejorar la detección temprana
+                    y el tratamiento del cáncer de seno.</p>
+
+                <h3>Objetivos del Proyecto</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <i class="fas fa-eye"></i>
+                        <h4>Detección Temprana</h4>
+                        <p>Desarrollar algoritmos de IA para mejorar la precisión en el diagnóstico de mamografías y
+                            reducir falsos positivos.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h4>Análisis Predictivo</h4>
+                        <p>Crear modelos que predigan tiempos de diagnóstico, evolución del tratamiento y probabilidades
+                            de supervivencia.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-users"></i>
+                        <h4>Simulación de Agentes</h4>
+                        <p>Implementar simulaciones para optimizar rutas de atención y recursos hospitalarios.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h4>Educación</h4>
+                        <p>Desarrollar herramientas educativas para profesionales de la salud y pacientes.</p>
+                    </div>
+                </div>
+
+                <h2>Metodología</h2>
+                <div class="step-by-step">
+                    <div class="step">
+                        <h4>Recolección de Datos</h4>
+                        <p>Análisis de bases de datos médicas con más de 10,000 casos de mamografías y historiales
+                            clínicos.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Procesamiento de Imágenes</h4>
+                        <p>Aplicación de técnicas de deep learning para el análisis automatizado de mamografías
+                            digitales.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Desarrollo de Algoritmos</h4>
+                        <p>Implementación de redes neuronales convolucionales y algoritmos de machine learning.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Simulación Basada en Agentes</h4>
+                        <p>Modelado de sistemas complejos para predecir comportamientos y optimizar procesos.</p>
+                    </div>
+                    <div class="step">
+                        <h4>Validación Clínica</h4>
+                        <p>Pruebas con especialistas oncólogos para validar la precisión de los algoritmos
+                            desarrollados.</p>
+                    </div>
+                </div>
+
+                <h2>Avances Actuales</h2>
+                <div class="progress-section">
+                    <div class="progress-item">
+                        <div class="progress-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="progress-content">
+                            <h3>Fase 1 Completada - Recolección de Datos</h3>
+                            <p>Base de datos consolidada con 12,847 mamografías digitales y historiales clínicos
+                                correspondientes de pacientes de diferentes instituciones aliadas.</p>
+                        </div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="progress-content">
+                            <h3>Fase 2 En Desarrollo - Algoritmos de IA</h3>
+                            <p>Desarrollo de modelos de aprendizaje profundo con una precisión actual del 94.2% en la
+                                detección de anomalías mamográficas.</p>
+                        </div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-icon">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <div class="progress-content">
+                            <h3>Fase 3 Iniciada - Simulación de Agentes</h3>
+                            <p>Implementación de modelos de simulación para analizar flujos de pacientes y optimización
+                                de recursos hospitalarios.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Tecnologías Utilizadas</h2>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <i class="fab fa-python"></i>
+                        <h4>Python & TensorFlow</h4>
+                        <p>Desarrollo de modelos de deep learning y procesamiento de imágenes médicas.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-database"></i>
+                        <h4>Big Data Analytics</h4>
+                        <p>Análisis de grandes volúmenes de datos médicos usando Apache Spark y MongoDB.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-cloud"></i>
+                        <h4>Cloud Computing</h4>
+                        <p>Infraestructura escalable en AWS para procesamiento intensivo de datos.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-robot"></i>
+                        <h4>Machine Learning</h4>
+                        <p>Algoritmos de aprendizaje automático para predicción y clasificación médica.</p>
+                    </div>
+                </div>
+
+                <h2>Equipo de Investigación</h2>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <i class="fas fa-user-tie"></i>
+                        <h4>Ing. Angie Paola Rique Sabogal</h4>
+                        <p><strong>Directora del Proyecto</strong><br>
+                            Ingeniera Electrónica<br>
+                            </p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-user-md"></i>
+                        <h4>Ing. Neider Duan Barbosa Castro</h4>
+                        <p><strong>Ingeniero de sistemas</strong><br>
+                            <br>
+                            </p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-laptop-code"></i>
+                        <h4>Ing. Miguel Angel Guatame Medina</h4>
+                        <p><strong>Especialista en Seguridad informática</strong><br>
+                            Ingeniero de Sistemas</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-chart-bar"></i>
+                        <h4>Ing. Cristhian Fernando Moreno Manrique</h4>
+                        <p><strong>Ingeniero Electrónico</strong><br>
+                        Desarrollador Full Stack</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3><i class="fas fa-award"></i> Reconocimientos</h3>
+                    <ul>
+                        <li><strong>2024:</strong> Premio Nacional de Innovación en Salud Digital</li>
+                        <li><strong>2024:</strong> Mención Honorífica en el Congreso Internacional de IA Médica</li>
+                        <li><strong>2023:</strong> Financiación aprobada por MinCiencias para investigación en IA</li>
+                        <li><strong>2023:</strong> Certificación ISO 27001 para manejo de datos médicos</li>
+                    </ul>
+                </div>
+
+                <h2>Publicaciones y Resultados</h2>
+                <ul>
+                    <li><strong>"AI-Driven Breast Cancer Detection: A Colombian Perspective"</strong> - Journal of
+                        Medical AI, 2024</li>
+                    <li><strong>"Agent-Based Modeling for Healthcare Resource Optimization"</strong> - Healthcare
+                        Management Science, 2024</li>
+                    <li><strong>"Deep Learning Applications in Mammography Screening"</strong> - IEEE Transactions on
+                        Medical Imaging, 2023</li>
+                    <li><strong>"Predictive Models for Cancer Treatment Outcomes"</strong> - Nature Digital Medicine,
+                        2023</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CONTACT PAGE -->
+        <div id="contact" class="page">
+            <section class="hero-banner">
+                <div class="hero-content">
+                    <h1>Contacto</h1>
+                    <p>Ponte en contacto con nosotros</p>
+                </div>
+            </section>
+
+            <div class="content-section">
+                <h2>Información de Contacto</h2>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <i class="fas fa-envelope"></i>
+                        <h4>Correo Electrónico</h4>
+                        <p>info@preventia.org<br>
+                            investigacion@preventia.org</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-phone"></i>
+                        <h4>Teléfono</h4>
+                        <p>601 338 06 66<br>
+                            Whatsapp: (+57) 318 516 0957</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h4>Dirección</h4>
+                        <p>Fundación Universitaria Compensar<br>
+                            Facultad de Ingeniería<br>
+                            Avenida (Calle) 32 No. 17 – 30</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-clock"></i>
+                        <h4>Horarios de Atención</h4>
+                        <p>Lunes a Viernes: 8:00 AM - 5:00 PM<br>
+                            Sábados: 9:00 AM - 1:00 PM</p>
+                    </div>
+                </div>
+
+                <h2>Formulario de Contacto</h2>
+                <form class="contact-form" onsubmit="submitForm(event)">
+                    <div class="form-group">
+                        <label for="name">Nombre Completo</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Correo Electrónico</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Teléfono</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Asunto</label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Selecciona un asunto</option>
+                            <option value="informacion">Solicitud de información</option>
+                            <option value="colaboracion">Propuesta de colaboración</option>
+                            <option value="investigacion">Consulta sobre investigación</option>
+                            <option value="medios">Medios de comunicación</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Mensaje</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="cta-button">Enviar Mensaje</button>
+                </form>
+
+                <h2>Redes Sociales</h2>
+                <div class="social-links" style="justify-content: center; margin: 2rem 0;">
+                    <a href="javascript:void(0)" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="javascript:void(0)" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="javascript:void(0)" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="javascript:void(0)" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="javascript:void(0)" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+
+                <div class="highlight-box">
+                    <h3><i class="fas fa-info-circle"></i> Colaboraciones</h3>
+                    <p>Estamos abiertos a colaboraciones con:</p>
+                    <ul>
+                        <li>Instituciones de salud y hospitales</li>
+                        <li>Universidades e institutos de investigación</li>
+                        <li>Empresas de tecnología médica</li>
+                        <li>Organizaciones sin fines de lucro</li>
+                        <li>Entidades gubernamentales</li>
+                    </ul>
+                    <p>Si estás interesado en colaborar con nosotros, no dudes en contactarnos.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEWS PAGE-->
+        <div id="noticias" class="page">
+            <section class="hero-banner">
+                <div class="hero-content">
+                    <h1>Resumen Semanal</h1>
+                    <p>Análisis de medios digitales sobre cáncer de seno</p>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <div class="container">
+                    <h2 class="section-title">Resumen Semanal: Cobertura Global sobre Cáncer de Seno</h2>
+                    <p style="text-align: center; margin-top: -1rem; color: var(--dark-gray); font-size: 1rem;">
+                        Análisis automatizado de medios digitales en español e inglés – Semana 24 de 2025
+                    </p>
+
+                    <!-- Tarjetas resumen -->
+                    <div class="cards-grid" style="margin-top: 2rem;">
+                        <div class="info-card">
+                            <h3>Noticias Recolectadas</h3>
+                            <p><strong style="font-size: 1.8rem; color: var(--primary-blue);">134</strong></p>
+                        </div>
+                        <div class="info-card">
+                            <h3>Idioma Dominante</h3>
+                            <p><strong>Inglés (64%)</strong><br><span
+                                    style="color: var(--dark-gray); font-size: 0.9rem;">Español (36%)</span></p>
+                        </div>
+                        <div class="info-card">
+                            <h3>País Más Activo</h3>
+                            <p><strong>Estados Unidos</strong></p>
+                        </div>
+                        <div class="info-card">
+                            <h3>Medio Más Frecuente</h3>
+                            <p><strong>WebMD</strong></p>
+                        </div>
+                    </div>
+
+                    <!-- Gráficos -->
+                    <div class="cards-grid" style="margin-top: 3rem;">
+                        <div class="info-card">
+                            <h3>Distribución de Idiomas</h3>
+                            <img src="https://quickchart.io/chart?c={type:'pie',data:{labels:['Inglés','Español'],datasets:[{data:[64,36]}]}}"
+                                alt="Distribución por idioma"
+                                style="width: 100%; height: 260px; object-fit: contain; margin-top: 1rem;" />
+                        </div>
+                        <div class="info-card">
+                            <h3>Noticias por Día</h3>
+                            <img src="https://quickchart.io/chart?c={type:'bar',data:{labels:['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],datasets:[{label:'Noticias',data:[15,22,18,24,20,19,16]}]}}"
+                                alt="Gráfico semanal"
+                                style="width: 100%; height: 260px; object-fit: contain; margin-top: 1rem;" />
+                        </div>
+                    </div>
+
+                    <!-- Análisis generado por IA -->
+                    <div class="highlight-box" style="margin-top: 3rem;">
+                        <h3>Resumen Automatizado</h3>
+                        <p style="font-size: 1rem;">
+                            Esta semana se observó un aumento en las noticias relacionadas con prevención y diagnóstico
+                            temprano,
+                            especialmente en portales latinoamericanos. La cobertura tuvo un tono mayormente
+                            informativo, con un leve
+                            incremento en artículos de tono emocional.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            <section class="info-section">
+                <div class="container">
+                    <h2 class="section-title">Explorador Temático</h2>
+                    <p style="text-align: center; margin-top: -1rem; color: var(--dark-gray); font-size: 1rem;">
+                        Clasificación de noticias sobre cáncer de seno según enfoque principal
+                    </p>
+
+                    <!-- Filtros -->
+                    <div class="cards-grid"
+                        style="margin-top: 2rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                        <div class="info-card" style="padding: 1rem;">
+                            <label for="pais"
+                                style="font-size: 0.85rem; color: var(--dark-gray); font-weight: bold;">País</label>
+                            <select id="pais"
+                                style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc; margin-top: 0.5rem;">
+                                <option>Todos</option>
+                                <option>Colombia</option>
+                                <option>Estados Unidos</option>
+                                <option>España</option>
+                                <option>México</option>
+                            </select>
+                        </div>
+                        <div class="info-card" style="padding: 1rem;">
+                            <label for="idioma"
+                                style="font-size: 0.85rem; color: var(--dark-gray); font-weight: bold;">Idioma</label>
+                            <select id="idioma"
+                                style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc; margin-top: 0.5rem;">
+                                <option>Todos</option>
+                                <option>Español</option>
+                                <option>Inglés</option>
+                            </select>
+                        </div>
+                        <div class="info-card" style="padding: 1rem;">
+                            <label for="fecha"
+                                style="font-size: 0.85rem; color: var(--dark-gray); font-weight: bold;">Fecha</label>
+                            <input type="date" id="fecha"
+                                style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc; margin-top: 0.5rem;">
+                        </div>
+                        <div class="info-card" style="padding: 1rem; display: flex; align-items: flex-end;">
+                            <button
+                                style="background: var(--primary-blue); color: white; width: 100%; padding: 0.6rem 1rem; border-radius: 30px; font-weight: bold; border: none; cursor: pointer;">
+                                Aplicar filtros
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico de barras -->
+                    <div class="info-card" style="margin-top: 3rem;">
+                        <h3 style="color: var(--primary-blue); font-size: 1.3rem; margin-bottom: 1rem;">Temas abordados
+                            esta semana</h3>
+                        <img src="https://quickchart.io/chart?c={type:'bar',data:{labels:['Prevención','Tratamiento','Diagnóstico','Testimonios','Política pública','Investigación','Otros'],datasets:[{label:'Español',data:[12,9,8,5,6,4,3],backgroundColor:'rgba(99,102,241,0.7)'},{label:'Inglés',data:[18,15,13,7,10,6,5],backgroundColor:'rgba(16,185,129,0.7)'}]}}"
+                            alt="Gráfico de temas" style="width: 100%; height: 320px; object-fit: contain;" />
+                    </div>
+
+                    <!-- Resumen automatizado -->
+                    <div class="highlight-box" style="margin-top: 2rem;">
+                        <h3>Resumen Automatizado</h3>
+                        <p style="font-size: 1rem;">
+                            Esta semana, el tema más abordado en Colombia fue <strong>prevención</strong>, mientras que
+                            en Estados Unidos
+                            predominaron artículos sobre <strong>tratamiento e investigación</strong>. El interés en
+                            políticas públicas
+                            aumentó ligeramente en medios en español.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <div class="container">
+                    <h2 class="section-title">Análisis de Tono Informativo</h2>
+                    <p style="text-align: center; margin-top: -1rem; color: var(--dark-gray); font-size: 1rem;">
+                        Clasificación emocional de las noticias sobre cáncer de seno según PLN
+                    </p>
+
+                    <!-- Filtros -->
+                    <div class="cards-grid"
+                        style="margin-top: 2rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                        <div class="info-card" style="padding: 1rem;">
+                            <label for="pais-tono"
+                                style="font-size: 0.85rem; color: var(--dark-gray); font-weight: bold;">País</label>
+                            <select id="pais-tono"
+                                style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc; margin-top: 0.5rem;">
+                                <option>Todos</option>
+                                <option>Colombia</option>
+                                <option>Estados Unidos</option>
+                                <option>España</option>
+                                <option>México</option>
+                            </select>
+                        </div>
+                        <div class="info-card" style="padding: 1rem;">
+                            <label for="idioma-tono"
+                                style="font-size: 0.85rem; color: var(--dark-gray); font-weight: bold;">Idioma</label>
+                            <select id="idioma-tono"
+                                style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc; margin-top: 0.5rem;">
+                                <option>Todos</option>
+                                <option>Español</option>
+                                <option>Inglés</option>
+                            </select>
+                        </div>
+                        <div class="info-card" style="padding: 1rem;">
+                            <label for="fecha-tono"
+                                style="font-size: 0.85rem; color: var(--dark-gray); font-weight: bold;">Fecha</label>
+                            <input type="date" id="fecha-tono"
+                                style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc; margin-top: 0.5rem;">
+                        </div>
+                        <div class="info-card" style="padding: 1rem; display: flex; align-items: flex-end;">
+                            <button
+                                style="background: var(--primary-blue); color: white; width: 100%; padding: 0.6rem 1rem; border-radius: 30px; font-weight: bold; border: none; cursor: pointer;">
+                                Aplicar filtros
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico de pastel -->
+                    <div class="info-card" style="margin-top: 3rem;">
+                        <h3 style="color: var(--primary-blue); font-size: 1.3rem; margin-bottom: 1rem;">Distribución de
+                            Sentimientos</h3>
+                        <img src="https://quickchart.io/chart?c={type:'pie',data:{labels:['Positivo','Neutro','Negativo'],datasets:[{data:[28,53,19],backgroundColor:['rgba(16,185,129,0.8)','rgba(107,114,128,0.8)','rgba(124,58,237,0.8)']} ]}}"
+                            alt="Gráfico de sentimiento" style="width: 100%; height: 320px; object-fit: contain;" />
+                    </div>
+
+                    <!-- Línea temporal -->
+                    <div class="info-card" style="margin-top: 2rem;">
+                        <h3 style="color: var(--primary-blue); font-size: 1.3rem; margin-bottom: 1rem;">Evolución
+                            Semanal del Tono</h3>
+                        <img src="https://quickchart.io/chart?c={type:'line',data:{labels:['Sem 20','Sem 21','Sem 22','Sem 23','Sem 24'],datasets:[{label:'Positivo',data:[25,26,27,28,28],borderColor:'rgba(16,185,129,1)',fill:false},{label:'Negativo',data:[22,20,21,19,19],borderColor:'rgba(124,58,237,1)',fill:false},{label:'Neutro',data:[53,54,52,53,53],borderColor:'rgba(107,114,128,1)',fill:false}]},options:{plugins:{legend:{position:'bottom'}}}}"
+                            alt="Tendencia de sentimiento" style="width: 100%; height: 280px; object-fit: contain;" />
+                    </div>
+
+                    <!-- Resumen -->
+                    <div class="highlight-box" style="margin-top: 2rem;">
+                        <h3>Resumen Automatizado</h3>
+                        <p style="font-size: 1rem;">
+                            Se mantiene un tono mayoritariamente <strong>neutro</strong> (53%), con un
+                            ligero aumento en artículos <strong>positivos</strong> que destacan avances en
+                            investigación. Las publicaciones <strong>negativas</strong> disminuyeron tras la
+                            campaña de prevención de la semana pasada.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <div class="container">
+                    <h2 class="section-title">Mapa de Cobertura Internacional</h2>
+                    <p style="text-align: center; margin-top: -1rem; color: var(--dark-gray); font-size: 1rem;">
+                        Noticias sobre cáncer de seno por país según medios digitales en español e inglés
+                    </p>
+
+                    <!-- Filtros -->
+                    <div class="cards-grid"
+                        style="margin-top: 2rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                        <div class="info-card" style="padding: 1rem;">
+                            <label for="idioma-mapa"
+                                style="font-size: 0.85rem; color: var(--dark-gray); font-weight: bold;">Idioma</label>
+                            <select id="idioma-mapa"
+                                style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc; margin-top: 0.5rem;">
+                                <option>Todos</option>
+                                <option>Español</option>
+                                <option>Inglés</option>
+                            </select>
+                        </div>
+                        <div class="info-card" style="padding: 1rem;">
+                            <label for="categoria-mapa"
+                                style="font-size: 0.85rem; color: var(--dark-gray); font-weight: bold;">Categoría
+                                temática</label>
+                            <select id="categoria-mapa"
+                                style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc; margin-top: 0.5rem;">
+                                <option>Todos</option>
+                                <option>Prevención</option>
+                                <option>Tratamiento</option>
+                                <option>Testimonios</option>
+                                <option>Política pública</option>
+                            </select>
+                        </div>
+                        <div class="info-card" style="padding: 1rem;">
+                            <label for="semana-mapa"
+                                style="font-size: 0.85rem; color: var(--dark-gray); font-weight: bold;">Semana</label>
+                            <select id="semana-mapa"
+                                style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc; margin-top: 0.5rem;">
+                                <option>Semana 24</option>
+                                <option>Semana 23</option>
+                                <option>Semana 22</option>
+                            </select>
+                        </div>
+                        <div class="info-card" style="padding: 1rem; display: flex; align-items: flex-end;">
+                            <button
+                                style="background: var(--primary-blue); color: white; width: 100%; padding: 0.6rem 1rem; border-radius: 30px; font-weight: bold; border: none; cursor: pointer;">
+                                Aplicar filtros
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mapa -->
+                    <div class="info-card" style="margin-top: 3rem;">
+                        <h3 style="color: var(--primary-blue); font-size: 1.3rem; margin-bottom: 1rem;">Distribución
+                            geográfica de noticias</h3>
+                        <div id="map" style="width: 100%; height: 400px; border-radius: 15px; border: 1px solid #ddd;">
+                        </div>
+                        <p style="font-size: 0.8rem; color: var(--dark-gray); margin-top: 0.5rem;">*Haz clic en un
+                            círculo para detalles.*</p>
+                    </div>
+
+                    <!-- Leyenda -->
+                    <div class="highlight-box"
+                        style="margin-top: 2rem; background: var(--light-gray); color: var(--dark-gray);">
+                        <h3 style="color: var(--primary-blue); margin-bottom: 1rem;">Leyenda de Cobertura</h3>
+                        <ul style="display: flex; flex-wrap: wrap; gap: 2rem; font-size: 0.95rem;">
+                            <li style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span
+                                    style="width: 1rem; height: 1rem; border-radius: 50%; background: #dbeafe; border: 1px solid #ccc;"></span>
+                                Poca cobertura
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span
+                                    style="width: 1rem; height: 1rem; border-radius: 50%; background: #60a5fa; border: 1px solid #ccc;"></span>
+                                Cobertura media
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span
+                                    style="width: 1rem; height: 1rem; border-radius: 50%; background: #1d4ed8; border: 1px solid #ccc;"></span>
+                                Alta cobertura
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Resumen -->
+                    <div class="highlight-box" style="margin-top: 2rem;">
+                        <h3>Resumen Automatizado</h3>
+                        <p style="font-size: 1rem;">
+                            Durante la semana 24, <strong>Estados Unidos</strong> lideró en cantidad de noticias,
+                            seguido por
+                            <strong>México</strong> y <strong>Colombia</strong>. En Europa, se observó un repunte en
+                            <strong>España</strong>, con énfasis en prevención y política pública.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <div class="container">
+                    <h2 class="section-title">Noticias Destacadas</h2>
+                    <p style="text-align: center; margin-top: -1rem; color: var(--dark-gray); font-size: 1rem;">
+                        Filtra, ordena y accede al contenido original
+                    </p>
+
+                    <!-- Filtros -->
+                    <div class="cards-grid"
+                        style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-top: 2rem;">
+                        <input type="text" placeholder="Buscar por título o medio..."
+                            style="padding: 0.75rem; border-radius: 8px; border: 1px solid #ccc;" />
+                        <select style="padding: 0.75rem; border-radius: 8px; border: 1px solid #ccc;">
+                            <option>Todos los países</option>
+                            <option>Colombia</option>
+                            <option>EE.UU.</option>
+                            <option>España</option>
+                        </select>
+                        <select style="padding: 0.75rem; border-radius: 8px; border: 1px solid #ccc;">
+                            <option>Idioma</option>
+                            <option>Español</option>
+                            <option>Inglés</option>
+                        </select>
+                        <button
+                            style="background: var(--primary-blue); color: white; padding: 0.75rem; border-radius: 30px; font-weight: bold; border: none; cursor: pointer;">
+                            Aplicar filtros
+                        </button>
+                    </div>
+
+                    <!-- Tabla de noticias -->
+                    <div class="info-card" style="margin-top: 2rem; overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                            <thead
+                                style="background: var(--light-gray); color: var(--dark-gray); text-transform: uppercase; font-size: 0.8rem;">
+                                <tr>
+                                    <th style="padding: 0.75rem; text-align: left;">Título</th>
+                                    <th style="padding: 0.75rem;">País</th>
+                                    <th style="padding: 0.75rem;">Idioma</th>
+                                    <th style="padding: 0.75rem;">Fecha</th>
+                                    <th style="padding: 0.75rem;">Tema</th>
+                                    <th style="padding: 0.75rem;">Tono</th>
+                                    <th style="padding: 0.75rem; text-align: center;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody style="color: var(--dark-gray); border-top: 1px solid #eee;">
+                                <tr>
+                                    <td style="padding: 0.75rem;"><a href="https://webmd.com/article123" target="_blank"
+                                            style="color: var(--primary-blue); text-decoration: underline;">Avances en
+                                            prevención de cáncer de seno ↗</a></td>
+                                    <td style="padding: 0.75rem;">🇨🇴 Colombia</td>
+                                    <td style="padding: 0.75rem;">Español</td>
+                                    <td style="padding: 0.75rem;">10-06-2025</td>
+                                    <td style="padding: 0.75rem;"><span class="badge">Prevención</span></td>
+                                    <td style="padding: 0.75rem;"><span class="badge-neutral">Neutro</span></td>
+                                    <td style="padding: 0.75rem; text-align: center;"><button onclick="openModal()"
+                                            style="color: var(--primary-blue); text-decoration: underline;">Ver
+                                            resumen</button></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.75rem;"><a href="https://cnn.com/health/update-ai-screening"
+                                            target="_blank"
+                                            style="color: var(--primary-blue); text-decoration: underline;">IA mejora
+                                            diagnóstico temprano ↗</a></td>
+                                    <td style="padding: 0.75rem;">🇺🇸 EE.UU.</td>
+                                    <td style="padding: 0.75rem;">Inglés</td>
+                                    <td style="padding: 0.75rem;">09-06-2025</td>
+                                    <td style="padding: 0.75rem;"><span class="badge">Diagnóstico</span></td>
+                                    <td style="padding: 0.75rem;"><span class="badge-positive">Positivo</span></td>
+                                    <td style="padding: 0.75rem; text-align: center;"><button
+                                            style="color: var(--primary-blue); text-decoration: underline;">Ver
+                                            resumen</button></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.75rem;"><a
+                                            href="https://elpais.com/sociedad/reportaje-testimonios" target="_blank"
+                                            style="color: var(--primary-blue); text-decoration: underline;">Testimonios
+                                            conmueven redes sociales ↗</a></td>
+                                    <td style="padding: 0.75rem;">🇪🇸 España</td>
+                                    <td style="padding: 0.75rem;">Español</td>
+                                    <td style="padding: 0.75rem;">11-06-2025</td>
+                                    <td style="padding: 0.75rem;"><span class="badge">Testimonios</span></td>
+                                    <td style="padding: 0.75rem;"><span class="badge-negative">Negativo</span></td>
+                                    <td style="padding: 0.75rem; text-align: center;"><button
+                                            style="color: var(--primary-blue); text-decoration: underline;">Ver
+                                            resumen</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Modal simulado -->
+                    <div id="modal" class="hidden"
+                        style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 999;">
+                        <div
+                            style="background: white; border-radius: 15px; padding: 2rem; max-width: 600px; width: 90%;">
+                            <h3 style="font-size: 1.2rem; color: var(--primary-blue); margin-bottom: 1rem;">Avances en
+                                prevención de cáncer de seno</h3>
+                            <div style="margin-bottom: 1rem;">
+                                <span class="badge">Prevención</span>
+                                <span class="badge-neutral">Neutro</span>
+                                <span class="badge-positive">🇨🇴 Español</span>
+                            </div>
+                            <p style="font-size: 0.95rem; color: var(--dark-gray); margin-bottom: 1.5rem;">
+                                Esta noticia destaca campañas recientes enfocadas en detección temprana en comunidades
+                                rurales de Colombia. El
+                                enfoque es informativo y se sustenta en declaraciones de autoridades sanitarias y
+                                testimonios de pacientes.
+                            </p>
+                            <div style="display: flex; justify-content: space-between;">
+                                <a href="https://webmd.com/article123" target="_blank"
+                                    style="color: var(--primary-blue); text-decoration: underline;">Abrir artículo
+                                    original ↗</a>
+                                <button onclick="closeModal()"
+                                    style="background: #ddd; border: none; padding: 0.5rem 1rem; border-radius: 10px;">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <div class="container">
+                    <h2 class="section-title">Exportación y Reportes</h2>
+                    <p style="text-align: center; margin-top: -1rem; color: var(--dark-gray); font-size: 1rem;">
+                        Descarga datos, gráficos o informes automatizados del análisis semanal
+                    </p>
+
+                    <!-- Tarjetas de exportación -->
+                    <div class="cards-grid"
+                        style="margin-top: 2rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                        <!-- CSV/XLSX -->
+                        <div class="info-card">
+                            <h3>Tabla de Noticias</h3>
+                            <p>Exporta las noticias filtradas para análisis en hoja de cálculo.</p>
+                            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                                <button onclick="simulateExport('CSV')" class="cta-button" style="flex: 1;">CSV</button>
+                                <button onclick="simulateExport('XLSX')" class="cta-button"
+                                    style="flex: 1;">XLSX</button>
+                            </div>
+                        </div>
+
+                        <!-- Gráficos -->
+                        <div class="info-card">
+                            <h3>Gráficos</h3>
+                            <p>Descarga las visualizaciones clave (temas, tono, mapa).</p>
+                            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                                <button onclick="simulateExport('PNG')" class="cta-button" style="flex: 1;">PNG</button>
+                                <button onclick="simulateExport('SVG')" class="cta-button" style="flex: 1;">SVG</button>
+                            </div>
+                        </div>
+
+                        <!-- PDF -->
+                        <div class="info-card">
+                            <h3>Informe PDF</h3>
+                            <p>Genera un informe semanal con resumen IA, gráficos y hallazgos.</p>
+                            <button onclick="simulateExport('PDF')" class="cta-button"
+                                style="margin-top: 1rem; width: 100%;">Generar PDF</button>
+                        </div>
+                    </div>
+
+                    <!-- Opciones avanzadas -->
+                    <div class="info-card" style="margin-top: 2rem; padding: 0;">
+                        <button onclick="toggleAdvanced()"
+                            style="width: 100%; padding: 1rem 1.5rem; background: transparent; border: none; font-weight: bold; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; color: var(--dark-gray);">
+                            Opciones avanzadas
+                            <span id="arrow" style="display: inline-block; transition: transform 0.3s;">▼</span>
+                        </button>
+                        <div id="advancedPanel" class="hidden"
+                            style="border-top: 1px solid #eee; padding: 1rem 1.5rem;">
+                            <div class="cards-grid"
+                                style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                                <div>
+                                    <label style="font-size: 0.8rem; color: var(--dark-gray); font-weight: bold;">Rango
+                                        de Fechas</label>
+                                    <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                                        <input type="date"
+                                            style="flex: 1; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc;" />
+                                        <input type="date"
+                                            style="flex: 1; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc;" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label
+                                        style="font-size: 0.8rem; color: var(--dark-gray); font-weight: bold;">Filtros
+                                        Activos</label>
+                                    <input type="text" disabled value="País: Colombia · Idioma: Español"
+                                        style="margin-top: 0.5rem; width: 100%; padding: 0.5rem; background: #f0f0f0; border: 1px solid #ddd; border-radius: 8px;" />
+                                </div>
+                                <div>
+                                    <label
+                                        style="font-size: 0.8rem; color: var(--dark-gray); font-weight: bold;">Incluir
+                                        resúmenes IA</label>
+                                    <select
+                                        style="margin-top: 0.5rem; width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc;">
+                                        <option>Sí</option>
+                                        <option>No</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Indicador de progreso -->
+                    <div id="progressBox"
+                        style="display: none; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 1rem; margin-top: 1rem; align-items: center; gap: 1rem;">
+                        <span id="progressText" style="color: #1d4ed8; font-size: 0.95rem;">Generando archivo...</span>
+                        <div id="progressSpinner"
+                            style="width: 20px; height: 20px; border: 2px solid #4a90e2; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;">
+                        </div>
+                    </div>
+
+                    <!-- Historial -->
+                    <div class="info-card" style="margin-top: 2rem;">
+                        <h3 style="margin-bottom: 1rem; color: var(--primary-blue); font-size: 1.2rem;">Historial de
+                            Exportaciones Recientes</h3>
+                        <ul style="list-style: none; padding-left: 0;">
+                            <li style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Informe_PDF_Sem24.pdf (hace 1 h)</span>
+                                <a href="#" style="color: var(--primary-blue); text-decoration: underline;">Descargar
+                                    ↗</a>
+                            </li>
+                            <li style="display: flex; justify-content: space-between;">
+                                <span>Noticias_Colombia_Sem24.csv (ayer)</span>
+                                <a href="#" style="color: var(--primary-blue); text-decoration: underline;">Descargar
+                                    ↗</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>PreventIA</h3>
+                <p>Proyecto de investigación dedicado a la aplicación de inteligencia artificial para la prevención y
+                    detección temprana del cáncer de seno.</p>
+                <div class="social-links">
+                    <a href="javascript:void(0)" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="javascript:void(0)" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="javascript:void(0)" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="javascript:void(0)" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul>
+                    <li><a href="javascript:void(0)" onclick="showPage('home')">Inicio</a></li>
+                    <li><a href="javascript:void(0)" onclick="showPage('about')">Sobre el Cáncer</a></li>
+                    <li><a href="javascript:void(0)" onclick="showPage('prevention')">Prevención</a></li>
+                    <li><a href="javascript:void(0)" onclick="showPage('self-exam')">Autoexamen</a></li>
+                    <li><a href="javascript:void(0)" onclick="showPage('institutions')">Instituciones</a></li>
+                    <li><a href="javascript:void(0)" onclick="showPage('project')">Proyecto</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Líneas de Emergencia</h3>
+                <ul>
+                    <li><a href="tel:123">123 - Emergencias</a></li>
+                    <li><a href="tel:018000423000">Liga Contra el Cáncer: 01-8000-423-000</a></li>
+                    <li><a href="tel:018000113012">Apoyo Emocional: 01-8000-113-012</a></li>
+                    <li><a href="tel:018000951097">Información EPS: 01-8000-951-097</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> info@preventia.org</li>
+                    <li><i class="fas fa-phone"></i> 601 338 06 66</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Fundación Universitaria Compensar</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Avenida (Calle) 32 No. 17 – 30, Bogotá</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 PreventIA. Todos los derechos reservados. | Desarrollado con tecnología e investigación
+                colombiana.</p>
+            <p>Este proyecto está respaldado por la Fundación Universitaria Compensar.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation functionality
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const indicators = document.querySelectorAll('.indicator');
+
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+
+            // Update navigation - remove active from all links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Add active class to the corresponding nav item
+            const activeLink = document.querySelector(`[onclick="showPage('${pageId}')"]`);
+            if (activeLink && activeLink.classList.contains('nav-link')) {
+                activeLink.classList.add('active');
+            }
+
+            // Close mobile menu if open
+            const nav = document.getElementById('nav-menu');
+            nav.classList.remove('active');
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function toggleMenu() {
+            const nav = document.getElementById('nav-menu');
+            nav.classList.toggle('active');
+        }
+
+        // Carousel functionality
+        function showSlide(n) {
+            if (n >= slides.length) currentSlide = 0;
+            if (n < 0) currentSlide = slides.length - 1;
+
+            const carousel = document.getElementById('carousel');
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            // Update indicators
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        function currentSlideIndicator(n) {
+            currentSlide = n - 1;
+            showSlide(currentSlide);
+        }
+
+        // Auto-advance carousel
+        setInterval(nextSlide, 5000);
+
+        // Form submission
+        function submitForm(event) {
+            event.preventDefault();
+
+            // Get form data
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+
+            // Here you would typically send the data to a server
+            // For demo purposes, we'll just show an alert
+            alert('¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.');
+
+            // Reset form
+            event.target.reset();
+        }
+
+        // Smooth scrolling for anchor links (only for valid anchors)
+        document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                if (href && href !== '#') {
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Add scroll effect to navbar
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', function () {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const header = document.querySelector('header');
+
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                // Scrolling down
+                header.style.transform = 'translateY(-100%)';
+            } else {
+                // Scrolling up
+                header.style.transform = 'translateY(0)';
+            }
+            lastScrollTop = scrollTop;
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function (entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards and sections
+        document.querySelectorAll('.info-card, .progress-item, .partner-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            showSlide(0);
+        });
+
+        // Add styles for form
+        const style = document.createElement('style');
+        style.textContent = `
+            .contact-form {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 2rem;
+                background: var(--light-gray);
+                border-radius: 15px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: bold;
+                color: var(--primary-blue);
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                width: 100%;
+                padding: 0.75rem;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                font-size: 1rem;
+                transition: border-color 0.3s ease;
+            }
+
+            .form-group input:focus,
+            .form-group select:focus,
+            .form-group textarea:focus {
+                outline: none;
+                border-color: var(--primary-blue);
+                box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+            }
+
+            .form-group textarea {
+                resize: vertical;
+                min-height: 100px;
+            }
+
+            .contact-form .cta-button {
+                width: 100%;
+                margin-top: 1rem;
+                padding: 1rem;
+                font-size: 1.1rem;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    <script>
+        const map = L.map('map').setView([20, 0], 2);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap & Leaflet'
+        }).addTo(map);
+
+        const coverageData = [
+            { country: 'Estados Unidos', lat: 37.8, lon: -96, total: 120, idioma: 'Inglés', tono: 'Neutro' },
+            { country: 'México', lat: 23.6, lon: -102, total: 60, idioma: 'Español', tono: 'Positivo' },
+            { country: 'Colombia', lat: 4.6, lon: -74, total: 45, idioma: 'Español', tono: 'Neutro' },
+            { country: 'España', lat: 40.5, lon: -3.7, total: 32, idioma: 'Español', tono: 'Positivo' }
+        ];
+
+        const maxTotal = Math.max(...coverageData.map(d => d.total));
+        const scaleRadius = val => 10 + (val / maxTotal) * 40;
+
+        coverageData.forEach(d => {
+            L.circle([d.lat, d.lon], {
+                radius: scaleRadius(d.total) * 10000,
+                color: '#3b82f6',
+                fillColor: '#3b82f6',
+                fillOpacity: 0.5,
+                weight: 1
+            })
+                .addTo(map)
+                .bindPopup(`<strong>${d.country}</strong><br/>
+                Noticias: ${d.total}<br/>
+                Idioma predominante: ${d.idioma}<br/>
+                Tono predominante: ${d.tono}`);
+        });
+    </script>
+    <script>
+        function openModal() {
+            const modal = document.getElementById('modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        }
+
+        // Cerrar si se hace clic fuera del contenido
+        window.addEventListener('click', function (event) {
+            const modal = document.getElementById('modal');
+            if (modal && !modal.classList.contains('hidden') && event.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+
+    <script>
+        function simulateExport(type) {
+            const box = document.getElementById('progressBox');
+            const text = document.getElementById('progressText');
+
+            // Reset styles
+            box.style.display = 'flex';
+            box.style.backgroundColor = '#eff6ff'; // azul claro
+            box.style.borderColor = '#bfdbfe';
+            text.style.color = '#1d4ed8';
+            text.textContent = `Generando archivo ${type}...`;
+
+            // Después de 3 segundos simula descarga
+            setTimeout(() => {
+                text.textContent = `¡${type} listo para descargar!`;
+                box.style.backgroundColor = '#ecfdf5'; // verde claro
+                box.style.borderColor = '#bbf7d0';
+                text.style.color = '#047857';
+
+                // Ocultar luego de 5 segundos más (opcional)
+                setTimeout(() => {
+                    box.style.display = 'none';
+                }, 5000);
+            }, 3000);
+        }
+
+        function toggleAdvanced() {
+            const panel = document.getElementById('advancedPanel');
+            const arrow = document.getElementById('arrow');
+
+            const isVisible = panel && !panel.classList.contains('hidden');
+            if (isVisible) {
+                panel.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                panel.classList.remove('hidden');
+                arrow.style.transform = 'rotate(180deg)';
+            }
+        }
+    </script>
+
+</body>
+
+</html>

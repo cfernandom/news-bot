@@ -8,6 +8,7 @@
 |--------------|-------------|------------|----------|
 | 🔧 **Development** | [`development.md`](./development.md) | 30-60 sec | Features, APIs, coding, debugging |
 | 🎓 **Academic Products** | [`academic.md`](./academic.md) | 30-60 sec | Reports, books, rigorous documentation |
+| 🎨 **UX/UI Design** | [`ux-ui-design.md`](./ux-ui-design.md) | 30-60 sec | Interface design, user experience, medical UX |
 | 🐛 **Quick Debugging** | [`debugging.md`](./debugging.md) | 30-60 sec | Urgent bugs, specific fixes |
 | ⚡ **Quick Commands** | [`quick-commands.md`](./quick-commands.md) | 10-30 sec | One-liner frequent scenarios |
 
@@ -32,6 +33,11 @@
 "Cristhian, PreventIA dev session. Implementing FastAPI endpoints for sentiment analytics. Need architecture guidance."
 ```
 
+**UX/UI Design:**
+```
+"Cristhian, diseñar dashboard React PreventIA. Users: oncólogos + investigadores. Data: 106 articles + sentiment analysis. Need medical-grade UX."
+```
+
 **Bug Fix:**
 ```
 "Cristhian, PreventIA bug: [ERROR]. Component: [MODULE]. Priority: HIGH. Need quick fix."
@@ -48,10 +54,12 @@
 |----------|-------------------|------|
 | **Major feature development** | `development.md` | 60 sec |
 | **Academic report/book** | `academic.md` | 60 sec |
+| **Dashboard/UI design** | `ux-ui-design.md` | 60 sec |
 | **Specific bug/error** | `debugging.md` | 30 sec |
 | **Quick questions** | `quick-commands.md` | 10 sec |
 | **Code review** | Quick command | 15 sec |
 | **Architecture planning** | `development.md` | 60 sec |
+| **Medical UX research** | `ux-ui-design.md` | 60 sec |
 
 ## 📋 **What's Included in Each Prompt**
 

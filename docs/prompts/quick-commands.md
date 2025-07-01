@@ -16,6 +16,11 @@
 "Cristhian, building React dashboard for PreventIA sentiment data visualization. Need component architecture for charts and real-time updates."
 ```
 
+### **UX/UI Design Session**
+```
+"Cristhian, diseñar dashboard médico PreventIA. Users: oncólogos + investigadores UCOMPENSAR. Data: 106 articles con sentiment. Need medical-grade UX design."
+```
+
 ### **Database Optimization**
 ```
 "Cristhian, PreventIA database performance issues. Need to optimize PostgreSQL queries for analytics dashboard with 106 articles growing to thousands."
