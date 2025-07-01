@@ -9,7 +9,7 @@ import os
 import sys
 from datetime import datetime
 
-from test_scraper_framework import ScraperTestFramework, run_scraper_test
+from .test_scraper_framework import ScraperTestFramework, run_scraper_test
 
 # Setup paths
 sys.path.append(
@@ -96,11 +96,10 @@ class WebMDTest(ScraperTestFramework):
             self.test_results["specific_tests"] = {
                 "status": "success",
                 "date_parsing_quality": (
-                    date_check["recent_dates"] / date_check["total"]
-                )
-                * 100
-                if date_check["total"] > 0
-                else 0,
+                    (date_check["recent_dates"] / date_check["total"]) * 100
+                    if date_check["total"] > 0
+                    else 0
+                ),
                 "expected_domain": "webmd.com",
             }
             print(
@@ -138,11 +137,11 @@ class CureTodayTest(ScraperTestFramework):
             self.test_results["specific_tests"] = {
                 "status": "success",
                 "summary_quality": (
-                    content_check["with_quality_summary"] / content_check["total"]
-                )
-                * 100
-                if content_check["total"] > 0
-                else 0,
+                    (content_check["with_quality_summary"] / content_check["total"])
+                    * 100
+                    if content_check["total"] > 0
+                    else 0
+                ),
                 "expected_domain": "curetoday.com",
             }
             print(
@@ -182,19 +181,23 @@ class NewsMedicalTest(ScraperTestFramework):
                 "status": "success",
                 "metadata_consistency": {
                     "country_accuracy": (
-                        consistency_check["correct_country"]
-                        / consistency_check["total"]
-                    )
-                    * 100
-                    if consistency_check["total"] > 0
-                    else 0,
+                        (
+                            consistency_check["correct_country"]
+                            / consistency_check["total"]
+                        )
+                        * 100
+                        if consistency_check["total"] > 0
+                        else 0
+                    ),
                     "language_accuracy": (
-                        consistency_check["correct_language"]
-                        / consistency_check["total"]
-                    )
-                    * 100
-                    if consistency_check["total"] > 0
-                    else 0,
+                        (
+                            consistency_check["correct_language"]
+                            / consistency_check["total"]
+                        )
+                        * 100
+                        if consistency_check["total"] > 0
+                        else 0
+                    ),
                 },
                 "expected_domain": "news-medical.net",
             }

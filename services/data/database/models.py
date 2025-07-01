@@ -7,7 +7,7 @@ from datetime import date, datetime
 from enum import Enum
 from typing import Any, Dict, Generic, List, Optional, TypeVar
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import (
     JSON,
     Boolean,
@@ -21,8 +21,7 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
 )
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
@@ -242,8 +241,7 @@ class NewsSourceResponse(NewsSourceBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ArticleBase(BaseModel):
@@ -287,8 +285,7 @@ class ArticleResponse(ArticleBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class KeywordCreate(BaseModel):
@@ -305,8 +302,7 @@ class KeywordResponse(BaseModel):
     keyword_type: KeywordType
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class WeeklyAnalyticsResponse(BaseModel):
@@ -327,8 +323,7 @@ class WeeklyAnalyticsResponse(BaseModel):
     generated_at: datetime
     articles_processed: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Analytics schemas for complex queries (used with raw SQL)
