@@ -5,7 +5,7 @@
 repos:
   # Basic file hygiene and common issues (optimized)
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
         description: Remove trailing whitespace
@@ -21,30 +21,19 @@ repos:
       - id: mixed-line-ending
         description: Check for mixed line endings
 
-  # Conventional commit message validation
-  - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v3.0.0
+  # Conventional commit message validation (reliable local implementation)
+  - repo: local
     hooks:
-      - id: conventional-pre-commit
+      - id: conventional-commit-local
+        name: Conventional Commit Format Check
+        entry: python scripts/check_conventional_commit.py
+        language: system
         stages: [commit-msg]
-        description: Validate conventional commit messages
-        args:
-          - feat      # New features
-          - fix       # Bug fixes
-          - docs      # Documentation changes
-          - style     # Code style changes
-          - refactor  # Code refactoring
-          - test      # Test additions/changes
-          - chore     # Maintenance tasks
-          - migration # Database migrations
-          - scraper   # Web scraper changes
-          - nlp       # NLP/AI related changes
-          - analytics # Analytics/dashboard changes
-          - legal     # Legal compliance changes
+        pass_filenames: true
 
   # Python code formatting with Black
   - repo: https://github.com/psf/black
-    rev: 23.9.1
+    rev: 25.1.0
     hooks:
       - id: black
         description: Format Python code with Black
@@ -53,7 +42,7 @@ repos:
 
   # Import sorting with isort (compatible with Black) - CORRECTED
   - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
+    rev: 6.0.1
     hooks:
       - id: isort
         description: Sort Python imports
@@ -61,7 +50,7 @@ repos:
 
   # Python linting with flake8
   - repo: https://github.com/pycqa/flake8
-    rev: 6.1.0
+    rev: 7.3.0
     hooks:
       - id: flake8
         description: Python linting with flake8
@@ -72,7 +61,7 @@ repos:
 
   # Security scanning with gitleaks
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.18.0
+    rev: v8.27.2
     hooks:
       - id: gitleaks
         description: Scan for secrets and sensitive data
