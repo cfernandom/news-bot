@@ -154,7 +154,7 @@ async def scrape_news_medical_to_postgres() -> List[int]:
                 date,
                 current_time,
                 "en",
-                "International",
+                "Global",
                 "pending",
                 content_hash,
                 word_count,
