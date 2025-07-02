@@ -43,7 +43,7 @@ const MedicalTooltip = ({ active, payload }: TooltipProps) => {
     return (
       <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm">
         <h4 className="font-semibold text-gray-900 mb-2">
-          Sentimiento: {data.sentiment === 'positive' ? 'Positivo' : 
+          Sentimiento: {data.sentiment === 'positive' ? 'Positivo' :
                       data.sentiment === 'negative' ? 'Negativo' : 'Neutro'}
         </h4>
         <div className="space-y-1 text-sm">
@@ -75,7 +75,7 @@ const EducationalExplanation = ({ isVisible, onToggle }: { isVisible: boolean; o
       <span>{isVisible ? '📖' : '💡'}</span>
       {isVisible ? 'Ocultar explicación' : '¿Qué significa esto?'}
     </button>
-    
+
     {isVisible && (
       <div className="mt-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
         <h4 className="font-semibold text-blue-900 mb-2">
@@ -83,11 +83,11 @@ const EducationalExplanation = ({ isVisible, onToggle }: { isVisible: boolean; o
         </h4>
         <div className="text-sm text-blue-800 space-y-2">
           <p>
-            <strong>¿Qué es?</strong> Una técnica que usa inteligencia artificial para identificar 
+            <strong>¿Qué es?</strong> Una técnica que usa inteligencia artificial para identificar
             si una noticia médica transmite emociones positivas, negativas o neutrales.
           </p>
           <p>
-            <strong>¿Por qué importa?</strong> Nos ayuda a entender cómo se comunica la información 
+            <strong>¿Por qué importa?</strong> Nos ayuda a entender cómo se comunica la información
             sobre cáncer de mama y su posible impacto emocional en pacientes y familias.
           </p>
           <div className="mt-3 space-y-1">
@@ -114,7 +114,7 @@ const EducationalExplanation = ({ isVisible, onToggle }: { isVisible: boolean; o
 const ProfessionalStats = ({ data }: { data: SentimentData[] }) => {
   const total = data.reduce((sum, item) => sum + item.value, 0);
   const negativeRatio = data.find(d => d.sentiment === 'negative')?.percentage || 0;
-  
+
   return (
     <div className="mt-4 p-4 bg-gray-50 rounded-lg border">
       <h4 className="font-semibold text-gray-900 mb-3">📈 Análisis Estadístico</h4>
@@ -131,7 +131,7 @@ const ProfessionalStats = ({ data }: { data: SentimentData[] }) => {
         </div>
         <div className="col-span-2">
           <p className="text-gray-600 text-xs">
-            <strong>Interpretación médica:</strong> El {negativeRatio}% de sentimiento negativo 
+            <strong>Interpretación médica:</strong> El {negativeRatio}% de sentimiento negativo
             puede reflejar la naturaleza seria del tema de cáncer de mama en medios de comunicación.
           </p>
         </div>
@@ -142,9 +142,9 @@ const ProfessionalStats = ({ data }: { data: SentimentData[] }) => {
 
 // Custom legend for medical context
 interface LegendProps {
-  payload?: Array<{ 
-    value: string; 
-    color: string; 
+  payload?: Array<{
+    value: string;
+    color: string;
     payload?: SentimentData;
   }>;
 }
@@ -154,8 +154,8 @@ const MedicalLegend = ({ payload }: LegendProps) => (
     <div className="flex flex-wrap gap-4 text-sm">
       {payload?.map((entry, index: number) => (
         <div key={index} className="flex items-center gap-2">
-          <div 
-            className="w-3 h-3 rounded-full" 
+          <div
+            className="w-3 h-3 rounded-full"
             style={{ backgroundColor: entry.color }}
           />
           <span className="font-medium">
@@ -171,10 +171,10 @@ const MedicalLegend = ({ payload }: LegendProps) => (
   </div>
 );
 
-export const SentimentChart: React.FC<SentimentChartProps> = ({ 
-  data, 
-  loading = false, 
-  className = '' 
+export const SentimentChart: React.FC<SentimentChartProps> = ({
+  data,
+  loading = false,
+  className = ''
 }) => {
   const { mode } = useDualMode();
   const [showExplanation, setShowExplanation] = useState(false);
@@ -211,21 +211,21 @@ export const SentimentChart: React.FC<SentimentChartProps> = ({
             {isEducational ? '😊 Sentimientos en Noticias Médicas' : '📊 Análisis de Sentimiento'}
           </h3>
           <p className="text-sm text-gray-600 mt-1">
-            {isEducational 
+            {isEducational
               ? 'Cómo se sienten las noticias sobre cáncer de mama'
               : 'Distribución emocional en literatura médica analizada'
             }
           </p>
         </div>
-        
+
         {/* View toggle for professional mode */}
         {!isEducational && (
           <div className="flex bg-gray-100 rounded-lg p-1">
             <button
               onClick={() => setViewType('pie')}
               className={`px-3 py-1 text-sm rounded ${
-                viewType === 'pie' 
-                  ? 'bg-white shadow text-gray-900' 
+                viewType === 'pie'
+                  ? 'bg-white shadow text-gray-900'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -234,8 +234,8 @@ export const SentimentChart: React.FC<SentimentChartProps> = ({
             <button
               onClick={() => setViewType('bar')}
               className={`px-3 py-1 text-sm rounded ${
-                viewType === 'bar' 
-                  ? 'bg-white shadow text-gray-900' 
+                viewType === 'bar'
+                  ? 'bg-white shadow text-gray-900'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -261,9 +261,9 @@ export const SentimentChart: React.FC<SentimentChartProps> = ({
                 nameKey="sentiment"
               >
                 {data.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={MEDICAL_COLORS[entry.sentiment as keyof typeof MEDICAL_COLORS]} 
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={MEDICAL_COLORS[entry.sentiment as keyof typeof MEDICAL_COLORS]}
                   />
                 ))}
               </Pie>
@@ -273,24 +273,24 @@ export const SentimentChart: React.FC<SentimentChartProps> = ({
           ) : (
             <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
-              <XAxis 
-                dataKey="sentiment" 
+              <XAxis
+                dataKey="sentiment"
                 tick={{ fontSize: 12 }}
-                tickFormatter={(value) => 
+                tickFormatter={(value) =>
                   value === 'positive' ? 'Positivo' :
                   value === 'negative' ? 'Negativo' : 'Neutro'
                 }
               />
               <YAxis tick={{ fontSize: 12 }} />
               <Tooltip content={<MedicalTooltip />} />
-              <Bar 
-                dataKey="value" 
+              <Bar
+                dataKey="value"
                 radius={[4, 4, 0, 0]}
               >
                 {data.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={MEDICAL_COLORS[entry.sentiment as keyof typeof MEDICAL_COLORS]} 
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={MEDICAL_COLORS[entry.sentiment as keyof typeof MEDICAL_COLORS]}
                   />
                 ))}
               </Bar>
@@ -301,9 +301,9 @@ export const SentimentChart: React.FC<SentimentChartProps> = ({
 
       {/* Mode-specific content */}
       {isEducational ? (
-        <EducationalExplanation 
-          isVisible={showExplanation} 
-          onToggle={() => setShowExplanation(!showExplanation)} 
+        <EducationalExplanation
+          isVisible={showExplanation}
+          onToggle={() => setShowExplanation(!showExplanation)}
         />
       ) : (
         <ProfessionalStats data={data} />

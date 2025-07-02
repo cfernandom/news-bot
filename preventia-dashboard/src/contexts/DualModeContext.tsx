@@ -141,7 +141,7 @@ export const DualModeProvider: React.FC<DualModeProviderProps> = ({
       ...prev,
       ...newPreferences,
       // Handle nested objects specifically
-      accessibility: newPreferences.accessibility 
+      accessibility: newPreferences.accessibility
         ? { ...prev.accessibility, ...newPreferences.accessibility }
         : prev.accessibility,
       professional: newPreferences.professional
