@@ -26,7 +26,7 @@ router = APIRouter(prefix="/articles", tags=["articles"])
 @router.get("/", response_model=PaginatedResponse[ArticleResponse])
 async def get_articles(
     page: int = Query(1, ge=1, description="Page number"),
-    size: int = Query(20, ge=1, le=100, description="Items per page"),
+    size: int = Query(20, ge=1, le=200, description="Items per page"),
     source: Optional[str] = Query(None, description="Filter by news source"),
     sentiment: Optional[str] = Query(
         None, description="Filter by sentiment (positive/negative/neutral)"
@@ -97,7 +97,7 @@ async def get_article(article_id: int, db: AsyncSession = Depends(get_db_session
 async def search_articles(
     q: str = Query(..., description="Search query"),
     page: int = Query(1, ge=1, description="Page number"),
-    size: int = Query(20, ge=1, le=100, description="Items per page"),
+    size: int = Query(20, ge=1, le=200, description="Items per page"),
     db: AsyncSession = Depends(get_db_session),
 ):
     """Search articles by title, summary, or content."""
