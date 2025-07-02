@@ -133,24 +133,60 @@ export class MedicalApiClient {
   // Core analytics summary for medical dashboard
   async getAnalyticsSummary(): Promise<AnalyticsSummary> {
     try {
-      const response = await this.client.get<ApiAnalyticsResponse>('/api/analytics/dashboard');
-      const data = response.data;
+      // Get dashboard data and articles to calculate missing fields
+      const [dashboardResponse, articlesResponse] = await Promise.all([
+        this.client.get<ApiAnalyticsResponse>('/api/analytics/dashboard'),
+        this.client.get<ApiArticlesResponse>('/api/articles/?size=200')
+      ]);
+
+      const dashboardData = dashboardResponse.data;
+      const articles = articlesResponse.data.items || [];
+
+      // Calculate language distribution from articles
+      const languageCount = articles.reduce((acc: Record<string, number>, article: any) => {
+        const lang = article.language === 'es' ? 'spanish' : 'english';
+        acc[lang] = (acc[lang] || 0) + 1;
+        return acc;
+      }, {});
+
+      // Calculate top country and source from articles
+      const countryCount = articles.reduce((acc: Record<string, number>, article: any) => {
+        const country = article.country || 'Unknown';
+        acc[country] = (acc[country] || 0) + 1;
+        return acc;
+      }, {});
+
+      const sourceCount = articles.reduce((acc: Record<string, number>, article: any) => {
+        const sourceName = article.source?.name || 'Unknown';
+        acc[sourceName] = (acc[sourceName] || 0) + 1;
+        return acc;
+      }, {});
+
+      const topCountry = Object.entries(countryCount)
+        .filter(([country]) => country !== 'Global' && country !== 'Unknown')
+        .sort(([,a], [,b]) => (b as number) - (a as number))[0]?.[0] || 'N/A';
+
+      const topSource = Object.entries(sourceCount)
+        .sort(([,a], [,b]) => (b as number) - (a as number))[0]?.[0] || 'N/A';
+
+      // Calculate total language articles for percentage
+      const totalLanguageArticles = (languageCount.spanish || 0) + (languageCount.english || 0);
 
       return {
-        totalArticles: data.total_articles || 0,
-        totalSources: data.total_sources || 0,
+        totalArticles: dashboardData.total_articles || articles.length,
+        totalSources: dashboardData.total_sources || Object.keys(sourceCount).length,
         languageDistribution: {
-          español: data.language_distribution?.spanish || 0,
-          inglés: data.language_distribution?.english || 0,
+          español: totalLanguageArticles > 0 ? Math.round(((languageCount.spanish || 0) / totalLanguageArticles) * 100) : 0,
+          inglés: totalLanguageArticles > 0 ? Math.round(((languageCount.english || 0) / totalLanguageArticles) * 100) : 0,
         },
         sentimentDistribution: {
-          positive: data.sentiment_distribution?.positive || 0,
-          negative: data.sentiment_distribution?.negative || 0,
-          neutral: data.sentiment_distribution?.neutral || 0,
+          positive: dashboardData.sentiment_distribution?.positive || 0,
+          negative: dashboardData.sentiment_distribution?.negative || 0,
+          neutral: dashboardData.sentiment_distribution?.neutral || 0,
         },
-        topCountry: data.top_country || 'N/A',
-        topSource: data.top_source || 'N/A',
-        lastUpdated: data.last_updated || new Date().toISOString(),
+        topCountry,
+        topSource,
+        lastUpdated: new Date().toISOString(),
       };
     } catch (error) {
       throw this.handleMedicalError(error);
@@ -260,8 +296,8 @@ export class MedicalApiClient {
   // Articles retrieval with medical filtering
   async getArticles(filters: MedicalFilters = {}): Promise<PaginatedArticles> {
     try {
-      // Use the articles/ endpoint instead of search/ for listing all articles
-      const response = await this.client.get<ApiArticlesResponse>('/api/articles/');
+      // Use the articles/ endpoint with size=200 to get all articles
+      const response = await this.client.get<ApiArticlesResponse>('/api/articles/?size=200');
 
       // The API returns { items: [...] } format
       const items = response.data.items || [];
