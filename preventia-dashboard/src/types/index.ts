@@ -287,4 +287,4 @@ export interface ThemeConfig {
 }
 
 // Export all types
-export type * from 'react';
+// Note: React types imported directly where needed

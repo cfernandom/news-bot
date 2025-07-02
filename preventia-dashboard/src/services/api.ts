@@ -174,19 +174,19 @@ export class MedicalApiClient {
 
       return [
         {
-          sentiment: 'positive',
+          sentiment: 'positive' as const,
           value: distribution.positive || 0,
           percentage: Math.round(((distribution.positive || 0) / total) * 100),
           color: '#10b981' // Medical green
         },
         {
-          sentiment: 'negative',
+          sentiment: 'negative' as const,
           value: distribution.negative || 0,
           percentage: Math.round(((distribution.negative || 0) / total) * 100),
           color: '#ef4444' // Medical red
         },
         {
-          sentiment: 'neutral',
+          sentiment: 'neutral' as const,
           value: distribution.neutral || 0,
           percentage: Math.round(((distribution.neutral || 0) / total) * 100),
           color: '#6b7280' // Medical gray
@@ -267,7 +267,7 @@ export class MedicalApiClient {
       const items = response.data.items || [];
 
       return {
-        articles: items.map(this.transformArticle),
+        articles: items.map((item: unknown) => this.transformArticle(item as Record<string, unknown>)),
         total: items.length,
         page: 1,
         limit: items.length,

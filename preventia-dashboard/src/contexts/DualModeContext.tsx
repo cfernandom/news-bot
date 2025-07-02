@@ -91,8 +91,8 @@ export const DualModeProvider: React.FC<DualModeProviderProps> = ({
       localStorage.setItem('preventia-mode', mode);
 
       // Track mode usage for analytics
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'mode_change', {
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'mode_change', {
           mode,
           timestamp: new Date().toISOString(),
         });
@@ -137,23 +137,20 @@ export const DualModeProvider: React.FC<DualModeProviderProps> = ({
 
   // Update user preferences
   const updatePreferences = (newPreferences: Partial<UserPreferences>) => {
-    setUserPreferences(prev => {
-      // Deep merge preferences
-      const updated = { ...prev };
-
-      Object.keys(newPreferences).forEach(key => {
-        const typedKey = key as keyof UserPreferences;
-        const value = newPreferences[typedKey];
-
-        if (value && typeof value === 'object' && !Array.isArray(value)) {
-          updated[typedKey] = { ...updated[typedKey], ...value } as any;
-        } else {
-          updated[typedKey] = value as any;
-        }
-      });
-
-      return updated;
-    });
+    setUserPreferences(prev => ({
+      ...prev,
+      ...newPreferences,
+      // Handle nested objects specifically
+      accessibility: newPreferences.accessibility 
+        ? { ...prev.accessibility, ...newPreferences.accessibility }
+        : prev.accessibility,
+      professional: newPreferences.professional
+        ? { ...prev.professional, ...newPreferences.professional }
+        : prev.professional,
+      educational: newPreferences.educational
+        ? { ...prev.educational, ...newPreferences.educational }
+        : prev.educational,
+    }));
   };
 
   // Context value

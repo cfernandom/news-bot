@@ -6,6 +6,9 @@ import { AdaptiveContainer } from './components/adaptive/AdaptiveWrapper';
 import { ModeToggle } from './components/ui/ModeToggle';
 import MedicalKPIGrid from './components/dashboard/MedicalKPIGrid';
 import MedicalErrorBoundary from './components/common/ErrorBoundary';
+import SentimentChart from './components/charts/SentimentChart';
+import TopicsChart from './components/charts/TopicsChart';
+import { useMedicalSentimentDistribution, useMedicalTopicsDistribution } from './hooks/useMedicalData';
 
 // Create a query client
 const queryClient = new QueryClient({
@@ -47,6 +50,83 @@ const AppHeader: React.FC = () => {
   );
 };
 
+// Medical Visualizations Section
+const MedicalVisualizationsSection: React.FC = () => {
+  const { data: sentimentData, isLoading: sentimentLoading, isError: sentimentError } = useMedicalSentimentDistribution();
+  const { data: topicsData, isLoading: topicsLoading, isError: topicsError } = useMedicalTopicsDistribution();
+
+  if (sentimentError || topicsError) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+        <p className="text-red-700">Error al cargar datos de visualización</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-gray-900">
+          📊 Análisis Visual de Datos Médicos
+        </h2>
+        <div className="text-sm text-gray-500">
+          Visualizaciones interactivas con datos reales de 106 artículos
+        </div>
+      </div>
+
+      {/* Medical Charts Grid - Day 1 & Day 2 Implementation */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Sentiment Analysis Chart - DAY 1 COMPLETED */}
+        <div className="lg:col-span-1">
+          <SentimentChart 
+            data={sentimentData || []} 
+            loading={sentimentLoading}
+            className="h-full"
+          />
+        </div>
+        
+        {/* Topics Distribution Chart - DAY 2 IMPLEMENTATION */}
+        <div className="lg:col-span-1">
+          <TopicsChart 
+            data={topicsData || []} 
+            loading={topicsLoading}
+            className="h-full"
+          />
+        </div>
+      </div>
+
+      {/* Future Visualizations Preview */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Geographic Map Placeholder - DAY 4 */}
+        <div className="lg:col-span-1 bg-white rounded-lg border shadow-sm p-6">
+          <div className="text-center py-12">
+            <div className="text-4xl mb-4">🗺️</div>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              Mapa Geográfico
+            </h3>
+            <p className="text-gray-500 text-sm">
+              Cobertura internacional - Day 4 implementation
+            </p>
+          </div>
+        </div>
+
+        {/* Articles Table Placeholder - DAY 3 */}
+        <div className="lg:col-span-1 bg-white rounded-lg border shadow-sm p-6">
+          <div className="text-center py-12">
+            <div className="text-4xl mb-4">📋</div>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              Tabla de Artículos
+            </h3>
+            <p className="text-gray-500 text-sm">
+              Gestión de 106 artículos - Day 3 implementation
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Main dashboard content
 const DashboardContent: React.FC = () => {
   return (
@@ -65,20 +145,23 @@ const DashboardContent: React.FC = () => {
       {/* Medical KPI Grid with Real Data */}
       <MedicalKPIGrid />
 
-      {/* Status message */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+      {/* Medical Visualizations - NEW SECTION */}
+      <MedicalVisualizationsSection />
+
+      {/* Implementation status */}
+      <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
         <div className="flex items-center justify-center space-x-2 mb-2">
-          <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <h3 className="text-lg font-semibold text-blue-900">
-            Dashboard en Construcción
+          <h3 className="text-lg font-semibold text-green-900">
+            🚀 Week 2 Sprint - Day 2 En Progreso
           </h3>
         </div>
-        <p className="text-blue-700">
-          Esta es la implementación base del sistema dual-mode. Los componentes de visualización
-          avanzada (gráficos, mapas, tablas) se implementarán en las siguientes fases del desarrollo.
+        <p className="text-green-700">
+          ✅ SentimentChart (Day 1) + TopicsChart (Day 2) operativos con 10 categorías médicas.
+          Próximo: ArticlesTable (Day 3), GeographicMap (Day 4).
         </p>
       </div>
     </div>
