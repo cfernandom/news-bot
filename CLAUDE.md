@@ -45,15 +45,23 @@ PreventIA News Analytics is an intelligent media monitoring system specialized i
 - **Test sentiment analyzer**: `source venv/bin/activate && python tests/legacy_test_sentiment_analysis.py`
 - **Analyze individual article**: Use `services.nlp.src.sentiment.get_sentiment_analyzer()` and `services.nlp.src.topic_classifier.get_topic_classifier()`
 
-### FastAPI Commands (FASE 3)
+### FastAPI Commands (FASE 3 COMPLETADA)
 - **Start FastAPI server**: `python -m services.api.main`
+- **Docker FastAPI service**: `docker compose up api -d` (✅ Production ready)
+- **View API docs**: Open `http://localhost:8000/docs` (OpenAPI auto-generated)
+- **Health check**: `curl http://localhost:8000/health` (Advanced health monitoring)
 - **Test API endpoints**: `python tests/integration/test_api/test_api.py`
-- **Test basic functionality**: `python tests/integration/test_api/test_detailed_api.py`
-- **Build API Docker image**: `docker compose build api`
-- **Run API service**: `docker compose up api -d`
-- **View API docs**: Open `http://localhost:8000/docs`
-- **Health check**: `curl http://localhost:8000/health`
-- **Run API tests**: `pytest tests/unit/test_api/ tests/integration/test_api/`
+- **Run all API tests**: `pytest tests/unit/test_api/ tests/integration/test_api/`
+- **API performance check**: All endpoints < 5s response time (106 artículos dataset)
+
+### React Dashboard Commands (FASE 4 EN PROGRESO)
+- **Start development server**: `cd preventia-dashboard && npm run dev`
+- **Production build**: `cd preventia-dashboard && npm run build` (✅ Optimized)
+- **Run unit tests**: `cd preventia-dashboard && npm run test:unit`
+- **Run E2E tests**: `cd preventia-dashboard && npm run test:e2e`
+- **Docker React service**: `docker compose up frontend -d`
+- **Production deployment**: `cd preventia-dashboard && npm run preview`
+- **Testing coverage**: `cd preventia-dashboard && npm run test:coverage`
 
 ## Architecture Overview
 
@@ -329,7 +337,7 @@ git merge --no-ff feature/analytics-endpoints
 - **4 prompt types:** development, academic, debugging, quick-commands
 - **Production-ready** system tested and optimized for daily use
 
-# 📊 Estado del Proyecto: FASE 3 COMPLETADA - FastAPI Dashboard Analytics Implementado (2025-06-30)
+# 📊 Estado del Proyecto: FASE 4 EN PROGRESO - React Dashboard Implementation (2025-07-03)
 
 ## ✅ FASE 1 COMPLETADA - Migración de Scrapers a PostgreSQL
 - **4 scrapers migrados** exitosamente: Breast Cancer Org, WebMD, CureToday, News Medical
@@ -411,6 +419,15 @@ git merge --no-ff feature/analytics-endpoints
 - **OpenAPI documentation** auto-generada en `/docs`
 - **Modular architecture** con routers por dominio (articles, analytics, nlp)
 
+## 🚀 FASE 4 EN PROGRESO - React Dashboard Implementation
+- **React 19 + TypeScript** setup with modern tooling (Vite, TailwindCSS)
+- **Dual-mode system** implementado: Professional/Educational modes
+- **Components avanzados** ya operativos: ArticlesDataTable, SentimentChart, TopicsChart
+- **Real-time data integration** con FastAPI backend (106 artículos)
+- **Production build** optimizado con code splitting (237KB main bundle)
+- **Testing framework** setup: Unit/Integration/E2E with Vitest + Puppeteer
+- **Docker containerization** listo para producción
+
 ### FastAPI Endpoints Implementados
 | Categoría | Endpoints | Funcionalidad | Status |
 |-----------|-----------|---------------|---------|
@@ -427,8 +444,12 @@ git merge --no-ff feature/analytics-endpoints
 - **All endpoints**: < 5s response time target achieved
 
 ## 🎯 Estado Actual del Sistema
-**Status:** ✅ FASE 3 COMPLETADA - FASTAPI DASHBOARD ANALYTICS IMPLEMENTADO
-**Próximo paso recomendado:** 🚀 **FASE 4 - React Frontend Dashboard Development**
+**Status:** 🚀 FASE 4 EN PROGRESO - REACT DASHBOARD IMPLEMENTATION
+**Branch actual:** `feature/fase4-react-dashboard-dual-mode`
+**Últimos commits:** ArticlesTableSection + comprehensive ArticlesDataTable + pagination support
+**React Dashboard URL:** http://localhost:5173 (dev) | http://localhost:4173 (preview)
+**API Documentation:** http://localhost:8000/docs
+**Próximo paso:** 📊 **Legacy Prototype Implementation** (dashboard_v0.1.html)
 
 ### Infraestructura Lista para Analytics
 - **PostgreSQL** optimizado con campos analytics-ready (sentiment_score, topic_category)
@@ -448,36 +469,174 @@ python tests/scrapers/test_all_migrated_scrapers.py
 docker compose exec postgres psql -U preventia -d preventia_news -c "SELECT COUNT(*) FROM articles;"
 ```
 
-## Current Implementation Status
+## Current Implementation Status (ACTUALIZADO 2025-07-03)
 
-### ✅ Completed - FASE 1 & FASE 2
-- PostgreSQL database with optimized analytics schema
-- Hybrid ORM + raw SQL data layer
-- Docker containerization with health checks
-- 4 scrapers migrados con Playwright integration
-- **VADER sentiment analysis** with medical content specialization
+### ✅ Completed - FASE 1, 2 & 3
+- **PostgreSQL database** with optimized analytics schema (106 artículos)
+- **Hybrid ORM + raw SQL** data layer with performance < 5s
+- **Docker containerization** with health checks and production readiness
+- **4 scrapers migrados** con Playwright integration
+- **VADER sentiment analysis** with medical content specialization (100% coverage)
+- **FastAPI REST API** with 20+ endpoints and OpenAPI documentation
 - **Professional testing framework** (unit/integration/e2e/performance)
-- **24 comprehensive tests** with 95% coverage and HTML reporting
-- Complete documentation structure and usage guides
-- **Git workflow profesional** con conventional commits, commits atómicos y branch strategy
+- **Complete documentation** structure and usage guides
+- **Git workflow profesional** con conventional commits y branch strategy
 
-### 🚀 Ready for FASE 3 - Dashboard Analytics
-- FastAPI REST API endpoints implementation
-- React dashboard frontend with sentiment visualizations
-- Real-time WebSocket updates for live analytics
-- Geographic and trending analysis expansion
+### 🚀 In Progress - FASE 4 - React Dashboard
+- **React 19 + TypeScript** con modern tooling stack
+- **Advanced components** implementados: ArticlesDataTable, Charts, KPIs
+- **Dual-mode system** Professional/Educational operativo
+- **Real-time data integration** con FastAPI backend
+- **Production build** optimizado (237KB bundle, 4.71s build)
+- **Testing framework** Vitest + Puppeteer setup
 
-### 📋 Pending Issues & Next Steps
-- **Coverage Investigation**: 50 artículos sin procesar (47.2% pending sentiment analysis)
-- **Topic Categorization**: Automatic medical topic classification implementation
-- **Performance Optimization**: Batch processing parallelization
+### 📋 Next Steps Available
+- **Legacy Prototype**: Implement dashboard_v0.1.html (strategy ready)
+- **Geographic Visualization**: React-leaflet map component
+- **Advanced Analytics**: Time series trends and forecasting
+- **Performance Optimization**: Bundle size reduction and lazy loading
+- **Production Deployment**: Full stack optimization
 
-## Migration Notes
+## 📈 Evolution Timeline
 
-This system is transitioning from a newsletter generation bot to an analytics platform. Key changes:
+**FASE 1 (COMPLETADA):** Newsletter Bot → PostgreSQL Migration
+**FASE 2 (COMPLETADA):** NLP Analytics + Sentiment Analysis
+**FASE 3 (COMPLETADA):** FastAPI REST API + OpenAPI Documentation
+**FASE 4 (EN PROGRESO):** React Dashboard + Advanced Visualizations
+**PRÓXIMO:** Legacy Prototype Implementation + Geographic Analytics
+
+### Migration Notes
+This system evolved from a newsletter generation bot to a comprehensive analytics platform:
 - **No longer publishes to WordPress** - focus is on data analysis
-- **PostgreSQL replaces file-based storage** - enables complex analytics
-- **Analytics-first architecture** - optimized for dashboard and insights
-- **Hybrid database approach** - performance + productivity
+- **PostgreSQL + FastAPI + React** - modern full-stack architecture
+- **Analytics-first design** - optimized for insights and visualizations
+- **Dual-mode system** - Professional/Educational user experiences
+- **Production-ready** - Docker containerization, testing, monitoring
 
 For historical context, see `docs/decisions/ADR-001-project-scope-change.md`.
+
+---
+
+## 🔧 Quick Start Commands (ACTUALIZADOS 2025-07-03)
+
+### Full Stack Startup
+```bash
+# Start backend services
+docker compose up postgres redis api -d
+
+# Start React frontend (separate terminal)
+cd preventia-dashboard && npm run dev
+
+# Verify all services
+docker compose ps
+curl http://localhost:8000/health
+```
+
+### Development Workflow
+```bash
+# Backend development
+source venv/bin/activate
+python -m services.api.main  # FastAPI dev server
+
+# Frontend development
+cd preventia-dashboard
+npm run dev                  # React dev server
+npm run test:unit           # Unit tests
+npm run build               # Production build
+```
+
+### Data & Analytics
+```bash
+# Database operations
+docker compose exec postgres psql -U preventia -d preventia_news
+
+# Run analytics
+python scripts/batch_sentiment_analysis.py
+python scripts/batch_topic_classification.py
+
+# API testing
+curl http://localhost:8000/api/v1/articles/
+curl http://localhost:8000/api/v1/analytics/sentiment
+```
+
+### Legacy Prototype Commands (CRÍTICO - 2025-07-03)
+- **View prototype**: Open `docs/assets/prototypes/dashboard_v0.1.html` in browser
+- **API specification**: See `docs/assets/prototypes/endpoints.md` (15 legacy endpoints detailed)
+- **Implementation strategy**: See `docs/implementation/legacy-prototype-implementation-strategy.md`
+- **Create implementation branch**: `git checkout -b feature/legacy-prototype-implementation`
+- **Development server**: `cd preventia-dashboard && npm run dev` (reuse infrastructure)
+- **Test legacy API compatibility**: `curl http://localhost:8000/api/v1/news?page=1`
+
+### Legacy Prototype Context for Future Sessions
+
+#### 🎯 CRITICAL PRIORITY: Legacy Prototype Implementation Ready
+**Complete strategy documented and ready for implementation:**
+
+#### **Legacy HTML Prototype Analysis**
+- **File**: `docs/assets/prototypes/dashboard_v0.1.html` (8-section complete dashboard)
+- **8 Sections**: Home, About Cancer, Prevention, Self-Exam, Institutions, Project, Contact, News Analytics
+- **Theme**: Pink-blue gradient (#F8BBD9 → #4A90E2)
+- **Features**: Geographic map, sentiment charts, export functionality, responsive design
+
+#### **Legacy API Requirements Analysis**
+- **File**: `docs/assets/prototypes/endpoints.md` (15 legacy endpoints specification)
+- **Current API**: 20+ modern endpoints at `/api/*`
+- **Legacy Expected**: 15 endpoints at `/api/v1/*` with different format
+- **Format Gap**: Legacy expects `{status, data, meta}` wrapper vs current direct responses
+- **Field Mapping**: `sentiment_label` → `tone`, `published_at` → `date`, `size` → `page_size`
+- **Missing Critical**: Export (CSV/XLSX/PDF), Authentication (JWT), Chart generation
+
+#### **Implementation Strategy**
+- **File**: `docs/implementation/legacy-prototype-implementation-strategy.md`
+- **Approach**: Branch parallel + API compatibility layer (zero breaking changes)
+- **Timeline**: 15-22 hours across 5 phases
+- **Phase 3 Critical**: Legacy API compatibility layer with format transformers
+- **New Dependencies**: pandas, openpyxl, reportlab, python-jose, passlib
+
+#### **Legacy API Compatibility Requirements**
+```bash
+# Current endpoints (working)
+GET /api/articles/              # 106 artículos, direct format
+GET /api/analytics/sentiment/   # Direct sentiment data
+
+# Legacy endpoints needed (15 total)
+GET /api/v1/news                # ⚠️ Needs format wrapper transformation
+GET /api/v1/stats/tones         # ⚠️ Field mapping: sentiment_label → tone
+GET /api/v1/export/news.csv     # ❌ MISSING - Critical CSV export
+GET /api/v1/export/news.xlsx    # ❌ MISSING - Critical Excel export
+POST /api/v1/export/report      # ❌ MISSING - Critical PDF generation
+
+# Legacy format expected
+{
+  "status": "success",
+  "data": { ... },
+  "meta": { "page": 1, "page_size": 20, "total": 234 }
+}
+```
+
+#### **Implementation Commands Ready**
+```bash
+# Start implementation
+git checkout -b feature/legacy-prototype-implementation
+
+# Backend: Add legacy compatibility layer
+# Create: services/api/routers/legacy.py
+# Create: services/api/routers/exports.py
+# Create: services/api/transformers/articles.py
+
+# Frontend: Add React components
+# Create: src/pages/legacy/ (8 pages)
+# Create: src/components/legacy/ (layout, carousel, map)
+# Create: src/styles/legacy/ (pink-blue theme)
+
+# Test legacy API
+curl http://localhost:8000/api/v1/news?page=1&page_size=10
+```
+
+---
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
