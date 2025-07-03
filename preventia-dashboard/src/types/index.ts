@@ -28,6 +28,7 @@ export interface UserPreferences {
 // Dual-mode context type
 export interface DualModeContextType {
   mode: Mode;
+  currentMode: Mode; // Add currentMode alias for compatibility
   toggleMode: () => void;
   setMode: (mode: Mode) => void;
   userPreferences: UserPreferences;

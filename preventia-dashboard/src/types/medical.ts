@@ -28,6 +28,43 @@ export interface MedicalArticle {
   updatedAt: string;
 }
 
+// Alternative interface matching API response format
+export interface Article {
+  id: number;
+  title: string;
+  url: string;
+  summary?: string;
+  content?: string;
+  published_at: string;
+  language: string;
+  country: string;
+
+  // Source information
+  source?: {
+    name: string;
+    base_url: string;
+    language: string;
+    country: string;
+  };
+
+  // NLP Analysis Results
+  sentiment_label?: 'positive' | 'negative' | 'neutral';
+  sentiment_score?: number;
+  sentiment_confidence?: number;
+  topic_category?: string;
+  topic_confidence?: number;
+
+  // Processing metadata
+  processing_status?: string;
+  processing_error?: string;
+  word_count?: number;
+
+  // Timestamps
+  created_at: string;
+  updated_at: string;
+  scraped_at: string;
+}
+
 export interface AnalyticsSummary {
   totalArticles: number;
   totalSources: number;

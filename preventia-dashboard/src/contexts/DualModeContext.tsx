@@ -156,6 +156,7 @@ export const DualModeProvider: React.FC<DualModeProviderProps> = ({
   // Context value
   const contextValue: DualModeContextType = {
     mode,
+    currentMode: mode, // Add currentMode alias for compatibility
     toggleMode,
     setMode,
     userPreferences,
