@@ -14,6 +14,8 @@ interface GeographicData {
 interface LegacyGeographicMapProps {
   data: GeographicData[];
   loading?: boolean;
+  title?: string;
+  showClickableMarkers?: boolean;
 }
 
 // Custom component to fit bounds when data changes
@@ -30,7 +32,12 @@ const FitBounds: React.FC<{ data: GeographicData[] }> = ({ data }) => {
   return null;
 };
 
-const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({ data, loading }) => {
+const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({
+  data,
+  loading,
+  title = "Mapa Geográfico",
+  showClickableMarkers = true
+}) => {
   const [mapLoaded, setMapLoaded] = useState(false);
 
   // Calculate circle size based on article count

@@ -13,7 +13,7 @@ import {
 } from 'recharts';
 
 interface TrendDataPoint {
-  date: string;
+  date?: string;
   day?: string;
   week?: string;
   positive?: number;
@@ -76,7 +76,10 @@ const LegacyTrendChart: React.FC<LegacyTrendChartProps> = ({
       <BarChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--legacy-border)" />
         <XAxis
-          dataKey={chartData[0]?.day ? 'day' : 'date'}
+          dataKey={
+            chartData[0] && 'day' in chartData[0] ? 'day' :
+            chartData[0] && 'week' in chartData[0] ? 'week' : 'date'
+          }
           stroke="var(--text-primary)"
           fontSize={12}
         />
