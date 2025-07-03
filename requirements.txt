@@ -44,6 +44,11 @@ numpy==2.2.1
 # Additional utilities
 python-multipart==0.0.17
 
+# Export and authentication dependencies
+openpyxl==3.1.5
+PyJWT==2.10.1
+passlib[bcrypt]==1.7.4
+
 # Development automation tools (verified latest versions)
 pre-commit==4.2.0
 black==25.1.0
