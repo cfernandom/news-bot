@@ -11,7 +11,7 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from services.api.routers import analytics, articles, nlp
+from services.api.routers import analytics, articles, auth, exports, legacy, nlp
 from services.data.database.connection import DatabaseManager
 
 
@@ -61,6 +61,11 @@ app.add_middleware(
 app.include_router(articles.router, prefix="/api")
 app.include_router(analytics.router, prefix="/api")
 app.include_router(nlp.router, prefix="/api")
+
+# Include legacy API routers
+app.include_router(legacy.router)
+app.include_router(exports.router)
+app.include_router(auth.router)
 
 
 # Health check endpoint
