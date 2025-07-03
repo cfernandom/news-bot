@@ -19,13 +19,7 @@ const createApiClient = (): AxiosInstance => {
   // Request interceptor
   client.interceptors.request.use(
     (config) => {
-      // Add timestamp for cache busting if needed
-      if (config.method === 'get') {
-        config.params = {
-          ...config.params,
-          _t: Date.now(),
-        };
-      }
+      // Simple request logging without cache busting
       return config;
     },
     (error) => {

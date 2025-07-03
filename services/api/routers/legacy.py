@@ -313,48 +313,56 @@ async def get_stats_geo_legacy(
     topic: Optional[str] = Query(None, description="Filter by topic"),
     db_conn=Depends(get_db_connection),
 ):
-    """Legacy endpoint: Get geographic distribution."""
+    """Legacy endpoint: Get geographic distribution by country as per endpoints.md."""
 
-    # Build base query with optional filters
-    where_conditions = ["content IS NOT NULL"]
+    # Build filters for the SQL query
+    where_conditions = ["a.sentiment_label IS NOT NULL"]
     params = []
 
     if date_from:
-        where_conditions.append("published_at >= $" + str(len(params) + 1))
+        where_conditions.append("a.published_at >= $" + str(len(params) + 1))
         params.append(datetime.fromisoformat(date_from))
 
     if date_to:
-        where_conditions.append("published_at <= $" + str(len(params) + 1))
+        where_conditions.append("a.published_at <= $" + str(len(params) + 1))
         params.append(datetime.fromisoformat(date_to))
 
     if topic:
-        where_conditions.append("topic_category = $" + str(len(params) + 1))
+        where_conditions.append("a.topic_category = $" + str(len(params) + 1))
         params.append(topic)
 
     where_clause = " AND ".join(where_conditions)
 
+    # Use raw SQL as it works perfectly in PostgreSQL
     query = f"""
     SELECT
         CASE
-            WHEN content ILIKE '%united states%' OR content ILIKE '%usa%' OR content ILIKE '%america%' THEN 'US'
-            WHEN content ILIKE '%canada%' THEN 'CA'
-            WHEN content ILIKE '%united kingdom%' OR content ILIKE '%uk%' OR content ILIKE '%britain%' THEN 'GB'
-            WHEN content ILIKE '%australia%' THEN 'AU'
-            WHEN content ILIKE '%europe%' OR content ILIKE '%european%' THEN 'EU'
-            WHEN content ILIKE '%global%' OR content ILIKE '%international%' OR content ILIKE '%worldwide%' THEN 'GLOBAL'
-            ELSE 'OTHER'
+            WHEN ns.base_url ILIKE '%breastcancer.org%' THEN 'US'
+            WHEN ns.base_url ILIKE '%curetoday.com%' THEN 'US'
+            WHEN ns.base_url ILIKE '%webmd.com%' THEN 'US'
+            WHEN ns.base_url ILIKE '%news-medical.net%' THEN 'UK'
+            ELSE 'Other'
         END as country,
-        COUNT(*) as total,
-        MODE() WITHIN GROUP (ORDER BY sentiment_label) as tone,
-        'EN' as language
-    FROM articles
+        a.sentiment_label as tone,
+        COUNT(*) as total
+    FROM articles a
+    LEFT JOIN news_sources ns ON a.source_id = ns.id
     WHERE {where_clause}
-    GROUP BY country
+    GROUP BY
+        CASE
+            WHEN ns.base_url ILIKE '%breastcancer.org%' THEN 'US'
+            WHEN ns.base_url ILIKE '%curetoday.com%' THEN 'US'
+            WHEN ns.base_url ILIKE '%webmd.com%' THEN 'US'
+            WHEN ns.base_url ILIKE '%news-medical.net%' THEN 'UK'
+            ELSE 'Other'
+        END,
+        a.sentiment_label
     ORDER BY total DESC
     """
 
     result = await db_conn.fetch(query, *params)
 
+    # Transform to expected format as per endpoints.md
     geo_data = []
     for row in result:
         geo_data.append(
@@ -362,7 +370,7 @@ async def get_stats_geo_legacy(
                 "country": row["country"],
                 "total": row["total"],
                 "tone": row["tone"] or "neutral",
-                "language": row["language"],
+                "language": "EN",
             }
         )
 

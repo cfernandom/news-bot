@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { DualModeProvider } from './contexts/DualModeContext';
@@ -10,6 +11,7 @@ import SentimentChart from './components/charts/SentimentChart';
 import TopicsChart from './components/charts/TopicsChart';
 import ArticlesTableSection from './components/sections/ArticlesTableSection';
 import { useMedicalSentimentDistribution, useMedicalTopicsDistribution } from './hooks/useMedicalData';
+import LegacyRoutes from './routes/LegacyRoutes';
 
 // Create a query client
 const queryClient = new QueryClient({
@@ -161,27 +163,42 @@ const DashboardContent: React.FC = () => {
   );
 };
 
-// Main App component
+// Main Dashboard App (existing functionality)
+const MainDashboardApp: React.FC = () => {
+  return (
+    <DualModeProvider initialMode="professional">
+      <div className="min-h-screen bg-gray-50">
+        <AppHeader />
+
+        <main className="py-8">
+          <AdaptiveContainer maxWidth="full">
+            <MedicalErrorBoundary>
+              <DashboardContent />
+            </MedicalErrorBoundary>
+          </AdaptiveContainer>
+        </main>
+      </div>
+    </DualModeProvider>
+  );
+};
+
+// Main App component with routing
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <MedicalErrorBoundary>
-        <DualModeProvider initialMode="professional">
-          <div className="min-h-screen bg-gray-50">
-            <AppHeader />
+        <Router>
+          <Routes>
+            {/* Legacy prototype routes as main routes */}
+            <Route path="/*" element={<LegacyRoutes />} />
 
-            <main className="py-8">
-              <AdaptiveContainer maxWidth="full">
-                <MedicalErrorBoundary>
-                  <DashboardContent />
-                </MedicalErrorBoundary>
-              </AdaptiveContainer>
-            </main>
-          </div>
+            {/* Main dashboard route */}
+            <Route path="/dashboard" element={<MainDashboardApp />} />
+          </Routes>
 
           {/* React Query DevTools (only in development) */}
           <ReactQueryDevtools initialIsOpen={false} />
-        </DualModeProvider>
+        </Router>
       </MedicalErrorBoundary>
     </QueryClientProvider>
   );
