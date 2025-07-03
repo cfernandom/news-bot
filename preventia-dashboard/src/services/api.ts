@@ -56,6 +56,10 @@ interface ApiTrendsResponse {
 
 interface ApiArticlesResponse {
   items?: unknown[];
+  total?: number;
+  page?: number;
+  size?: number;
+  pages?: number;
 }
 
 interface ApiSourcesResponse {
@@ -309,6 +313,32 @@ export class MedicalApiClient {
         limit: items.length,
         hasNext: false,
         hasPrevious: false,
+      };
+    } catch (error) {
+      throw this.handleMedicalError(error);
+    }
+  }
+
+  // Articles with pagination for data tables
+  async getArticlesPaginated(
+    page: number = 1,
+    limit: number = 20,
+    filters: MedicalFilters = {}
+  ): Promise<PaginatedArticles> {
+    try {
+      // API call with pagination parameters
+      const response = await this.client.get<ApiArticlesResponse>(`/api/articles/?page=${page}&size=${limit}`);
+
+      // The API returns { items: [...], total: X, page: Y, size: Z, pages: N } format
+      const { items = [], total = 0, page: currentPage = 1, size: pageSize = limit, pages = 1 } = response.data;
+
+      return {
+        articles: items.map((item: unknown) => this.transformArticle(item as Record<string, unknown>)),
+        total: total,
+        page: currentPage,
+        limit: pageSize,
+        hasNext: currentPage < pages,
+        hasPrevious: currentPage > 1,
       };
     } catch (error) {
       throw this.handleMedicalError(error);

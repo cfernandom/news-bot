@@ -21,6 +21,8 @@ export const MEDICAL_QUERY_KEYS = {
   weeklyTrends: ['medical', 'trends', 'weekly'] as const,
   articles: (filters?: MedicalFilters) =>
     ['medical', 'articles', filters] as const,
+  articlesWithPagination: (page?: number, limit?: number, filters?: MedicalFilters) =>
+    ['medical', 'articles', 'paginated', page, limit, filters] as const,
   article: (id: number) =>
     ['medical', 'articles', id] as const,
   sources: ['medical', 'sources'] as const,
@@ -132,6 +134,24 @@ export const useMedicalArticles = (filters: MedicalFilters = {}) => {
     placeholderData: (previousData) => previousData, // Smooth pagination experience
     meta: {
       medicalContext: 'articles-listing',
+    },
+  });
+};
+
+// Articles with pagination for medical data tables
+export const useMedicalArticlesPaginated = (
+  page: number = 1,
+  limit: number = 20,
+  filters: MedicalFilters = {}
+) => {
+  return useQuery({
+    queryKey: MEDICAL_QUERY_KEYS.articlesWithPagination(page, limit, filters),
+    queryFn: () => medicalApiClient.getArticlesPaginated(page, limit, filters),
+    staleTime: MEDICAL_CACHE_CONFIG.articles,
+    retry: 2,
+    placeholderData: (previousData) => previousData, // Smooth pagination experience
+    meta: {
+      medicalContext: 'articles-pagination',
     },
   });
 };
