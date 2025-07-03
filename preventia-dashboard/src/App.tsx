@@ -8,6 +8,7 @@ import MedicalKPIGrid from './components/dashboard/MedicalKPIGrid';
 import MedicalErrorBoundary from './components/common/ErrorBoundary';
 import SentimentChart from './components/charts/SentimentChart';
 import TopicsChart from './components/charts/TopicsChart';
+import ArticlesTableSection from './components/sections/ArticlesTableSection';
 import { useMedicalSentimentDistribution, useMedicalTopicsDistribution } from './hooks/useMedicalData';
 
 // Create a query client
@@ -78,17 +79,17 @@ const MedicalVisualizationsSection: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Sentiment Analysis Chart - DAY 1 COMPLETED */}
         <div className="lg:col-span-1">
-          <SentimentChart 
-            data={sentimentData || []} 
+          <SentimentChart
+            data={sentimentData || []}
             loading={sentimentLoading}
             className="h-full"
           />
         </div>
-        
+
         {/* Topics Distribution Chart - DAY 2 IMPLEMENTATION */}
         <div className="lg:col-span-1">
-          <TopicsChart 
-            data={topicsData || []} 
+          <TopicsChart
+            data={topicsData || []}
             loading={topicsLoading}
             className="h-full"
           />
@@ -110,17 +111,9 @@ const MedicalVisualizationsSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Articles Table Placeholder - DAY 3 */}
-        <div className="lg:col-span-1 bg-white rounded-lg border shadow-sm p-6">
-          <div className="text-center py-12">
-            <div className="text-4xl mb-4">📋</div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">
-              Tabla de Artículos
-            </h3>
-            <p className="text-gray-500 text-sm">
-              Gestión de 106 artículos - Day 3 implementation
-            </p>
-          </div>
+        {/* Articles Table - DAY 3 IMPLEMENTED */}
+        <div className="lg:col-span-1">
+          <ArticlesTableSection className="h-full" />
         </div>
       </div>
     </div>
