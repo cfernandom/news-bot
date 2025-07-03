@@ -6,7 +6,7 @@ Provides backward compatibility with the original dashboard prototype.
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import desc, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -66,12 +66,24 @@ async def get_news_legacy(
         query = query.filter(Article.topic_category == topic)
 
     if date_from:
-        start_date = datetime.fromisoformat(date_from)
-        query = query.filter(Article.published_at >= start_date)
+        try:
+            start_date = datetime.fromisoformat(date_from)
+            query = query.filter(Article.published_at >= start_date)
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid date format for date_from: {date_from}. Use YYYY-MM-DD format.",
+            )
 
     if date_to:
-        end_date = datetime.fromisoformat(date_to)
-        query = query.filter(Article.published_at <= end_date)
+        try:
+            end_date = datetime.fromisoformat(date_to)
+            query = query.filter(Article.published_at <= end_date)
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid date format for date_to: {date_to}. Use YYYY-MM-DD format.",
+            )
 
     if search:
         search_filter = or_(
@@ -257,7 +269,9 @@ async def get_tones_timeline_legacy(
 ):
     """Legacy endpoint: Get tone evolution over time."""
 
-    cutoff_date = datetime.now(timezone.utc) - timedelta(weeks=weeks)
+    cutoff_date = (datetime.now(timezone.utc) - timedelta(weeks=weeks)).replace(
+        tzinfo=None
+    )
 
     query = """
     SELECT

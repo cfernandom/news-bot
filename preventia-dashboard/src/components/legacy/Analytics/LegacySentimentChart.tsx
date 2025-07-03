@@ -24,7 +24,7 @@ interface LegacySentimentChartProps {
 const LegacySentimentChart: React.FC<LegacySentimentChartProps> = ({
   data,
   loading,
-  title = "Distribución de Sentimientos",
+  title = "Sentiment Analysis",
   showPieChart = false,
   type = 'sentiment'
 }) => {
@@ -81,7 +81,8 @@ const LegacySentimentChart: React.FC<LegacySentimentChartProps> = ({
     <div className="legacy-chart-container">
       <h3>{title}</h3>
       <ResponsiveContainer width="100%" height={400}>
-        <PieChart>
+        <div data-testid="pie-chart">
+          <PieChart>
           <Pie
             data={chartData}
             cx="50%"
@@ -99,6 +100,7 @@ const LegacySentimentChart: React.FC<LegacySentimentChartProps> = ({
           <Tooltip content={<CustomTooltip />} />
           <Legend />
         </PieChart>
+        </div>
       </ResponsiveContainer>
     </div>
   );

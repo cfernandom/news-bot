@@ -338,8 +338,8 @@ class TestLegacyAPIEndpoints:
         """Test error handling in legacy endpoints."""
         # Test invalid date format
         response = client.get("/api/v1/news?date_from=invalid-date")
-        # Should handle gracefully (might return 422 or ignore invalid date)
-        assert response.status_code in [200, 422]
+        # Should handle gracefully (might return 400, 422 or ignore invalid date)
+        assert response.status_code in [200, 400, 422]
 
         # Test invalid pagination
         response = client.get("/api/v1/news?page=0")
