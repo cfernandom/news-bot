@@ -71,7 +71,7 @@ export class MedicalApiClient {
   private baseURL: string;
   private client: AxiosInstance;
 
-  constructor(baseURL: string = 'http://localhost:8000') {
+  constructor(baseURL: string = import.meta.env.VITE_API_URL || 'http://localhost:8000') {
     this.baseURL = baseURL;
     this.client = axios.create({
       baseURL: this.baseURL,
