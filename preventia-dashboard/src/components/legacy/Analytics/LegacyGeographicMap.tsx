@@ -41,15 +41,17 @@ const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({ data, loading
     return minSize + ((count / maxCount) * (maxSize - minSize));
   };
 
-  // Get color based on sentiment
-  const getCircleColor = (tono: string) => {
-    switch (tono.toLowerCase()) {
-      case 'positivo':
-        return '#10b981'; // green
-      case 'negativo':
-        return '#ef4444'; // red
-      default:
-        return '#6b7280'; // gray
+  // Get color based on article count intensity
+  const getCircleColor = (count: number) => {
+    const maxCount = Math.max(...data.map(d => d.total));
+    const intensity = count / maxCount;
+
+    if (intensity > 0.7) {
+      return '#1e40af'; // Dark blue
+    } else if (intensity > 0.4) {
+      return '#3b82f6'; // Medium blue
+    } else {
+      return '#93c5fd'; // Light blue
     }
   };
 
@@ -74,16 +76,16 @@ const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({ data, loading
       {/* Map Legend */}
       <div className="legacy-map-legend">
         <div className="legend-item">
-          <div className="legend-circle" style={{ backgroundColor: '#10b981' }}></div>
-          <span>Tono Positivo</span>
+          <div className="legend-circle" style={{ backgroundColor: '#93c5fd' }}></div>
+          <span>Baja Cobertura</span>
         </div>
         <div className="legend-item">
-          <div className="legend-circle" style={{ backgroundColor: '#6b7280' }}></div>
-          <span>Tono Neutro</span>
+          <div className="legend-circle" style={{ backgroundColor: '#3b82f6' }}></div>
+          <span>Media Cobertura</span>
         </div>
         <div className="legend-item">
-          <div className="legend-circle" style={{ backgroundColor: '#ef4444' }}></div>
-          <span>Tono Negativo</span>
+          <div className="legend-circle" style={{ backgroundColor: '#1e40af' }}></div>
+          <span>Alta Cobertura</span>
         </div>
       </div>
 
@@ -108,7 +110,7 @@ const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({ data, loading
                   key={index}
                   center={[location.lat, location.lon]}
                   radius={getCircleSize(location.total)}
-                  fillColor={getCircleColor(location.tono)}
+                  fillColor={getCircleColor(location.total)}
                   color="#ffffff"
                   weight={2}
                   opacity={0.8}
@@ -126,16 +128,17 @@ const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({ data, loading
                         <strong>Idioma:</strong> {location.idioma}
                       </p>
                       <p style={{ margin: '4px 0', fontSize: '14px' }}>
-                        <strong>Tono:</strong>
+                        <strong>Cobertura:</strong>
                         <span style={{
                           marginLeft: '5px',
                           padding: '2px 6px',
                           borderRadius: '3px',
-                          backgroundColor: getCircleColor(location.tono),
+                          backgroundColor: getCircleColor(location.total),
                           color: 'white',
                           fontSize: '12px'
                         }}>
-                          {location.tono}
+                          {location.total > Math.max(...data.map(d => d.total)) * 0.7 ? 'Alta' :
+                           location.total > Math.max(...data.map(d => d.total)) * 0.4 ? 'Media' : 'Baja'}
                         </span>
                       </p>
                     </div>

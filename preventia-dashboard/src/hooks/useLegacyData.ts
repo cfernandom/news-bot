@@ -48,9 +48,9 @@ export const useLegacyArticles = (page: number = 1, limit: number = 20) => {
   });
 };
 
-export const useLegacySentimentStats = () => {
+export const useLegacySentimentStats = (filters?: any) => {
   return useQuery({
-    queryKey: ['legacy-sentiment-stats'],
+    queryKey: ['legacy-sentiment-stats', filters],
     queryFn: async () => {
       const response = await apiClient.get('/api/v1/stats/tones');
       const data = response.data.data;
@@ -66,9 +66,9 @@ export const useLegacySentimentStats = () => {
   });
 };
 
-export const useLegacyTopicsStats = () => {
+export const useLegacyTopicsStats = (filters?: any) => {
   return useQuery({
-    queryKey: ['legacy-topics-stats'],
+    queryKey: ['legacy-topics-stats', filters],
     queryFn: async () => {
       const response = await apiClient.get('/api/v1/stats/topics');
       const data = response.data.data;
@@ -112,9 +112,9 @@ export const useLegacyGeneralStats = () => {
 };
 
 // Geographic data from real API endpoint - organized by countries as per endpoints.md spec
-export const useLegacyGeographicData = () => {
+export const useLegacyGeographicData = (filters?: any) => {
   return useQuery({
-    queryKey: ['legacy-geographic'],
+    queryKey: ['legacy-geographic', filters],
     queryFn: async () => {
       try {
         const response = await apiClient.get('/api/v1/stats/geo');
@@ -187,6 +187,29 @@ export const useLegacyGeographicData = () => {
       }
     },
     staleTime: 10 * 60 * 1000, // 10 minutes
+  });
+};
+
+// News data with filters
+export const useLegacyNews = (filters?: any) => {
+  return useQuery({
+    queryKey: ['legacy-news', filters],
+    queryFn: async () => {
+      // Build query parameters based on filters
+      const params = new URLSearchParams();
+      params.append('page', '1');
+      params.append('page_size', '50');
+
+      if (filters?.country) params.append('country', filters.country);
+      if (filters?.language) params.append('language', filters.language);
+      if (filters?.date) params.append('date', filters.date);
+      if (filters?.topic) params.append('topic', filters.topic);
+      if (filters?.keyword) params.append('search', filters.keyword);
+
+      const response = await apiClient.get(`/api/v1/news?${params.toString()}`);
+      return response.data.data || [];
+    },
+    staleTime: 5 * 60 * 1000,
   });
 };
 
