@@ -444,12 +444,12 @@ git merge --no-ff feature/analytics-endpoints
 - **All endpoints**: < 5s response time target achieved
 
 ## 🎯 Estado Actual del Sistema
-**Status:** ⚠️ LEGACY PROTOTYPE IMPLEMENTADO - TESTING & VALIDATION REQUIRED
+**Status:** 🔍 LEGACY TESTING SUITE IMPLEMENTADO - FIXES CRÍTICOS REQUERIDOS
 **Branch actual:** `feature/legacy-prototype-rollback`
-**Últimos commits:** 8 elementos legacy implementados + production roadmap documentation
+**Últimos commits:** Legacy testing suite completo + 6 issues críticos identificados
 **React Dashboard URL:** http://localhost:5173 (dev) | http://localhost:4173 (preview)
 **API Documentation:** http://localhost:8000/docs
-**Próximo paso crítico:** 🧪 **Testing & Data Validation** antes de producción
+**Próximo paso crítico:** 🚨 **Fix Critical Issues** identificados en testing (ETA: 2 horas)
 
 ### Infraestructura Lista para Analytics
 - **PostgreSQL** optimizado con campos analytics-ready (sentiment_score, topic_category)
@@ -482,19 +482,27 @@ docker compose exec postgres psql -U preventia -d preventia_news -c "SELECT COUN
 - **Complete documentation** structure and usage guides
 - **Git workflow profesional** con conventional commits y branch strategy
 
-### ⚠️ CRITICAL ISSUES TO RESOLVE - FASE 4 Testing
-- **Data Validation Required**: Verificar correspondencia dashboard ↔ base de datos
-- **Dashboard Errors**: Identificar y corregir errores en visualizaciones
-- **Testing Coverage**: Ejecutar test suite completo (unit/integration/e2e)
-- **Performance Validation**: Verificar métricas reales vs targets
-- **API Data Consistency**: Validar que datos mostrados coincidan con PostgreSQL
+### 🔍 LEGACY TESTING SUITE COMPLETADO (2025-07-03)
+- **✅ Test Infrastructure**: 18 API tests + 120+ React component tests implementados
+- **✅ Issue Detection**: 6 issues críticos identificados y documentados
+- **✅ Coverage Baseline**: 72% overall coverage establecido (target 90%+)
+- **✅ Quality Framework**: CI/CD gates y regression testing configurado
+- **✅ Documentation**: 3 documentos comprehensivos generados
 
-### 📋 Critical Next Steps (ANTES DE PRODUCCIÓN)
-1. **Data Validation**: Verificar correspondencia completa dashboard-database
-2. **Error Resolution**: Identificar y corregir errores dashboard mediante testing
-3. **Performance Testing**: Bundle size, load times, response times
-4. **Integration Testing**: End-to-end validation de todo el flujo de datos
-5. **Security Audit**: Antes de cualquier deployment producción
+### 🚨 CRITICAL ISSUES IDENTIFICADOS (FIXES REQUERIDOS)
+1. **🔴 Timezone Handling API** (30min) - Timeline endpoints broken con datetime offset errors
+2. **🔴 Data Format Mismatch** (15min) - LegacySentimentChart interface Array vs Object
+3. **🔴 SQL Query Geographic** (45min) - Geographic endpoints parameter formatting issues
+4. **🟡 Chart Library Mismatch** (2h) - Tests mock Chart.js pero components usan Recharts
+5. **🟡 Language Inconsistency** (1h) - Components español, tests inglés expectations
+6. **🟡 Input Validation** (30min) - API no maneja gracefully invalid date inputs
+
+### 📋 Critical Next Steps (PRÓXIMA SESIÓN)
+1. **🚨 Fix Timezone Issues**: datetime.now(timezone.utc) en timeline endpoints
+2. **🚨 Fix Data Interfaces**: Corregir SentimentData[] interfaces en componentes
+3. **🚨 Fix SQL Queries**: Parameter formatting en geographic endpoints
+4. **✅ Validate Fixes**: Re-run test suite y verificar 90%+ pass rate
+5. **📊 Complete Testing**: E2E tests y performance baselines
 
 ## 📈 Evolution Timeline
 
@@ -558,44 +566,30 @@ curl http://localhost:8000/api/v1/articles/
 curl http://localhost:8000/api/v1/analytics/sentiment
 ```
 
-### 🧪 CRITICAL TESTING & VALIDATION (PRÓXIMA SESIÓN)
+### 🔧 LEGACY TESTING COMMANDS (IMPLEMENTADOS)
 ```bash
-# 1. Data Validation - Verificar correspondencia dashboard-database
-cd preventia-dashboard
-npm run dev  # Dashboard en http://localhost:5173
-# Manual: Comparar datos mostrados vs datos reales en PostgreSQL
+# 1. Run Legacy API Tests (18 tests - 12 passing, 6 failing)
+cd tests && pytest integration/test_api/test_legacy_api.py -v
 
-# 2. Frontend Testing
-npm run test:unit           # Unit tests
-npm run test:e2e            # End-to-end tests
-npm run build               # Production build verification
-npm run preview             # Test production build
+# 2. Run Legacy Component Tests (120+ tests - 50%+ passing)
+cd preventia-dashboard && npx vitest run src/components/legacy/__tests__/
 
-# 3. Backend Testing
-cd ../tests
-pytest --cov=../services --cov-report=html  # Coverage completo
-pytest -m integration -v                    # Integration tests
-pytest -m database -v                       # Database validation
+# 3. Run Specific Failing Tests
+pytest integration/test_api/test_legacy_api.py::TestLegacyAPIEndpoints::test_get_tones_timeline_legacy -v
+npx vitest run src/components/legacy/__tests__/LegacySentimentChart.test.tsx
 
-# 4. API Data Consistency
-curl http://localhost:8000/api/analytics/sentiment | jq .
-# Comparar con datos mostrados en dashboard
+# 4. Coverage Reports
+pytest --cov=../services --cov-report=html
+npx vitest run --coverage src/components/legacy/
 
-# 5. Performance Validation
-cd ../preventia-dashboard
-npm run build
-ls -la dist/  # Verificar bundle size < 500KB
-# Test load times < 3s
-
-# 6. Database Content Verification
-docker compose exec postgres psql -U preventia -d preventia_news -c "
-SELECT
-    COUNT(*) as total_articles,
-    COUNT(CASE WHEN sentiment_label = 'positive' THEN 1 END) as positive,
-    COUNT(CASE WHEN sentiment_label = 'negative' THEN 1 END) as negative,
-    COUNT(CASE WHEN sentiment_label = 'neutral' THEN 1 END) as neutral
-FROM articles WHERE sentiment_label IS NOT NULL;"
+# 5. Quick Test Status Check
+pytest integration/test_api/test_legacy_api.py -v | grep -E "(PASSED|FAILED)"
 ```
+
+### 📊 TESTING DOCUMENTATION GENERADA
+- **`docs/implementation/legacy-testing-results.md`** - Análisis detallado de resultados
+- **`docs/implementation/legacy-test-suite-summary.md`** - Inventario completo de tests
+- **`docs/implementation/testing-coverage-dashboard.md`** - Dashboard ejecutivo visual
 
 ### ✅ Legacy Prototype Status (IMPLEMENTADO - 2025-07-03)
 - **Estado**: ✅ 8 elementos críticos implementados
@@ -607,28 +601,28 @@ FROM articles WHERE sentiment_label IS NOT NULL;"
 
 ### 🚨 CRITICAL ISSUES TO ADDRESS (Próxima Sesión)
 
-#### **1. Data Validation Required**
-- **Issue**: Dashboard puede mostrar datos incorrectos o inconsistentes
-- **Action**: Verificar correspondencia exacta dashboard ↔ PostgreSQL
-- **Commands**: Ver sección "CRITICAL TESTING & VALIDATION" arriba
+#### **1. Fix Timezone Handling API Timeline (ETA: 30min)**
+- **Location**: `services/api/routers/legacy.py:257`
+- **Error**: `TypeError: can't subtract offset-naive and offset-aware datetimes`
+- **Fix**: `datetime.now(timezone.utc)` instead of `datetime.now()`
+- **Tests**: `test_get_tones_timeline_legacy` (2 tests failing)
 
-#### **2. Dashboard Error Resolution**
-- **Issue**: Posibles errores en visualizaciones y components
-- **Action**: Ejecutar test suite completo y corregir errores encontrados
-- **Focus**: LegacySentimentChart, LegacyTopicsChart, LegacyGeographicMap
+#### **2. Fix Data Format Mismatch Components (ETA: 15min)**
+- **Location**: `src/components/legacy/Analytics/LegacySentimentChart.tsx`
+- **Error**: `data.map is not a function` - expects Array, receives Object
+- **Fix**: Ensure consistent SentimentData[] interface
+- **Tests**: LegacySentimentChart (5/10 tests failing)
 
-#### **3. Performance Validation**
-- **Issue**: Bundle size y load times pueden estar fuera de targets
-- **Targets**: Bundle < 500KB, Load time < 3s, API response < 2s
-- **Action**: Performance testing y optimization si necesario
+#### **3. Fix SQL Query Geographic Endpoints (ETA: 45min)**
+- **Location**: `services/api/routers/legacy.py:337-361`
+- **Error**: Raw SQL parameter formatting issues
+- **Fix**: Proper asyncpg parameter binding
+- **Tests**: `test_get_stats_geo_legacy` (2 tests failing)
 
-#### **4. Production Readiness Assessment**
-- **Issue**: Sistema no validado para producción
-- **Requirements**:
-  - ✅ Tests passing (unit/integration/e2e)
-  - ⚠️ Data validation complete
-  - ⚠️ Performance targets met
-  - ⚠️ Error-free dashboard operation
+#### **4. Validate All Fixes (ETA: 30min)**
+- **Action**: Re-run complete test suite
+- **Target**: 90%+ API test pass rate
+- **Verification**: Test documentation updated
 
 ---
 

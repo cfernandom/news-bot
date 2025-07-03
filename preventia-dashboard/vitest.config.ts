@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
@@ -54,6 +54,7 @@ export default defineConfig({
     include: [
       'tests/unit/**/*.{test,spec}.{js,ts,tsx}',
       'tests/integration/**/*.{test,spec}.{js,ts,tsx}',
+      'src/**/*.{test,spec}.{js,ts,tsx}',
     ],
 
     // Mock configuration
