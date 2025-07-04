@@ -17,6 +17,7 @@ interface LegacySentimentChartProps {
   data: SentimentData[];
   loading?: boolean;
   title?: string;
+  subtitle?: string;
   showPieChart?: boolean;
   type?: 'sentiment' | 'language';
 }
@@ -25,7 +26,7 @@ const LegacySentimentChart: React.FC<LegacySentimentChartProps> = ({
   data,
   loading,
   title = "Sentiment Analysis",
-  showPieChart = false,
+  subtitle,
   type = 'sentiment'
 }) => {
   // Handle different empty states
@@ -56,7 +57,7 @@ const LegacySentimentChart: React.FC<LegacySentimentChartProps> = ({
     ? ['#4A90E2', '#F8BBD9', '#9CA3AF']
     : ['#10b981', '#ef4444', '#6b7280'];
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ name: string; value: number; }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0];
       const total = filteredChartData.reduce((sum, item) => sum + item.value, 0);
@@ -150,6 +151,7 @@ const LegacySentimentChart: React.FC<LegacySentimentChartProps> = ({
   return (
     <div className="legacy-chart-container">
       <h3>{title}</h3>
+      {subtitle && <p className="legacy-chart-subtitle">{subtitle}</p>}
       <ResponsiveContainer width="100%" height={400}>
         <PieChart>
           <Pie

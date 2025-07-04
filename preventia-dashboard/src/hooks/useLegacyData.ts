@@ -2,6 +2,14 @@ import { useQuery } from '@tanstack/react-query';
 import apiClient from '../api/client';
 
 // Types for legacy data
+interface FilterState {
+  country?: string;
+  language?: string;
+  date?: string;
+  topic?: string;
+  keyword?: string;
+}
+
 interface LegacyArticle {
   id: number;
   title: string;
@@ -82,7 +90,7 @@ export const useLegacyArticles = (page: number = 1, limit: number = 20) => {
   });
 };
 
-export const useLegacySentimentStats = (filters?: any) => {
+export const useLegacySentimentStats = (filters?: FilterState) => {
   return useQuery({
     queryKey: ['legacy-sentiment-stats', filters],
     queryFn: async (): Promise<LegacySentimentArray> => {
@@ -115,7 +123,7 @@ export const useLegacySentimentStats = (filters?: any) => {
   });
 };
 
-export const useLegacyTopicsStats = (filters?: any) => {
+export const useLegacyTopicsStats = (filters?: FilterState) => {
   return useQuery({
     queryKey: ['legacy-topics-stats', filters],
     queryFn: async (): Promise<LegacyTopicArray> => {
@@ -154,9 +162,9 @@ export const useLegacyGeneralStats = () => {
         const languageData = languageResponse.data.data || [];
 
         // Calculate dominant language
-        const totalLanguageArticles = languageData.reduce((sum: number, item: any) => sum + item.count, 0);
-        const englishData = languageData.find((item: any) => item.sentiment_label === 'english');
-        const spanishData = languageData.find((item: any) => item.sentiment_label === 'spanish');
+        const totalLanguageArticles = languageData.reduce((sum: number, item: { sentiment_label: string; count: number }) => sum + item.count, 0);
+        const englishData = languageData.find((item: { sentiment_label: string; count: number }) => item.sentiment_label === 'english');
+        const spanishData = languageData.find((item: { sentiment_label: string; count: number }) => item.sentiment_label === 'spanish');
 
         const englishCount = englishData?.count || 0;
         const spanishCount = spanishData?.count || 0;
@@ -203,7 +211,7 @@ export const useLegacyGeneralStats = () => {
 };
 
 // Geographic data from real API endpoint - organized by countries as per endpoints.md spec
-export const useLegacyGeographicData = (filters?: any) => {
+export const useLegacyGeographicData = (filters?: FilterState) => {
   return useQuery({
     queryKey: ['legacy-geographic', filters],
     queryFn: async (): Promise<LegacyGeographicArray> => {
@@ -218,17 +226,11 @@ export const useLegacyGeographicData = (filters?: any) => {
           'Other': { name: 'Otros', lat: 0, lon: 0, idioma: 'Varios' }
         };
 
-        // Sentiment translation
-        const sentimentMapping: { [key: string]: string } = {
-          'positive': 'Positivo',
-          'negative': 'Negativo',
-          'neutral': 'Neutro'
-        };
 
         // Group data by country to show aggregated totals per country
         const countryAggregates: { [key: string]: { positive: number, negative: number, neutral: number } } = {};
 
-        geoData.forEach((item: any) => {
+        geoData.forEach((item: { country: string; tone: string; total: number }) => {
           const country = item.country; // US, UK, Other as returned by API
           if (!countryAggregates[country]) {
             countryAggregates[country] = { positive: 0, negative: 0, neutral: 0 };
@@ -266,7 +268,7 @@ export const useLegacyGeographicData = (filters?: any) => {
               neutro: counts.neutral
             }
           };
-        }).filter((item: any) => item.total > 0) as LegacyGeographicArray;
+        }).filter((item: { total: number }) => item.total > 0) as LegacyGeographicArray;
 
         // Add AI summary
         result.ai_summary = "No se pudo establecer conexión.";
@@ -286,7 +288,7 @@ export const useLegacyGeographicData = (filters?: any) => {
 };
 
 // News data with filters
-export const useLegacyNews = (filters?: any) => {
+export const useLegacyNews = (filters?: FilterState) => {
   return useQuery({
     queryKey: ['legacy-news', filters],
     queryFn: async () => {
@@ -306,7 +308,7 @@ export const useLegacyNews = (filters?: any) => {
         const rawData = response.data.data || [];
 
         // Transform API data to match NewsItem interface expected by LegacyNewsTable
-        return rawData.map((item: any) => ({
+        return rawData.map((item: { id: number; title: string; country: string; language: string; date: string; topic: string; tone: string; url: string; summary: string }) => ({
           id: item.id,
           title: item.title,
           country: item.country,
@@ -355,10 +357,19 @@ export const useLegacyDailyArticles = (days: number = 14) => {
         console.log('Daily articles data:', data);
 
         // Transform to format expected by LegacyTrendChart
-        return data.map((item: any) => ({
+        const result = data.map((item: { day: string; count: number }) => ({
           day: new Date(item.day).toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }),
           count: item.count
         }));
+
+        // Add temporal metadata
+        (result as Array<any> & { temporalRange?: any }).temporalRange = {
+          type: 'daily',
+          period: days,
+          description: `Últimos ${days} días`
+        };
+
+        return result;
       } catch (error) {
         console.error('Failed to fetch daily articles:', error);
         return [];
@@ -382,12 +393,21 @@ export const useLegacySentimentTimeline = (weeks: number = 12) => {
         if (!data || !data.labels) return [];
 
         // Transform to format expected by LegacyTrendChart with sentiment lines
-        return data.labels.map((weekNum: number, index: number) => ({
+        const result = data.labels.map((weekNum: number, index: number) => ({
           week: `Sem ${weekNum}`,
           positive: data.positive[index] || 0,
           negative: data.negative[index] || 0,
           neutral: data.neutral[index] || 0
         }));
+
+        // Add temporal metadata
+        (result as Array<any> & { temporalRange?: any }).temporalRange = {
+          type: 'weekly',
+          period: weeks,
+          description: `Últimas ${weeks} semanas`
+        };
+
+        return result;
       } catch (error) {
         console.error('Failed to fetch sentiment timeline:', error);
         return [];
@@ -409,12 +429,21 @@ export const useLegacyTopicsWithLanguage = (weeks: number = 8) => {
         console.log('Topics with language breakdown:', data);
 
         // Transform to format expected by LegacyTopicsChart with language breakdown
-        return data.map((item: any) => ({
+        const result = data.map((item: { topic_category: string; total: number; english?: number; spanish?: number }) => ({
           topic_category: item.topic_category,
           count: item.total,
           english: item.english || 0,
           spanish: item.spanish || 0
         }));
+
+        // Add temporal metadata
+        (result as Array<any> & { temporalRange?: any }).temporalRange = {
+          type: 'weekly',
+          period: weeks,
+          description: `Últimas ${weeks} semanas`
+        };
+
+        return result;
       } catch (error) {
         console.error('Failed to fetch topics with language breakdown:', error);
         return [];
@@ -439,7 +468,7 @@ export const useLegacyLanguageStats = () => {
 
         // Add empty temporal evolution and AI summary
         result.temporal_evolution = [];
-        const totalArticles = data.reduce((sum: number, item: any) => sum + item.count, 0);
+        const totalArticles = data.reduce((sum: number, item: { count: number }) => sum + item.count, 0);
         result.ai_summary = `Distribución de idiomas basada en ${totalArticles} artículos analizados desde la base de datos.`;
 
         return result;

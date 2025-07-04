@@ -50,7 +50,7 @@ export const ArticlesDataTable: React.FC<ArticlesDataTableProps> = ({
 
   // Filter and sort articles
   const filteredAndSortedArticles = useMemo(() => {
-    let filtered = articles.filter(article => {
+    const filtered = articles.filter(article => {
       const matchesSearch = !filters.search ||
         article.title.toLowerCase().includes(filters.search.toLowerCase()) ||
         article.summary?.toLowerCase().includes(filters.search.toLowerCase());

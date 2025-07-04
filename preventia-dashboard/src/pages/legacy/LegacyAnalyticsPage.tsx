@@ -19,10 +19,50 @@ interface FilterState {
   keyword: string;
 }
 
+interface NewsItem {
+  id: number;
+  title: string;
+  country?: string;
+  language?: string;
+  date?: string;
+  published_at?: string;
+  topic?: string;
+  sentiment?: string;
+  url?: string;
+  source?: string;
+  summary?: string;
+}
+
 const LegacyAnalyticsPage: React.FC = () => {
   const [showExportModal, setShowExportModal] = useState(false);
-  const [selectedNews, setSelectedNews] = useState<any>(null);
-  const [filters, setFilters] = useState<FilterState>({
+  const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
+
+  // Separate filter states for each section
+  const [topicFilters, setTopicFilters] = useState<FilterState>({
+    country: '',
+    language: '',
+    date: '',
+    topic: '',
+    keyword: ''
+  });
+
+  const [sentimentFilters, setSentimentFilters] = useState<FilterState>({
+    country: '',
+    language: '',
+    date: '',
+    topic: '',
+    keyword: ''
+  });
+
+  const [geoFilters, setGeoFilters] = useState<FilterState>({
+    country: '',
+    language: '',
+    date: '',
+    topic: '',
+    keyword: ''
+  });
+
+  const [newsFilters, setNewsFilters] = useState<FilterState>({
     country: '',
     language: '',
     date: '',
@@ -31,22 +71,38 @@ const LegacyAnalyticsPage: React.FC = () => {
   });
 
   const { data: generalStats, isLoading: statsLoading } = useLegacyGeneralStats();
-  const { data: sentimentData, isLoading: sentimentLoading } = useLegacySentimentStats(filters);
-  const { data: topicsData, isLoading: topicsLoading } = useLegacyTopicsStats(filters);
-  const { data: geographicData, isLoading: geoLoading } = useLegacyGeographicData(filters);
-  const { data: newsData, isLoading: newsLoading } = useLegacyNews(filters);
+  const { data: sentimentData, isLoading: sentimentLoading } = useLegacySentimentStats(sentimentFilters);
+  const { data: topicsData, isLoading: topicsLoading } = useLegacyTopicsStats(topicFilters);
+  const { data: geographicData, isLoading: geoLoading } = useLegacyGeographicData(geoFilters);
+  const { data: newsData, isLoading: newsLoading } = useLegacyNews(newsFilters);
   const { data: languageData, isLoading: languageLoading } = useLegacyLanguageStats();
   const { data: dailyArticlesData, isLoading: dailyArticlesLoading } = useLegacyDailyArticles(14);
   const { data: sentimentTimelineData, isLoading: sentimentTimelineLoading } = useLegacySentimentTimeline(8);
   const { data: topicsWithLanguageData, isLoading: topicsWithLanguageLoading } = useLegacyTopicsWithLanguage(8);
 
   // Calculate date ranges and temporal context
-  const getDateRangeFromData = (): { startDate: string; endDate: string } | undefined => {
+  const getGlobalDateRange = (): { startDate: string; endDate: string } | undefined => {
+    if (!generalStats?.latest_article_date) return undefined;
+
+    // Calculate approximate start date based on total articles and daily average
+    const totalArticles = generalStats.total_articles || 0;
+    const estimatedDaysBack = Math.max(30, Math.min(365, totalArticles * 2)); // Estimate 2 days per article, min 30 days, max 1 year
+    const endDate = new Date(generalStats.latest_article_date);
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - estimatedDaysBack);
+
+    return {
+      startDate: startDate.toISOString().split('T')[0],
+      endDate: generalStats.latest_article_date
+    };
+  };
+
+  const getFilteredDateRange = (): { startDate: string; endDate: string } | undefined => {
     if (!newsData || !Array.isArray(newsData) || newsData.length === 0) return undefined;
 
     const dates = newsData
-      .map((item: any) => item.published_date)
-      .filter((date: any) => date)
+      .map((item: NewsItem) => item.date || item.published_at)
+      .filter((date: string | undefined) => date)
       .sort();
 
     return dates.length > 0 ? {
@@ -55,14 +111,35 @@ const LegacyAnalyticsPage: React.FC = () => {
     } : undefined;
   };
 
-  const dateRange = getDateRangeFromData();
-  const totalArticles = generalStats?.total_articles || newsData?.length || 0;
+  const globalDateRange = getGlobalDateRange();
+  const filteredDateRange = getFilteredDateRange();
+  const totalArticles = generalStats?.total_articles || 0;
+  const filteredArticles = newsData?.length || 0;
 
-  const handleFilterChange = (newFilters: Partial<FilterState>) => {
-    setFilters(prev => ({ ...prev, ...newFilters }));
+  // Determine if filters are applied for news section
+  const hasActiveNewsFilters = Object.values(newsFilters).some(value => value && value.trim() !== '');
+  const hasActiveFilters = hasActiveNewsFilters; // Alias for backward compatibility
+  const displayDateRange = hasActiveNewsFilters ? filteredDateRange : globalDateRange;
+  const displayArticleCount = hasActiveNewsFilters ? filteredArticles : totalArticles;
+
+  // Filter change handlers for each section
+  const handleTopicFilterChange = (newFilters: Partial<FilterState>) => {
+    setTopicFilters(prev => ({ ...prev, ...newFilters }));
   };
 
-  const handleNewsSelect = (news: any) => {
+  const handleSentimentFilterChange = (newFilters: Partial<FilterState>) => {
+    setSentimentFilters(prev => ({ ...prev, ...newFilters }));
+  };
+
+  const handleGeoFilterChange = (newFilters: Partial<FilterState>) => {
+    setGeoFilters(prev => ({ ...prev, ...newFilters }));
+  };
+
+  const handleNewsFilterChange = (newFilters: Partial<FilterState>) => {
+    setNewsFilters(prev => ({ ...prev, ...newFilters }));
+  };
+
+  const handleNewsSelect = (news: NewsItem) => {
     setSelectedNews(news);
   };
 
@@ -85,11 +162,14 @@ const LegacyAnalyticsPage: React.FC = () => {
         <p>
           Dashboard completo de análisis de noticias sobre cáncer de mama con datos reales
           procesados por nuestro sistema de inteligencia artificial.
-          {totalArticles > 0 && (
+          {displayArticleCount > 0 && (
             <><br />
-            <strong>Dataset actual:</strong> {totalArticles} artículos
-            {dateRange && (
-              <> desde {new Date(dateRange.startDate).toLocaleDateString('es-ES')} hasta {new Date(dateRange.endDate).toLocaleDateString('es-ES')}</>
+            <strong>{hasActiveFilters ? 'Datos filtrados:' : 'Dataset completo:'}</strong> {displayArticleCount} artículos
+            {displayDateRange && (
+              <> desde {new Date(displayDateRange.startDate).toLocaleDateString('es-ES')} hasta {new Date(displayDateRange.endDate).toLocaleDateString('es-ES')}</>
+            )}
+            {hasActiveFilters && totalArticles > 0 && (
+              <><br /><small>Dataset total: {totalArticles} artículos</small></>
             )}
             </>
           )}
@@ -108,8 +188,10 @@ const LegacyAnalyticsPage: React.FC = () => {
       <section className="legacy-analytics-section">
         <h2 className="legacy-section-title">📈 Resumen General</h2>
         <p className="legacy-section-description">
-          {dateRange
-            ? `Visión general y cuantitativa de la cobertura informativa desde ${new Date(dateRange.startDate).toLocaleDateString('es-ES')} hasta ${new Date(dateRange.endDate).toLocaleDateString('es-ES')}.`
+          {hasActiveFilters
+            ? `Visión general de ${filteredArticles} artículos que coinciden con los filtros aplicados${filteredDateRange ? ` (${new Date(filteredDateRange.startDate).toLocaleDateString('es-ES')} - ${new Date(filteredDateRange.endDate).toLocaleDateString('es-ES')})` : ''}.`
+            : globalDateRange
+            ? `Visión general y cuantitativa de la cobertura informativa desde ${new Date(globalDateRange.startDate).toLocaleDateString('es-ES')} hasta ${new Date(globalDateRange.endDate).toLocaleDateString('es-ES')}.`
             : 'Visión general y cuantitativa de la cobertura informativa en el dataset histórico acumulado.'
           }
         </p>
@@ -117,10 +199,12 @@ const LegacyAnalyticsPage: React.FC = () => {
         {/* a) Tarjetas de Indicadores */}
         <div className="legacy-analytics-grid">
           <LegacyKPICard
-            title="Noticias Recolectadas"
-            value={totalArticles > 0 ? totalArticles : 'Sin datos'}
-            subtitle={dateRange
-              ? `Del ${new Date(dateRange.startDate).toLocaleDateString('es-ES')} al ${new Date(dateRange.endDate).toLocaleDateString('es-ES')}`
+            title={hasActiveFilters ? "Noticias Filtradas" : "Noticias Recolectadas"}
+            value={displayArticleCount > 0 ? displayArticleCount : 'Sin datos'}
+            subtitle={displayDateRange
+              ? `Del ${new Date(displayDateRange.startDate).toLocaleDateString('es-ES')} al ${new Date(displayDateRange.endDate).toLocaleDateString('es-ES')}`
+              : hasActiveFilters
+              ? 'Filtros aplicados'
               : 'Datos históricos acumulados'
             }
             icon="fa-newspaper"
@@ -163,14 +247,15 @@ const LegacyAnalyticsPage: React.FC = () => {
             data={languageData || []}
             loading={languageLoading}
             title="Distribución de Idiomas"
+            subtitle={`Dataset completo: ${totalArticles} artículos`}
             type="language"
-            showPieChart={true}
           />
 
           <LegacyTrendChart
             data={dailyArticlesData || []}
             loading={dailyArticlesLoading}
             title="Noticias por Día"
+            subtitle="Últimos 14 días"
           />
         </div>
 
@@ -180,7 +265,7 @@ const LegacyAnalyticsPage: React.FC = () => {
           <p>
             {generalStats?.ai_summary ||
             (totalArticles > 0
-              ? `Análisis de ${totalArticles} artículos recopilados${dateRange ? ` desde ${new Date(dateRange.startDate).toLocaleDateString('es-ES')} hasta ${new Date(dateRange.endDate).toLocaleDateString('es-ES')}` : ' en el dataset actual'}. El sistema de IA está procesando la información para generar insights automáticos.`
+              ? `Análisis de ${totalArticles} artículos recopilados${globalDateRange ? ` desde ${new Date(globalDateRange.startDate).toLocaleDateString('es-ES')} hasta ${new Date(globalDateRange.endDate).toLocaleDateString('es-ES')}` : ' en el dataset actual'}. El sistema de IA está procesando la información para generar insights automáticos.`
               : "No hay datos suficientes para generar un resumen automatizado. Verifique la conexión con la API o la disponibilidad de datos."
             )}
           </p>
@@ -196,8 +281,8 @@ const LegacyAnalyticsPage: React.FC = () => {
 
         {/* a) Filtros Interactivos */}
         <LegacyFilterBar
-          filters={filters}
-          onFilterChange={handleFilterChange}
+          filters={topicFilters}
+          onFilterChange={handleTopicFilterChange}
           showTopicFilter={true}
           showDateFilter={true}
         />
@@ -208,9 +293,10 @@ const LegacyAnalyticsPage: React.FC = () => {
             data={topicsWithLanguageData || []}
             loading={topicsWithLanguageLoading}
             title="Frecuencia por Temas"
+            subtitle={`Últimas 8 semanas${Object.values(topicFilters).some(value => value && value.trim() !== '') ? ' (filtros aplicados)' : ''}`}
             showLanguageBreakdown={true}
-            dateRange={dateRange}
-            totalArticles={totalArticles}
+            dateRange={displayDateRange}
+            totalArticles={displayArticleCount}
           />
         </div>
 
@@ -220,7 +306,7 @@ const LegacyAnalyticsPage: React.FC = () => {
           <p>
             {topicsData?.ai_summary ||
             (topicsWithLanguageData && topicsWithLanguageData.length > 0
-              ? `Análisis temático de ${topicsWithLanguageData.reduce((sum: number, item: any) => sum + (item.count || 0), 0)} artículos categorizados en ${topicsWithLanguageData.length} temas principales. El sistema está procesando patrones y tendencias temáticas.`
+              ? `Análisis temático de ${topicsWithLanguageData.reduce((sum: number, item: { count?: number }) => sum + (item.count || 0), 0)} artículos categorizados en ${topicsWithLanguageData.length} temas principales. El sistema está procesando patrones y tendencias temáticas.`
               : "No hay datos temáticos suficientes para generar análisis automatizado. Los artículos pueden estar en proceso de categorización."
             )}
           </p>
@@ -236,8 +322,8 @@ const LegacyAnalyticsPage: React.FC = () => {
 
         {/* a) Filtros de Segmentación */}
         <LegacyFilterBar
-          filters={filters}
-          onFilterChange={handleFilterChange}
+          filters={sentimentFilters}
+          onFilterChange={handleSentimentFilterChange}
           showCountryFilter={true}
           showLanguageFilter={true}
           showDateFilter={true}
@@ -249,14 +335,15 @@ const LegacyAnalyticsPage: React.FC = () => {
             data={sentimentData || []}
             loading={sentimentLoading}
             title="Distribución de Sentimientos"
+            subtitle={Object.values(sentimentFilters).some(value => value && value.trim() !== '') ? `Datos filtrados` : `Dataset completo: ${totalArticles} artículos`}
             type="sentiment"
-            showPieChart={true}
           />
 
           <LegacyTrendChart
             data={sentimentTimelineData || []}
             loading={sentimentTimelineLoading}
             title="Evolución Temporal del Tono"
+            subtitle="Últimas 8 semanas"
             showSentimentLines={true}
           />
         </div>
@@ -267,7 +354,7 @@ const LegacyAnalyticsPage: React.FC = () => {
           <p>
             {sentimentData?.ai_summary ||
             (sentimentData && sentimentData.length > 0
-              ? `Análisis de sentimiento procesado en ${sentimentData.reduce((sum: number, item: any) => sum + (item.count || 0), 0)} artículos. El sistema está evaluando la carga emocional y distribución tonal del contenido.`
+              ? `Análisis de sentimiento procesado en ${sentimentData.reduce((sum: number, item: { count?: number }) => sum + (item.count || 0), 0)} artículos. El sistema está evaluando la carga emocional y distribución tonal del contenido.`
               : "No hay datos de sentimiento suficientes para generar análisis automatizado. Los artículos pueden estar en proceso de análisis de PLN."
             )}
           </p>
@@ -283,8 +370,8 @@ const LegacyAnalyticsPage: React.FC = () => {
 
         {/* a) Filtros de Exploración */}
         <LegacyFilterBar
-          filters={filters}
-          onFilterChange={handleFilterChange}
+          filters={geoFilters}
+          onFilterChange={handleGeoFilterChange}
           showLanguageFilter={true}
           showTopicFilter={true}
           showWeekFilter={true}
@@ -296,7 +383,7 @@ const LegacyAnalyticsPage: React.FC = () => {
             data={geographicData || []}
             loading={geoLoading}
             title="Densidad Informativa por País"
-            showClickableMarkers={true}
+            subtitle={Object.values(geoFilters).some(value => value && value.trim() !== '') ? `Datos filtrados` : `Dataset completo: ${totalArticles} artículos`}
           />
         </div>
 
@@ -306,7 +393,7 @@ const LegacyAnalyticsPage: React.FC = () => {
           <p>
             {geographicData?.ai_summary ||
             (geographicData && geographicData.length > 0
-              ? `Análisis geográfico de ${geographicData.reduce((sum: number, item: any) => sum + (item.total || 0), 0)} artículos distribuidos en ${geographicData.length} países. El sistema está evaluando patrones de cobertura internacional.`
+              ? `Análisis geográfico de ${geographicData.reduce((sum: number, item: { total?: number }) => sum + (item.total || 0), 0)} artículos distribuidos en ${geographicData.length} países. El sistema está evaluando patrones de cobertura internacional.`
               : "No hay datos geográficos suficientes para generar análisis automatizado. La información de ubicación puede estar en proceso de geocodificación."
             )}
           </p>
@@ -322,8 +409,8 @@ const LegacyAnalyticsPage: React.FC = () => {
 
         {/* a) Filtros de Búsqueda */}
         <LegacyFilterBar
-          filters={filters}
-          onFilterChange={handleFilterChange}
+          filters={newsFilters}
+          onFilterChange={handleNewsFilterChange}
           showKeywordSearch={true}
           showCountryFilter={true}
           showLanguageFilter={true}
@@ -335,7 +422,7 @@ const LegacyAnalyticsPage: React.FC = () => {
             data={newsData || []}
             loading={newsLoading}
             onNewsSelect={handleNewsSelect}
-            filters={filters}
+            filters={newsFilters}
           />
         </div>
       </section>

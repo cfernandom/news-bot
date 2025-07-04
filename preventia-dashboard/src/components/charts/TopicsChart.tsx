@@ -99,7 +99,7 @@ interface TopicsTooltipProps {
   label?: string;
 }
 
-const MedicalTopicsTooltip = ({ active, payload, label }: TopicsTooltipProps) => {
+const MedicalTopicsTooltip = ({ active, payload }: TopicsTooltipProps) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     const topicKey = data.topic as keyof typeof MEDICAL_TOPIC_INFO;

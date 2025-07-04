@@ -27,6 +27,7 @@ interface LegacyTrendChartProps {
   data: TrendDataPoint[];
   loading?: boolean;
   title?: string;
+  subtitle?: string;
   showSentimentLines?: boolean;
   type?: 'bar' | 'line';
 }
@@ -35,8 +36,8 @@ const LegacyTrendChart: React.FC<LegacyTrendChartProps> = ({
   data,
   loading = false,
   title = 'Gráfico de Tendencias',
-  showSentimentLines = false,
-  type = 'bar',
+  subtitle,
+  showSentimentLines = false
 }) => {
   // Handle different empty states
   const hasRealData = data && Array.isArray(data) && data.length > 0;
@@ -262,6 +263,7 @@ const LegacyTrendChart: React.FC<LegacyTrendChartProps> = ({
   return (
     <div className="legacy-chart-container">
       <h3>{title}</h3>
+      {subtitle && <p className="legacy-chart-subtitle">{subtitle}</p>}
 
       {showSentimentLines ? renderSentimentChart() : renderBarChart()}
 

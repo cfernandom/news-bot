@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import LegacyGeographicMap from '../Analytics/LegacyGeographicMap';
 
@@ -195,7 +195,7 @@ describe('LegacyGeographicMap', () => {
     const incompleteData = [
       { country: 'US', total: 85 }, // missing tone and language
       { country: 'UK', tone: 'positive' } // missing total and language
-    ] as any;
+    ];
 
     render(<LegacyGeographicMap data={incompleteData} />);
 

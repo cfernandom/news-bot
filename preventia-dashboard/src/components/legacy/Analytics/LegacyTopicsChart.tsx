@@ -16,12 +16,31 @@ interface TopicData {
   english?: number;
   español?: number;
   inglés?: number;
+  total?: number;
+}
+
+interface TooltipPayload {
+  dataKey: string;
+  value: number;
+  payload: {
+    name: string;
+    total: number;
+    español?: number;
+    inglés?: number;
+  };
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayload[];
+  label?: string;
 }
 
 interface LegacyTopicsChartProps {
   data: TopicData[];
   loading?: boolean;
   title?: string;
+  subtitle?: string;
   showLanguageBreakdown?: boolean;
   dateRange?: {
     startDate?: string;
@@ -34,6 +53,7 @@ const LegacyTopicsChart: React.FC<LegacyTopicsChartProps> = ({
   data,
   loading,
   title = "Temas Más Relevantes",
+  subtitle,
   showLanguageBreakdown = false,
   dateRange,
   totalArticles
@@ -76,8 +96,8 @@ const LegacyTopicsChart: React.FC<LegacyTopicsChartProps> = ({
         .slice(0, 8)
         .map(item => ({
           name: getTopicName(item.topic_category),
-          español: (item as any).spanish || (item as any).español || 0,
-          inglés: (item as any).english || (item as any).inglés || 0,
+          español: item.spanish || item.español || 0,
+          inglés: item.english || item.inglés || 0,
           total: item.count || 0,
         }))
     : data
@@ -89,7 +109,7 @@ const LegacyTopicsChart: React.FC<LegacyTopicsChartProps> = ({
           value: item.count || 0,
         }))) : [];
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       return (
         <div
@@ -111,10 +131,10 @@ const LegacyTopicsChart: React.FC<LegacyTopicsChartProps> = ({
           {showLanguageBreakdown ? (
             <>
               <p style={{ color: '#4A90E2', margin: '4px 0' }}>
-                Español: {payload.find((p: any) => p.dataKey === 'español')?.value || 0}
+                Español: {payload.find((p) => p.dataKey === 'español')?.value || 0}
               </p>
               <p style={{ color: '#10b981', margin: '4px 0' }}>
-                Inglés: {payload.find((p: any) => p.dataKey === 'inglés')?.value || 0}
+                Inglés: {payload.find((p) => p.dataKey === 'inglés')?.value || 0}
               </p>
               <p style={{ color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>
                 Total: {payload[0]?.payload?.total || 0}
@@ -194,10 +214,10 @@ const LegacyTopicsChart: React.FC<LegacyTopicsChartProps> = ({
   const getTopicsStats = () => {
     if (showLanguageBreakdown) {
       const totalSpanish = chartData.reduce((sum, item) => {
-        return sum + ((item as any).español || 0);
+        return sum + ((item as { español?: number }).español || 0);
       }, 0);
       const totalEnglish = chartData.reduce((sum, item) => {
-        return sum + ((item as any).inglés || 0);
+        return sum + ((item as { inglés?: number }).inglés || 0);
       }, 0);
       const total = totalSpanish + totalEnglish;
 
@@ -208,7 +228,7 @@ const LegacyTopicsChart: React.FC<LegacyTopicsChartProps> = ({
       };
     } else {
       const total = chartData.reduce((sum, item) => {
-        return sum + ((item as any).value || 0);
+        return sum + ((item as { value?: number }).value || 0);
       }, 0);
 
       return {
@@ -241,6 +261,7 @@ const LegacyTopicsChart: React.FC<LegacyTopicsChartProps> = ({
   return (
     <div className="legacy-chart-container">
       <h3>{getEnhancedTitle()}</h3>
+      {subtitle && <p className="legacy-chart-subtitle">{subtitle}</p>}
       <ResponsiveContainer width="100%" height={400}>
         <BarChart
           data={chartData}

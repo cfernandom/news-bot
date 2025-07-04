@@ -15,6 +15,7 @@ interface LegacyGeographicMapProps {
   data: GeographicData[];
   loading?: boolean;
   title?: string;
+  subtitle?: string;
   showClickableMarkers?: boolean;
 }
 
@@ -35,8 +36,7 @@ const FitBounds: React.FC<{ data: GeographicData[] }> = ({ data }) => {
 const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({
   data,
   loading,
-  title = "Mapa Geográfico",
-  showClickableMarkers = true
+  subtitle
 }) => {
   const [mapLoaded, setMapLoaded] = useState(false);
 
@@ -120,6 +120,7 @@ const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({
   return (
     <div className="legacy-chart-container">
       <h3>Cobertura Geográfica</h3>
+      {subtitle && <p className="legacy-chart-subtitle">{subtitle}</p>}
 
       {/* Map Legend */}
       <div className="legacy-map-legend">
@@ -216,7 +217,7 @@ const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({
           <span>Artículos</span>
         </div>
         <div className="map-stat">
-          <strong>{data.filter(item => item.idioma === 'Español' || item.idioma === 'Spanish').length}</strong>
+          <strong>{data.filter(item => item.idioma === 'es' || item.idioma === 'ES').length}</strong>
           <span>En Español</span>
         </div>
       </div>
