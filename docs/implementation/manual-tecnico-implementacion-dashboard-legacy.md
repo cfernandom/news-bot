@@ -181,7 +181,7 @@ API_PORT=8000
 API_RELOAD=false
 
 # Frontend
-VITE_API_URL=http://localhost:8000/api
+VITE_API_URL=http://localhost:8000
 NODE_ENV=development
 
 # Optional

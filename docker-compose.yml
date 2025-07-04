@@ -77,7 +77,7 @@ services:
       - ./preventia-dashboard/src:/app/src
       - ./preventia-dashboard/public:/app/public
     environment:
-      - VITE_API_URL=http://localhost:8000/api
+      - VITE_API_URL=http://localhost:8000
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5173/"]
       interval: 30s
