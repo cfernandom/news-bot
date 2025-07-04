@@ -280,12 +280,12 @@ const LegacyAnalyticsPage: React.FC = () => {
         </p>
 
         {/* a) Filtros Interactivos */}
-        <LegacyFilterBar
+        {/* <LegacyFilterBar
           filters={topicFilters}
           onFilterChange={handleTopicFilterChange}
           showTopicFilter={true}
           showDateFilter={true}
-        />
+        /> */}
 
         {/* b) Visualización de Temas */}
         <div className="legacy-chart-container">
@@ -321,13 +321,13 @@ const LegacyAnalyticsPage: React.FC = () => {
         </p>
 
         {/* a) Filtros de Segmentación */}
-        <LegacyFilterBar
+        {/* <LegacyFilterBar
           filters={sentimentFilters}
           onFilterChange={handleSentimentFilterChange}
           showCountryFilter={true}
           showLanguageFilter={true}
           showDateFilter={true}
-        />
+        /> */}
 
         {/* b) Distribución de Sentimientos & c) Evolución Temporal */}
         <div className="legacy-charts-main-grid">
@@ -369,13 +369,13 @@ const LegacyAnalyticsPage: React.FC = () => {
         </p>
 
         {/* a) Filtros de Exploración */}
-        <LegacyFilterBar
+        {/* <LegacyFilterBar
           filters={geoFilters}
           onFilterChange={handleGeoFilterChange}
           showLanguageFilter={true}
           showTopicFilter={true}
           showWeekFilter={true}
-        />
+        /> */}
 
         {/* b) Visualización Geográfica */}
         <div className="legacy-chart-container">
@@ -408,13 +408,13 @@ const LegacyAnalyticsPage: React.FC = () => {
         </p>
 
         {/* a) Filtros de Búsqueda */}
-        <LegacyFilterBar
+        {/* <LegacyFilterBar
           filters={newsFilters}
           onFilterChange={handleNewsFilterChange}
           showKeywordSearch={true}
           showCountryFilter={true}
           showLanguageFilter={true}
-        />
+        /> */}
 
         {/* b) Tabla de Noticias */}
         <div className="legacy-chart-container">
@@ -428,7 +428,7 @@ const LegacyAnalyticsPage: React.FC = () => {
       </section>
 
       {/* 4.7 Exportación y Reportes */}
-      <section className="legacy-analytics-section">
+      {/* <section className="legacy-analytics-section">
         <h2 className="legacy-section-title">📥 Exportación y Reportes</h2>
         <p className="legacy-section-description">
           Herramientas para descargar información procesada y generar reportes completos.
@@ -479,9 +479,8 @@ const LegacyAnalyticsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Export History */}
         <LegacyExportHistory />
-      </section>
+      </section> */}
 
       {/* Modals */}
       <LegacyExportModal
