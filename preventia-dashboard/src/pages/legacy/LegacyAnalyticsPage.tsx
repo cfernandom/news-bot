@@ -40,6 +40,24 @@ const LegacyAnalyticsPage: React.FC = () => {
   const { data: sentimentTimelineData, isLoading: sentimentTimelineLoading } = useLegacySentimentTimeline(8);
   const { data: topicsWithLanguageData, isLoading: topicsWithLanguageLoading } = useLegacyTopicsWithLanguage(8);
 
+  // Calculate date ranges and temporal context
+  const getDateRangeFromData = (): { startDate: string; endDate: string } | undefined => {
+    if (!newsData || !Array.isArray(newsData) || newsData.length === 0) return undefined;
+
+    const dates = newsData
+      .map((item: any) => item.published_date)
+      .filter((date: any) => date)
+      .sort();
+
+    return dates.length > 0 ? {
+      startDate: dates[0],
+      endDate: dates[dates.length - 1]
+    } : undefined;
+  };
+
+  const dateRange = getDateRangeFromData();
+  const totalArticles = generalStats?.total_articles || newsData?.length || 0;
+
   const handleFilterChange = (newFilters: Partial<FilterState>) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
   };
@@ -67,6 +85,14 @@ const LegacyAnalyticsPage: React.FC = () => {
         <p>
           Dashboard completo de análisis de noticias sobre cáncer de mama con datos reales
           procesados por nuestro sistema de inteligencia artificial.
+          {totalArticles > 0 && (
+            <><br />
+            <strong>Dataset actual:</strong> {totalArticles} artículos
+            {dateRange && (
+              <> desde {new Date(dateRange.startDate).toLocaleDateString('es-ES')} hasta {new Date(dateRange.endDate).toLocaleDateString('es-ES')}</>
+            )}
+            </>
+          )}
         </p>
 
         <button
@@ -78,40 +104,55 @@ const LegacyAnalyticsPage: React.FC = () => {
         </button>
       </div>
 
-      {/* 4.1 Resumen Semanal */}
+      {/* 4.1 Resumen General */}
       <section className="legacy-analytics-section">
-        <h2 className="legacy-section-title">📈 Resumen Semanal</h2>
+        <h2 className="legacy-section-title">📈 Resumen General</h2>
         <p className="legacy-section-description">
-          Visión general y cuantitativa de la cobertura informativa durante la semana actual.
+          {dateRange
+            ? `Visión general y cuantitativa de la cobertura informativa desde ${new Date(dateRange.startDate).toLocaleDateString('es-ES')} hasta ${new Date(dateRange.endDate).toLocaleDateString('es-ES')}.`
+            : 'Visión general y cuantitativa de la cobertura informativa en el dataset histórico acumulado.'
+          }
         </p>
 
         {/* a) Tarjetas de Indicadores */}
         <div className="legacy-analytics-grid">
           <LegacyKPICard
             title="Noticias Recolectadas"
-            value={generalStats?.total_articles || 0}
-            subtitle="Artículos digitales detectados"
+            value={totalArticles > 0 ? totalArticles : 'Sin datos'}
+            subtitle={dateRange
+              ? `Del ${new Date(dateRange.startDate).toLocaleDateString('es-ES')} al ${new Date(dateRange.endDate).toLocaleDateString('es-ES')}`
+              : 'Datos históricos acumulados'
+            }
             icon="fa-newspaper"
           />
 
           <LegacyKPICard
             title="Idioma Dominante"
-            value={`${generalStats?.dominant_language || 'Sin datos'}`}
-            subtitle={`${generalStats?.language_percentage || 0}% del contenido`}
+            value={generalStats?.dominant_language || 'No disponible'}
+            subtitle={generalStats?.language_percentage
+              ? `${generalStats.language_percentage}% del contenido`
+              : 'Información no disponible'
+            }
             icon="fa-language"
           />
 
           <LegacyKPICard
             title="País Más Activo"
-            value={generalStats?.most_active_country || 'Sin datos'}
-            subtitle="Mayor generación de publicaciones"
+            value={generalStats?.most_active_country || 'No disponible'}
+            subtitle={generalStats?.most_active_country
+              ? "Mayor generación de publicaciones"
+              : "Información geográfica no disponible"
+            }
             icon="fa-flag"
           />
 
           <LegacyKPICard
             title="Medio Más Frecuente"
-            value={generalStats?.most_frequent_source || 'Sin datos'}
-            subtitle="Fuente con mayor cantidad de artículos"
+            value={generalStats?.most_frequent_source || 'No disponible'}
+            subtitle={generalStats?.most_frequent_source
+              ? "Fuente con mayor cantidad de artículos"
+              : "Información de fuentes no disponible"
+            }
             icon="fa-globe"
           />
         </div>
@@ -138,7 +179,10 @@ const LegacyAnalyticsPage: React.FC = () => {
           <h3><i className="fas fa-robot"></i> Resumen Automatizado (IA)</h3>
           <p>
             {generalStats?.ai_summary ||
-            "No se pudo establecer conexión"}
+            (totalArticles > 0
+              ? `Análisis de ${totalArticles} artículos recopilados${dateRange ? ` desde ${new Date(dateRange.startDate).toLocaleDateString('es-ES')} hasta ${new Date(dateRange.endDate).toLocaleDateString('es-ES')}` : ' en el dataset actual'}. El sistema de IA está procesando la información para generar insights automáticos.`
+              : "No hay datos suficientes para generar un resumen automatizado. Verifique la conexión con la API o la disponibilidad de datos."
+            )}
           </p>
         </div>
       </section>
@@ -163,8 +207,10 @@ const LegacyAnalyticsPage: React.FC = () => {
           <LegacyTopicsChart
             data={topicsWithLanguageData || []}
             loading={topicsWithLanguageLoading}
-            title="Frecuencia Semanal por Temas"
+            title="Frecuencia por Temas"
             showLanguageBreakdown={true}
+            dateRange={dateRange}
+            totalArticles={totalArticles}
           />
         </div>
 
@@ -173,7 +219,10 @@ const LegacyAnalyticsPage: React.FC = () => {
           <h3><i className="fas fa-robot"></i> Análisis Temático (IA)</h3>
           <p>
             {topicsData?.ai_summary ||
-            "No se pudo establecer conexión"}
+            (topicsWithLanguageData && topicsWithLanguageData.length > 0
+              ? `Análisis temático de ${topicsWithLanguageData.reduce((sum: number, item: any) => sum + (item.count || 0), 0)} artículos categorizados en ${topicsWithLanguageData.length} temas principales. El sistema está procesando patrones y tendencias temáticas.`
+              : "No hay datos temáticos suficientes para generar análisis automatizado. Los artículos pueden estar en proceso de categorización."
+            )}
           </p>
         </div>
       </section>
@@ -217,7 +266,10 @@ const LegacyAnalyticsPage: React.FC = () => {
           <h3><i className="fas fa-robot"></i> Análisis de Tono (IA)</h3>
           <p>
             {sentimentData?.ai_summary ||
-            "No se pudo establecer conexión"}
+            (sentimentData && sentimentData.length > 0
+              ? `Análisis de sentimiento procesado en ${sentimentData.reduce((sum: number, item: any) => sum + (item.count || 0), 0)} artículos. El sistema está evaluando la carga emocional y distribución tonal del contenido.`
+              : "No hay datos de sentimiento suficientes para generar análisis automatizado. Los artículos pueden estar en proceso de análisis de PLN."
+            )}
           </p>
         </div>
       </section>
@@ -253,7 +305,10 @@ const LegacyAnalyticsPage: React.FC = () => {
           <h3><i className="fas fa-robot"></i> Análisis Geográfico (IA)</h3>
           <p>
             {geographicData?.ai_summary ||
-            "No se pudo establecer conexión"}
+            (geographicData && geographicData.length > 0
+              ? `Análisis geográfico de ${geographicData.reduce((sum: number, item: any) => sum + (item.total || 0), 0)} artículos distribuidos en ${geographicData.length} países. El sistema está evaluando patrones de cobertura internacional.`
+              : "No hay datos geográficos suficientes para generar análisis automatizado. La información de ubicación puede estar en proceso de geocodificación."
+            )}
           </p>
         </div>
       </section>

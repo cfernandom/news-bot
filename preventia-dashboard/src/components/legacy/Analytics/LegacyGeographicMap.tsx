@@ -40,18 +40,29 @@ const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({
 }) => {
   const [mapLoaded, setMapLoaded] = useState(false);
 
+  // Handle different empty states
+  const hasRealData = data && data.length > 0;
+  const hasValidCoordinates = hasRealData && data.some(item => item.lat !== 0 && item.lon !== 0);
+
   // Calculate circle size based on article count
   const getCircleSize = (count: number) => {
-    const maxCount = Math.max(...data.map(d => d.total));
+    if (!hasRealData) return 8;
+
+    const validCounts = data.filter(d => d.total && d.total > 0).map(d => d.total);
+    const maxCount = validCounts.length > 0 ? Math.max(...validCounts) : 1;
     const minSize = 8;
     const maxSize = 30;
-    return minSize + ((count / maxCount) * (maxSize - minSize));
+    const safeCount = Math.max(count || 0, 1);
+    return minSize + ((safeCount / maxCount) * (maxSize - minSize));
   };
 
   // Get color based on article count intensity
   const getCircleColor = (count: number) => {
-    const maxCount = Math.max(...data.map(d => d.total));
-    const intensity = count / maxCount;
+    if (!hasRealData) return '#93c5fd';
+
+    const validCounts = data.filter(d => d.total && d.total > 0).map(d => d.total);
+    const maxCount = validCounts.length > 0 ? Math.max(...validCounts) : 1;
+    const intensity = (count || 0) / maxCount;
 
     if (intensity > 0.7) {
       return '#1e40af'; // Dark blue
@@ -76,7 +87,7 @@ const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({
     );
   }
 
-  if (!data || data.length === 0) {
+  if (!hasRealData) {
     return (
       <div className="legacy-chart-container">
         <h3>Cobertura Geográfica</h3>
@@ -85,6 +96,21 @@ const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({
           <p style={{ color: 'var(--text-secondary)', textAlign: 'center' }}>
             No se pudieron obtener los datos geográficos.<br />
             Verifique la conexión con la API.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!hasValidCoordinates) {
+    return (
+      <div className="legacy-chart-container">
+        <h3>Cobertura Geográfica</h3>
+        <div style={{ height: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <i className="fas fa-map-marker-alt" style={{ fontSize: '48px', color: '#6b7280', marginBottom: '20px' }}></i>
+          <p style={{ color: 'var(--text-secondary)', textAlign: 'center' }}>
+            Los datos geográficos no contienen coordenadas válidas.<br />
+            No es posible mostrar el mapa en este momento.
           </p>
         </div>
       </div>
@@ -141,13 +167,13 @@ const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({
                   <Popup>
                     <div className="legacy-map-popup">
                       <h4 style={{ margin: '0 0 8px 0', color: 'var(--primary-blue)' }}>
-                        {location.country}
+                        {location.country || 'País desconocido'}
                       </h4>
                       <p style={{ margin: '4px 0', fontSize: '14px' }}>
-                        <strong>Artículos:</strong> {location.total}
+                        <strong>Artículos:</strong> {location.total || 0}
                       </p>
                       <p style={{ margin: '4px 0', fontSize: '14px' }}>
-                        <strong>Idioma:</strong> {location.idioma}
+                        <strong>Idioma:</strong> {location.idioma || 'No especificado'}
                       </p>
                       <p style={{ margin: '4px 0', fontSize: '14px' }}>
                         <strong>Cobertura:</strong>
@@ -159,8 +185,15 @@ const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({
                           color: 'white',
                           fontSize: '12px'
                         }}>
-                          {location.total > Math.max(...data.map(d => d.total)) * 0.7 ? 'Alta' :
-                           location.total > Math.max(...data.map(d => d.total)) * 0.4 ? 'Media' : 'Baja'}
+                          {(() => {
+                            const validCounts = data.filter(d => d.total && d.total > 0).map(d => d.total);
+                            const maxCount = validCounts.length > 0 ? Math.max(...validCounts) : 1;
+                            const total = location.total || 0;
+
+                            if (total > maxCount * 0.7) return 'Alta';
+                            if (total > maxCount * 0.4) return 'Media';
+                            return 'Baja';
+                          })()}
                         </span>
                       </p>
                     </div>
@@ -175,15 +208,15 @@ const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({
       {/* Map Stats */}
       <div className="legacy-map-stats">
         <div className="map-stat">
-          <strong>{data.length}</strong>
+          <strong>{data.length || 0}</strong>
           <span>Países</span>
         </div>
         <div className="map-stat">
-          <strong>{data.reduce((sum, item) => sum + item.total, 0)}</strong>
+          <strong>{data.reduce((sum, item) => sum + (item.total || 0), 0)}</strong>
           <span>Artículos</span>
         </div>
         <div className="map-stat">
-          <strong>{data.filter(item => item.idioma === 'Español').length}</strong>
+          <strong>{data.filter(item => item.idioma === 'Español' || item.idioma === 'Spanish').length}</strong>
           <span>En Español</span>
         </div>
       </div>
