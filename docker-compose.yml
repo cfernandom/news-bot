@@ -14,7 +14,7 @@ services:
     ports:
       - "5433:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-preventia}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-preventia} -d ${POSTGRES_DB:-preventia_news}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -53,9 +53,9 @@ services:
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - DATABASE_URL=postgresql://${POSTGRES_USER:-preventia}:${POSTGRES_PASSWORD:-preventia123}@postgres:5432/${POSTGRES_DB:-preventia_news}
-      - DAYS_INTERVAL=${DAYS_INTERVAL:-3}
-      - WEEKLY_DAY=${WEEKLY_DAY:-1}
-      - WEEKLY_TIME=${WEEKLY_TIME:-06:00}
+      - DAYS_INTERVAL=${DAYS_INTERVAL}
+      - WEEKLY_DAY=${WEEKLY_DAY}
+      - WEEKLY_TIME=${WEEKLY_TIME}
     volumes:
       - ./logs:/app/logs
     depends_on:
