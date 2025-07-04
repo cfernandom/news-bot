@@ -20,16 +20,16 @@ interface FilterState {
 }
 
 interface NewsItem {
-  id: number;
+  id: string;
   title: string;
-  country?: string;
-  language?: string;
-  date?: string;
+  country: string;
+  language: string;
+  date: string;
   published_at?: string;
-  topic?: string;
-  sentiment?: string;
-  url?: string;
-  source?: string;
+  topic: string;
+  sentiment: string;
+  url: string;
+  source: string;
   summary?: string;
 }
 
@@ -100,9 +100,9 @@ const LegacyAnalyticsPage: React.FC = () => {
   const getFilteredDateRange = (): { startDate: string; endDate: string } | undefined => {
     if (!newsData || !Array.isArray(newsData) || newsData.length === 0) return undefined;
 
-    const dates = newsData
+    const dates: string[] = newsData
       .map((item: NewsItem) => item.date || item.published_at)
-      .filter((date: string | undefined) => date)
+      .filter((date: string | undefined): date is string => date !== undefined)
       .sort();
 
     return dates.length > 0 ? {
