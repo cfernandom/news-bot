@@ -1,3 +1,10 @@
+---
+version: "1.0"
+last_updated: "2025-07-04"
+maintainer: "Claude (Technical Director)"
+status: "active"
+---
+
 # Documentation Standards - PreventIA News Analytics
 
 ## Overview
@@ -69,7 +76,7 @@ python scripts/verify_docs.py --repo-root /path/to/repo
 
 # ❌ Incorrect
 [System Overview](../architecture/system-overview.md)  # No relative paths
-[ADR 001](decisions/ADR 001.md)  # No spaces in filenames
+[ADR 001](decisions/ADR-001.md)  # No spaces in filenames
 ```
 
 #### External Links

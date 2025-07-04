@@ -1,3 +1,10 @@
+---
+version: "1.0"
+last_updated: "2025-07-04"
+maintainer: "Claude (Technical Director)"
+status: "active"
+---
+
 # Testing Structure Standard - PreventIA News Analytics
 
 ## Directory Structure

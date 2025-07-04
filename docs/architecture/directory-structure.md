@@ -1,23 +1,31 @@
+---
+version: "1.0"
+last_updated: "2025-07-04"
+maintainer: "Claude (Technical Director)"
+status: "active"
+language: "English"
+---
+
 # Directory Structure - PreventIA News Analytics
 
-Esta documentación registra la estructura completa de directorios y archivos del proyecto NewsBot transformado a sistema de analytics.
+This documentation records the complete directory structure and files of the NewsBot project transformed into an analytics system.
 
-## 📁 Estructura Principal
+## 📁 Main Structure
 
 ```
 news_bot_3/
-├── 📄 CLAUDE.md                    # Guía para Claude Code
-├── 📄 README.md                    # Documentación principal del proyecto
-├── 📄 DEPLOYMENT.md               # Guía de deployment
-├── 📄 requirements.txt            # Dependencias Python
-├── 📄 main.py                     # Entry point de la aplicación
-├── 📄 test_database.py           # Tests de base de datos
-├── 📄 .env.template              # Template de configuración
-├── 📄 docker-compose.yml         # Orquestación de containers
-├── 📄 Dockerfile                 # Imagen del servicio
-├── 📄 entrypoint.sh              # Script de entrada container
-├── 📄 run_bot.sh                 # Script de ejecución
-├── 📄 crontab.template           # Template para cron jobs
+├── 📄 CLAUDE.md                    # Claude Code guidance
+├── 📄 README.md                    # Main project documentation
+├── 📄 DEPLOYMENT.md               # Deployment guide
+├── 📄 requirements.txt            # Python dependencies
+├── 📄 main.py                     # Application entry point
+├── 📄 test_database.py           # Database tests
+├── 📄 .env.template              # Configuration template
+├── 📄 docker-compose.yml         # Container orchestration
+├── 📄 Dockerfile                 # Service image
+├── 📄 entrypoint.sh              # Container entry script
+├── 📄 run_bot.sh                 # Execution script
+├── 📄 crontab.template           # Cron jobs template
 │
 ├── 📁 docs/                      # Documentación completa
 ├── 📁 services/                  # Servicios del sistema

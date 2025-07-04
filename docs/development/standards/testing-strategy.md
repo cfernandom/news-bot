@@ -1,3 +1,10 @@
+---
+version: "1.0"
+last_updated: "2025-07-04"
+maintainer: "Claude (Technical Director)"
+status: "active"
+---
+
 # Testing Strategy - PreventIA News Analytics
 
 ## Executive Summary

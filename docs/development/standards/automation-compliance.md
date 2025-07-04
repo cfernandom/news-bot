@@ -329,11 +329,11 @@ FAILED gitleaks
 - hook id: gitleaks
 - exit code: 1
 
-Found potential secret: API_KEY="sk-..."
+Found potential secret: API_KEY="sk-placeholder-key"
 
 # ✅ Solution
 # Remove secrets and use environment variables
-echo "API_KEY=sk-actual-key" >> .env
+echo "API_KEY=your-actual-key" >> .env
 # Update code to use os.getenv("API_KEY")
 git add -u
 git commit -m "fix(security): move API key to environment variables"
