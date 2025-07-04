@@ -30,10 +30,13 @@ const LegacySentimentChart: React.FC<LegacySentimentChartProps> = ({
 }) => {
   // Transform data based on type
   const chartData = type === 'language'
-    ? [
-        { name: 'Inglés', value: 64, color: '#4A90E2' },
-        { name: 'Español', value: 36, color: '#F8BBD9' }
-      ]
+    ? data.map(item => ({
+        name: item.sentiment_label === 'english' ? 'Inglés' :
+              item.sentiment_label === 'spanish' ? 'Español' : 'Otros',
+        value: item.count,
+        color: item.sentiment_label === 'english' ? '#4A90E2' :
+               item.sentiment_label === 'spanish' ? '#F8BBD9' : '#9CA3AF'
+      }))
     : data.map(item => ({
         name: item.sentiment_label === 'positive' ? 'Positivo' :
               item.sentiment_label === 'negative' ? 'Negativo' : 'Neutro',
@@ -42,8 +45,11 @@ const LegacySentimentChart: React.FC<LegacySentimentChartProps> = ({
                item.sentiment_label === 'negative' ? '#ef4444' : '#6b7280'
       }));
 
+  // Filter out items with 0 value for better visualization
+  const filteredChartData = chartData.filter(item => item.value > 0);
+
   const COLORS = type === 'language'
-    ? ['#4A90E2', '#F8BBD9']
+    ? ['#4A90E2', '#F8BBD9', '#9CA3AF']
     : ['#10b981', '#ef4444', '#6b7280'];
 
   const CustomTooltip = ({ active, payload }: any) => {
@@ -81,10 +87,9 @@ const LegacySentimentChart: React.FC<LegacySentimentChartProps> = ({
     <div className="legacy-chart-container">
       <h3>{title}</h3>
       <ResponsiveContainer width="100%" height={400}>
-        <div data-testid="pie-chart">
-          <PieChart>
+        <PieChart>
           <Pie
-            data={chartData}
+            data={filteredChartData}
             cx="50%"
             cy="50%"
             labelLine={false}
@@ -93,14 +98,13 @@ const LegacySentimentChart: React.FC<LegacySentimentChartProps> = ({
             fill="#8884d8"
             dataKey="value"
           >
-            {chartData.map((entry, index) => (
+            {filteredChartData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />
           <Legend />
         </PieChart>
-        </div>
       </ResponsiveContainer>
     </div>
   );

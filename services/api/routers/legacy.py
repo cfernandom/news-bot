@@ -31,6 +31,26 @@ def format_legacy_response(
 
 def transform_article_to_legacy(article: Article) -> Dict[str, Any]:
     """Transform Article model to legacy format."""
+    # Map source URL to country
+    country_mapping = {
+        "breastcancer.org": "US",
+        "webmd.com": "US",
+        "curetoday.com": "US",
+        "news-medical.net": "UK",
+        "breastcancernow.org": "UK",
+        "medicalxpress.com": "DE",
+        "nature.com": "UK",
+        "sciencedaily.com": "US",
+    }
+
+    # Extract country from source URL
+    source_country = "Unknown"
+    if article.source and article.source.base_url:
+        for domain, country in country_mapping.items():
+            if domain in article.source.base_url:
+                source_country = country
+                break
+
     return {
         "id": str(article.id),
         "title": article.title,
@@ -39,8 +59,8 @@ def transform_article_to_legacy(article: Article) -> Dict[str, Any]:
         "date": article.published_at.strftime("%Y-%m-%d"),
         "topic": article.topic_category or "Unknown",
         "tone": article.sentiment_label or "neutral",  # sentiment_label -> tone
-        "country": "Unknown",  # TODO: extract from content or add to model
-        "language": "EN",  # TODO: detect language or add to model
+        "country": source_country,  # Real country from source mapping
+        "language": article.language or "en",  # Real language from database
     }
 
 
@@ -389,3 +409,135 @@ async def get_stats_geo_legacy(
         )
 
     return format_legacy_response(geo_data)
+
+
+@router.get("/analytics/language-distribution")
+async def get_language_distribution_legacy(
+    date_from: Optional[str] = Query(None, description="Start date"),
+    date_to: Optional[str] = Query(None, description="End date"),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """Legacy endpoint: Get language distribution from articles."""
+
+    # Query language distribution from articles table
+    query = select(Article.language, func.count()).filter(Article.language.isnot(None))
+
+    # Apply date filters
+    if date_from:
+        start_date = datetime.fromisoformat(date_from)
+        query = query.filter(Article.published_at >= start_date)
+
+    if date_to:
+        end_date = datetime.fromisoformat(date_to)
+        query = query.filter(Article.published_at <= end_date)
+
+    query = query.group_by(Article.language).order_by(desc(func.count()))
+
+    result = await db.execute(query)
+    raw_distribution = {row[0]: row[1] for row in result.fetchall()}
+
+    # Transform language codes to expected format
+    distribution = []
+    for lang_code, count in raw_distribution.items():
+        if lang_code and count > 0:
+            # Map language codes to expected format
+            if lang_code.lower() in ["en", "english"]:
+                sentiment_label = "english"
+            elif lang_code.lower() in ["es", "spanish", "español"]:
+                sentiment_label = "spanish"
+            else:
+                sentiment_label = "other"
+
+            distribution.append({"sentiment_label": sentiment_label, "count": count})
+
+    return format_legacy_response(distribution)
+
+
+@router.get("/stats/articles/daily")
+async def get_articles_daily_timeline_legacy(
+    days: int = Query(7, ge=1, le=30, description="Number of days"),
+    db_conn=Depends(get_db_connection),
+):
+    """Legacy endpoint: Get daily articles count over time."""
+
+    cutoff_date = (datetime.now(timezone.utc) - timedelta(days=days)).replace(
+        tzinfo=None
+    )
+
+    query = """
+    SELECT
+        DATE(published_at) as day,
+        COUNT(*) as count
+    FROM articles
+    WHERE published_at >= $1
+    GROUP BY DATE(published_at)
+    ORDER BY day
+    """
+
+    result = await db_conn.fetch(query, cutoff_date)
+
+    # Format for LegacyTrendChart
+    daily_data = []
+    for row in result:
+        daily_data.append(
+            {"day": row["day"].strftime("%Y-%m-%d"), "count": row["count"]}
+        )
+
+    return format_legacy_response(daily_data)
+
+
+@router.get("/stats/topics/language-breakdown")
+async def get_topics_language_breakdown_legacy(
+    weeks: int = Query(8, ge=1, le=52, description="Number of weeks"),
+    db_conn=Depends(get_db_connection),
+):
+    """Legacy endpoint: Get topics distribution with language breakdown."""
+
+    # Use a broader date range since our data spans multiple weeks
+    cutoff_date = (datetime.now(timezone.utc) - timedelta(weeks=weeks)).replace(
+        tzinfo=None
+    )
+
+    query = """
+    SELECT
+        a.topic_category,
+        a.language,
+        COUNT(*) as count
+    FROM articles a
+    WHERE a.published_at >= $1
+        AND a.topic_category IS NOT NULL
+        AND a.language IS NOT NULL
+    GROUP BY a.topic_category, a.language
+    ORDER BY a.topic_category, a.language
+    """
+
+    result = await db_conn.fetch(query, cutoff_date)
+
+    # Organize data by topic with language breakdown
+    topics_data = {}
+    for row in result:
+        topic = row["topic_category"]
+        language = row["language"]
+        count = row["count"]
+
+        if topic not in topics_data:
+            topics_data[topic] = {
+                "topic_category": topic,
+                "english": 0,
+                "spanish": 0,
+                "total": 0,
+            }
+
+        # Map language codes to expected format
+        if language and language.upper() == "EN":
+            topics_data[topic]["english"] = count
+        elif language and language.upper() == "ES":
+            topics_data[topic]["spanish"] = count
+
+        topics_data[topic]["total"] += count
+
+    # Convert to list and sort by total
+    topics_list = list(topics_data.values())
+    topics_list.sort(key=lambda x: x["total"], reverse=True)
+
+    return format_legacy_response(topics_list)

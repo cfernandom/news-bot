@@ -9,7 +9,7 @@ import LegacyFilterBar from '../../components/legacy/Common/LegacyFilterBar';
 import LegacyNewsTable from '../../components/legacy/Analytics/LegacyNewsTable';
 import LegacyNewsModal from '../../components/legacy/Analytics/LegacyNewsModal';
 import LegacyTrendChart from '../../components/legacy/Analytics/LegacyTrendChart';
-import { useLegacyGeneralStats, useLegacySentimentStats, useLegacyTopicsStats, useLegacyGeographicData, useLegacyNews } from '../../hooks/useLegacyData';
+import { useLegacyGeneralStats, useLegacySentimentStats, useLegacyTopicsStats, useLegacyGeographicData, useLegacyNews, useLegacyLanguageStats, useLegacyDailyArticles, useLegacySentimentTimeline, useLegacyTopicsWithLanguage } from '../../hooks/useLegacyData';
 
 interface FilterState {
   country: string;
@@ -35,6 +35,10 @@ const LegacyAnalyticsPage: React.FC = () => {
   const { data: topicsData, isLoading: topicsLoading } = useLegacyTopicsStats(filters);
   const { data: geographicData, isLoading: geoLoading } = useLegacyGeographicData(filters);
   const { data: newsData, isLoading: newsLoading } = useLegacyNews(filters);
+  const { data: languageData, isLoading: languageLoading } = useLegacyLanguageStats();
+  const { data: dailyArticlesData, isLoading: dailyArticlesLoading } = useLegacyDailyArticles(14);
+  const { data: sentimentTimelineData, isLoading: sentimentTimelineLoading } = useLegacySentimentTimeline(8);
+  const { data: topicsWithLanguageData, isLoading: topicsWithLanguageLoading } = useLegacyTopicsWithLanguage(8);
 
   const handleFilterChange = (newFilters: Partial<FilterState>) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
@@ -44,7 +48,7 @@ const LegacyAnalyticsPage: React.FC = () => {
     setSelectedNews(news);
   };
 
-  if (statsLoading || sentimentLoading || topicsLoading) {
+  if (statsLoading || sentimentLoading || topicsLoading || languageLoading || dailyArticlesLoading || sentimentTimelineLoading || topicsWithLanguageLoading) {
     return (
       <div className="legacy-analytics-page">
         <div className="legacy-hero">
@@ -85,28 +89,28 @@ const LegacyAnalyticsPage: React.FC = () => {
         <div className="legacy-analytics-grid">
           <LegacyKPICard
             title="Noticias Recolectadas"
-            value={generalStats?.total_articles || 106}
+            value={generalStats?.total_articles || 0}
             subtitle="Artículos digitales detectados"
             icon="fa-newspaper"
           />
 
           <LegacyKPICard
             title="Idioma Dominante"
-            value={`${generalStats?.dominant_language || 'Inglés'}`}
-            subtitle={`${generalStats?.language_percentage || 64}% del contenido`}
+            value={`${generalStats?.dominant_language || 'Sin datos'}`}
+            subtitle={`${generalStats?.language_percentage || 0}% del contenido`}
             icon="fa-language"
           />
 
           <LegacyKPICard
             title="País Más Activo"
-            value={generalStats?.most_active_country || 'Estados Unidos'}
+            value={generalStats?.most_active_country || 'Sin datos'}
             subtitle="Mayor generación de publicaciones"
             icon="fa-flag"
           />
 
           <LegacyKPICard
             title="Medio Más Frecuente"
-            value={generalStats?.most_frequent_source || 'WebMD'}
+            value={generalStats?.most_frequent_source || 'Sin datos'}
             subtitle="Fuente con mayor cantidad de artículos"
             icon="fa-globe"
           />
@@ -115,16 +119,16 @@ const LegacyAnalyticsPage: React.FC = () => {
         {/* b) Gráficos Complementarios */}
         <div className="legacy-charts-main-grid">
           <LegacySentimentChart
-            data={[]}
-            loading={false}
+            data={languageData || []}
+            loading={languageLoading}
             title="Distribución de Idiomas"
             type="language"
             showPieChart={true}
           />
 
           <LegacyTrendChart
-            data={generalStats?.daily_articles || []}
-            loading={statsLoading}
+            data={dailyArticlesData || []}
+            loading={dailyArticlesLoading}
             title="Noticias por Día"
           />
         </div>
@@ -134,7 +138,7 @@ const LegacyAnalyticsPage: React.FC = () => {
           <h3><i className="fas fa-robot"></i> Resumen Automatizado (IA)</h3>
           <p>
             {generalStats?.ai_summary ||
-            "Esta semana se observó un incremento del 12% en las publicaciones sobre prevención de cáncer de mama, principalmente en medios estadounidenses. El tono general se mantiene neutral-informativo (67%), con un ligero aumento en contenido positivo relacionado con avances en diagnóstico temprano. Se destaca mayor actividad en portales especializados en salud durante los días martes y miércoles."}
+            "No se pudo establecer conexión"}
           </p>
         </div>
       </section>
@@ -157,8 +161,8 @@ const LegacyAnalyticsPage: React.FC = () => {
         {/* b) Visualización de Temas */}
         <div className="legacy-chart-container">
           <LegacyTopicsChart
-            data={topicsData || []}
-            loading={topicsLoading}
+            data={topicsWithLanguageData || []}
+            loading={topicsWithLanguageLoading}
             title="Frecuencia Semanal por Temas"
             showLanguageBreakdown={true}
           />
@@ -169,7 +173,7 @@ const LegacyAnalyticsPage: React.FC = () => {
           <h3><i className="fas fa-robot"></i> Análisis Temático (IA)</h3>
           <p>
             {topicsData?.ai_summary ||
-            "El tema más abordado esta semana fue Prevención (28% del contenido), seguido por Tratamiento (23%) y Diagnóstico (19%). Se observa mayor énfasis en investigación científica en medios estadounidenses, mientras que los portales latinoamericanos priorizan contenido sobre política pública y acceso a tratamientos."}
+            "No se pudo establecer conexión"}
           </p>
         </div>
       </section>
@@ -201,8 +205,8 @@ const LegacyAnalyticsPage: React.FC = () => {
           />
 
           <LegacyTrendChart
-            data={sentimentData?.temporal_evolution || []}
-            loading={sentimentLoading}
+            data={sentimentTimelineData || []}
+            loading={sentimentTimelineLoading}
             title="Evolución Temporal del Tono"
             showSentimentLines={true}
           />
@@ -213,7 +217,7 @@ const LegacyAnalyticsPage: React.FC = () => {
           <h3><i className="fas fa-robot"></i> Análisis de Tono (IA)</h3>
           <p>
             {sentimentData?.ai_summary ||
-            "Se mantiene un tono mayoritariamente neutro (53% del contenido analizado). Se observa un incremento en publicaciones positivas relacionadas con avances en inmunoterapia y diagnóstico por IA. La negatividad se concentra principalmente en artículos sobre disparidades de acceso a tratamientos y estadísticas de mortalidad."}
+            "No se pudo establecer conexión"}
           </p>
         </div>
       </section>
@@ -249,7 +253,7 @@ const LegacyAnalyticsPage: React.FC = () => {
           <h3><i className="fas fa-robot"></i> Análisis Geográfico (IA)</h3>
           <p>
             {geographicData?.ai_summary ||
-            "Estados Unidos lideró en volumen informativo con 45% del contenido total. México y Colombia mostraron alta actividad en temas de política pública sanitaria. En Europa, España incrementó su presencia mediática con énfasis en investigación clínica y programas de detección temprana."}
+            "No se pudo establecer conexión"}
           </p>
         </div>
       </section>

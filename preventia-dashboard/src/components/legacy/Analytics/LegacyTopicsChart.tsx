@@ -53,8 +53,8 @@ const LegacyTopicsChart: React.FC<LegacyTopicsChartProps> = ({
         .map(item => ({
           name: topicTranslations[item.topic_category.toLowerCase()] ||
                 item.topic_category.charAt(0).toUpperCase() + item.topic_category.slice(1),
-          español: Math.round(item.count * 0.36), // 36% Spanish
-          inglés: Math.round(item.count * 0.64), // 64% English
+          español: item.spanish || 0, // Use real Spanish count
+          inglés: item.english || 0, // Use real English count
           total: item.count,
         }))
     : data
@@ -99,6 +99,21 @@ const LegacyTopicsChart: React.FC<LegacyTopicsChartProps> = ({
             <i className="fas fa-spinner fa-spin" style={{ fontSize: '24px', color: 'var(--primary-blue)' }}></i>
             <p style={{ marginTop: '10px', color: 'var(--text-secondary)' }}>Cargando datos...</p>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="legacy-chart-container">
+        <h3>{title}</h3>
+        <div style={{ height: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <i className="fas fa-exclamation-triangle" style={{ fontSize: '48px', color: '#f59e0b', marginBottom: '20px' }}></i>
+          <p style={{ color: 'var(--text-secondary)', textAlign: 'center' }}>
+            No se pudieron obtener los datos de temas.<br />
+            Verifique la conexión con la API.
+          </p>
         </div>
       </div>
     );

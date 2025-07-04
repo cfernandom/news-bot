@@ -50,26 +50,24 @@ const LegacyTrendChart: React.FC<LegacyTrendChartProps> = ({
     );
   }
 
-  // Default data for demonstration
-  const defaultBarData = [
-    { day: 'Lunes', count: 18 },
-    { day: 'Martes', count: 24 },
-    { day: 'Miércoles', count: 21 },
-    { day: 'Jueves', count: 16 },
-    { day: 'Viernes', count: 14 },
-    { day: 'Sábado', count: 8 },
-    { day: 'Domingo', count: 5 },
-  ];
+  const hasRealData = data && data.length > 0;
 
-  const defaultSentimentData = [
-    { week: 'Sem 20', positive: 25, neutral: 60, negative: 15 },
-    { week: 'Sem 21', positive: 30, neutral: 55, negative: 15 },
-    { week: 'Sem 22', positive: 28, neutral: 57, negative: 15 },
-    { week: 'Sem 23', positive: 32, neutral: 53, negative: 15 },
-    { week: 'Sem 24', positive: 27, neutral: 58, negative: 15 },
-  ];
+  if (!hasRealData) {
+    return (
+      <div className="legacy-chart-container">
+        <h3>{title}</h3>
+        <div style={{ height: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <i className="fas fa-chart-line" style={{ fontSize: '48px', color: '#6b7280', marginBottom: '20px' }}></i>
+          <p style={{ color: 'var(--text-secondary)', textAlign: 'center' }}>
+            No se pudieron obtener los datos de tendencias.<br />
+            Verifique la conexión con la API.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
-  const chartData = data && data.length > 0 ? data : (showSentimentLines ? defaultSentimentData : defaultBarData);
+  const chartData = data;
 
   const renderBarChart = () => (
     <ResponsiveContainer width="100%" height={300}>
@@ -150,19 +148,18 @@ const LegacyTrendChart: React.FC<LegacyTrendChartProps> = ({
   return (
     <div className="legacy-chart-container">
       <h3>{title}</h3>
+
       {showSentimentLines ? renderSentimentChart() : renderBarChart()}
 
       {/* Chart insights */}
       <div className="legacy-chart-insights">
         {showSentimentLines ? (
           <p>
-            <strong>Tendencia:</strong> El sentimiento neutral se mantiene estable (~55%),
-            mientras que el contenido positivo muestra ligeras variaciones semanales.
+            <strong>Tendencia:</strong> Análisis basado en datos reales de evolución temporal del sentimiento.
           </p>
         ) : (
           <p>
-            <strong>Patrón:</strong> Mayor actividad informativa durante días laborales,
-            con picos los martes y miércoles.
+            <strong>Patrón:</strong> Análisis basado en datos reales de distribución temporal de artículos.
           </p>
         )}
       </div>

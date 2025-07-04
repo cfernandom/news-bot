@@ -76,6 +76,21 @@ const LegacyGeographicMap: React.FC<LegacyGeographicMapProps> = ({
     );
   }
 
+  if (!data || data.length === 0) {
+    return (
+      <div className="legacy-chart-container">
+        <h3>Cobertura Geográfica</h3>
+        <div style={{ height: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <i className="fas fa-globe-americas" style={{ fontSize: '48px', color: '#6b7280', marginBottom: '20px' }}></i>
+          <p style={{ color: 'var(--text-secondary)', textAlign: 'center' }}>
+            No se pudieron obtener los datos geográficos.<br />
+            Verifique la conexión con la API.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="legacy-chart-container">
       <h3>Cobertura Geográfica</h3>

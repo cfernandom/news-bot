@@ -37,71 +37,27 @@ const LegacyNewsTable: React.FC<LegacyNewsTableProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Default data for demonstration
-  const defaultData: NewsItem[] = [
-    {
-      id: '1',
-      title: 'Breakthrough in Early Breast Cancer Detection Using AI',
-      country: 'US',
-      language: 'en',
-      date: '2024-06-15',
-      topic: 'diagnosis',
-      sentiment: 'positive',
-      url: 'https://example.com/article1',
-      source: 'WebMD',
-      summary: 'Investigadores desarrollan nueva tecnología de IA para detección temprana.',
-    },
-    {
-      id: '2',
-      title: 'Nuevo tratamiento inmunoterapéutico muestra resultados prometedores',
-      country: 'ES',
-      language: 'es',
-      date: '2024-06-14',
-      topic: 'treatment',
-      sentiment: 'positive',
-      url: 'https://example.com/article2',
-      source: 'Medical News',
-      summary: 'Ensayo clínico fase III demuestra eficacia del 85% en pacientes.',
-    },
-    {
-      id: '3',
-      title: 'Rising Breast Cancer Rates in Young Women Concern Experts',
-      country: 'US',
-      language: 'en',
-      date: '2024-06-13',
-      topic: 'public_policy',
-      sentiment: 'negative',
-      url: 'https://example.com/article3',
-      source: 'Health News',
-      summary: 'Estadísticas muestran aumento preocupante en mujeres menores de 40.',
-    },
-    {
-      id: '4',
-      title: 'Campaña de prevención alcanza 50,000 mujeres en Colombia',
-      country: 'CO',
-      language: 'es',
-      date: '2024-06-12',
-      topic: 'prevention',
-      sentiment: 'positive',
-      url: 'https://example.com/article4',
-      source: 'El Tiempo Salud',
-      summary: 'Programa nacional supera metas de cobertura en zonas rurales.',
-    },
-    {
-      id: '5',
-      title: 'Patient Stories: Surviving Triple-Negative Breast Cancer',
-      country: 'US',
-      language: 'en',
-      date: '2024-06-11',
-      topic: 'testimonials',
-      sentiment: 'neutral',
-      url: 'https://example.com/article5',
-      source: 'Cancer Support',
-      summary: 'Testimonios inspiradores de supervivientes comparten su experiencia.',
-    },
-  ];
+  const hasRealData = data && data.length > 0;
 
-  const newsData = data && data.length > 0 ? data : defaultData;
+  if (!hasRealData) {
+    return (
+      <div className="legacy-news-table">
+        <div className="legacy-table-header">
+          <h3>Noticias Filtradas</h3>
+          <p>0 resultados encontrados</p>
+        </div>
+        <div style={{ height: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <i className="fas fa-newspaper" style={{ fontSize: '48px', color: '#6b7280', marginBottom: '20px' }}></i>
+          <p style={{ color: 'var(--text-secondary)', textAlign: 'center' }}>
+            No se pudieron obtener los datos de noticias.<br />
+            Verifique la conexión con la API.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const newsData = data;
 
   // Filter data based on filters
   const filteredData = newsData.filter((item) => {
@@ -125,11 +81,39 @@ const LegacyNewsTable: React.FC<LegacyNewsTableProps> = ({
   const getCountryFlag = (country: string) => {
     const flags: Record<string, string> = {
       US: '🇺🇸',
+      UK: '🇬🇧',
+      DE: '🇩🇪',
       CO: '🇨🇴',
       ES: '🇪🇸',
       MX: '🇲🇽',
+      Unknown: '🌍',
     };
     return flags[country] || '🌍';
+  };
+
+  const getCountryName = (country: string) => {
+    const names: Record<string, string> = {
+      US: 'Estados Unidos',
+      UK: 'Reino Unido',
+      DE: 'Alemania',
+      CO: 'Colombia',
+      ES: 'España',
+      MX: 'México',
+      Unknown: 'Desconocido',
+    };
+    return names[country] || country;
+  };
+
+  const getLanguageName = (language: string) => {
+    const languages: Record<string, string> = {
+      en: 'Inglés',
+      es: 'Español',
+      de: 'Alemán',
+      fr: 'Francés',
+      it: 'Italiano',
+      pt: 'Portugués',
+    };
+    return languages[language.toLowerCase()] || language;
   };
 
   const getTopicLabel = (topic: string) => {
@@ -171,6 +155,7 @@ const LegacyNewsTable: React.FC<LegacyNewsTableProps> = ({
       <div className="legacy-table-header">
         <h3>Noticias Filtradas</h3>
         <p>{filteredData.length} resultados encontrados</p>
+
       </div>
 
       <div className="legacy-table-container">
@@ -205,12 +190,12 @@ const LegacyNewsTable: React.FC<LegacyNewsTableProps> = ({
                   </td>
                   <td>
                     <span className="legacy-country">
-                      {getCountryFlag(item.country)} {item.country}
+                      {getCountryFlag(item.country)} {getCountryName(item.country)}
                     </span>
                   </td>
                   <td>
                     <span className="legacy-language">
-                      {item.language === 'en' ? 'Inglés' : 'Español'}
+                      {getLanguageName(item.language)}
                     </span>
                   </td>
                   <td>{new Date(item.date).toLocaleDateString('es-ES')}</td>
