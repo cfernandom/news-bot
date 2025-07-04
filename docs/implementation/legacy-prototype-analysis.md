@@ -400,10 +400,10 @@ GET /api/articles/              → GET /api/v1/news
 GET /api/analytics/sentiment/   → GET /api/v1/stats/tones
 GET /api/analytics/topics/      → GET /api/v1/stats/topics
 
-// Missing critical endpoints
-GET /api/v1/export/news.csv     # ❌ FALTA
-GET /api/v1/export/news.xlsx    # ❌ FALTA
-POST /api/v1/export/report      # ❌ FALTA
+// Export endpoints status (Updated 2025-07-04)
+GET /api/v1/export/news.csv     # ✅ IMPLEMENTADO - CSV con 106 artículos
+GET /api/v1/export/news.xlsx    # ✅ IMPLEMENTADO - Excel con 2 hojas (datos + resumen)
+POST /api/v1/export/report      # ✅ IMPLEMENTADO - PDF con analytics comprensivos
 ```
 
 ### Response Format Transformation
@@ -433,7 +433,7 @@ POST /api/v1/export/report      # ❌ FALTA
 - [ ] **8 páginas navegables** con React Router
 - [ ] **Carousel automático** con 4 slides
 - [ ] **Analytics dashboard** con datos reales (106 artículos)
-- [ ] **Export functionality** (CSV/XLSX/PDF)
+- [x] **Export functionality** (CSV/XLSX/PDF) - ✅ COMPLETADO 2025-07-04
 - [ ] **Geographic map** interactivo
 - [ ] **Contact form** funcional
 - [ ] **Mobile responsive** design
