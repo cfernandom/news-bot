@@ -87,6 +87,10 @@ const LegacyTrendChart: React.FC<LegacyTrendChartProps> = ({
             backgroundColor: 'var(--legacy-card-bg)',
             border: '1px solid var(--legacy-border)',
             borderRadius: '8px',
+            color: 'var(--text-primary)',
+            fontSize: '14px',
+            fontWeight: '500',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
           }}
         />
         <Bar
@@ -114,6 +118,10 @@ const LegacyTrendChart: React.FC<LegacyTrendChartProps> = ({
             backgroundColor: 'var(--legacy-card-bg)',
             border: '1px solid var(--legacy-border)',
             borderRadius: '8px',
+            color: 'var(--text-primary)',
+            fontSize: '14px',
+            fontWeight: '500',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
           }}
         />
         <Legend />
@@ -152,7 +160,7 @@ const LegacyTrendChart: React.FC<LegacyTrendChartProps> = ({
       {showSentimentLines ? renderSentimentChart() : renderBarChart()}
 
       {/* Chart insights */}
-      <div className="legacy-chart-insights">
+      {/* <div className="legacy-chart-insights">
         {showSentimentLines ? (
           <p>
             <strong>Tendencia:</strong> Análisis basado en datos reales de evolución temporal del sentimiento.
@@ -162,7 +170,7 @@ const LegacyTrendChart: React.FC<LegacyTrendChartProps> = ({
             <strong>Patrón:</strong> Análisis basado en datos reales de distribución temporal de artículos.
           </p>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

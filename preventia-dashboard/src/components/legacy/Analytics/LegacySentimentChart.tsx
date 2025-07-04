@@ -61,7 +61,7 @@ const LegacySentimentChart: React.FC<LegacySentimentChartProps> = ({
             {data.name}
           </p>
           <p style={{ color: 'var(--text-secondary)' }}>
-            {type === 'language' ? 'Porcentaje' : 'Artículos'}: {data.value}{type === 'language' ? '%' : ''}
+            {type === 'language' ? 'Artículos' : 'Artículos'}: {data.value}{type === 'language' ? '' : ''}
           </p>
         </div>
       );
