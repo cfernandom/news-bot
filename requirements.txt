@@ -48,6 +48,7 @@ python-multipart==0.0.17
 openpyxl==3.1.5
 PyJWT==2.10.1
 passlib[bcrypt]==1.7.4
+reportlab==4.4.2
 
 # Development automation tools (verified latest versions)
 pre-commit==4.2.0
