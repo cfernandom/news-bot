@@ -10,7 +10,7 @@ from typing import Dict, List, Optional
 from urllib.parse import urljoin, urlparse
 from urllib.robotparser import RobotFileParser
 
-import aiohttp
+import httpx
 
 logger = logging.getLogger(__name__)
 
@@ -39,19 +39,18 @@ class RobotsChecker:
     async def _fetch_robots_txt(self, robots_url: str) -> Optional[str]:
         """Fetch robots.txt content asynchronously."""
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                response = await client.get(
                     robots_url,
-                    timeout=aiohttp.ClientTimeout(total=10),
                     headers={"User-Agent": self.user_agent},
-                ) as response:
-                    if response.status == 200:
-                        return await response.text()
-                    else:
-                        logger.warning(
-                            f"robots.txt not found for {robots_url} (status: {response.status})"
-                        )
-                        return None
+                )
+                if response.status_code == 200:
+                    return response.text
+                else:
+                    logger.warning(
+                        f"robots.txt not found for {robots_url} (status: {response.status_code})"
+                    )
+                    return None
         except Exception as e:
             logger.error(f"Error fetching robots.txt from {robots_url}: {e}")
             return None

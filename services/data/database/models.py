@@ -95,6 +95,9 @@ class NewsSource(Base):
     terms_of_service_url = Column(String(500))
     terms_reviewed_at = Column(DateTime)
     legal_contact_email = Column(String(255))
+    fair_use_basis = Column(Text)  # Fair use documentation
+    compliance_score = Column(Numeric(3, 2))  # 0.00 to 1.00
+    last_compliance_check = Column(DateTime)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -197,17 +200,30 @@ class WeeklyAnalytics(Base):
 
     # Popular content
     top_keywords = Column(JSON)
-    trending_topics = Column(JSON)
 
-    # AI insights
-    ai_summary = Column(Text)
-    key_insights = Column(JSON)
 
-    # Metadata
-    generated_at = Column(DateTime, default=datetime.utcnow)
-    articles_processed = Column(Integer, default=0)
+class ComplianceAuditLog(Base):
+    __tablename__ = "compliance_audit_log"
 
-    __table_args__ = (UniqueConstraint("week_start", "week_end", name="_week_unique"),)
+    id = Column(Integer, primary_key=True)
+    table_name = Column(String(100), nullable=False)
+    record_id = Column(Integer, nullable=False)
+    action = Column(
+        String(50), nullable=False
+    )  # create, update, delete, validate, legal_review
+    old_values = Column(JSON)
+    new_values = Column(JSON)
+    legal_basis = Column(String(255), default="academic_research_fair_use")
+    performed_by = Column(String(255), nullable=False)
+    performed_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    # Compliance-specific fields
+    compliance_score_before = Column(Numeric(3, 2))
+    compliance_score_after = Column(Numeric(3, 2))
+    risk_level = Column(String(20))
+    violations_count = Column(Integer, default=0)
+
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 
 # Pydantic schemas (for API serialization and validation)
