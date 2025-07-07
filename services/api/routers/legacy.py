@@ -194,8 +194,14 @@ async def get_stats_summary_legacy(
     sentiment_result = await db.execute(sentiment_query)
     sentiment_dist = {row[0]: row[1] for row in sentiment_result.fetchall()}
 
-    # Countries count (simplified)
-    countries = 1  # TODO: implement proper country detection
+    # Countries count based on actual article data
+    countries_query = (
+        select(func.count(func.distinct(Article.country)))
+        .filter(date_filter)
+        .filter(Article.country.isnot(None))
+    )
+    countries_result = await db.execute(countries_query)
+    countries = countries_result.scalar() or 0
 
     summary = {
         "week": week or datetime.now().isocalendar()[1],
