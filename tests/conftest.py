@@ -28,7 +28,7 @@ from services.shared.models.article import Article
 # Configure test environment
 os.environ["DATABASE_URL"] = os.getenv(
     "TEST_DATABASE_URL",
-    "postgresql://preventia:test_password@localhost:5433/preventia_test",
+    "postgresql://preventia:preventia123@localhost:5433/preventia_test",
 )
 
 
