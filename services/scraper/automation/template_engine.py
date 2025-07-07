@@ -129,6 +129,7 @@ class ScraperTemplateEngine:
         self.jinja_env = Environment(loader=DictLoader(self.templates))
         self.last_template_used = "none"
         self.date_parsing_code = generate_date_parsing_code()
+        self.cms_detection_patterns = self._load_cms_detection_patterns()
 
     def _load_templates(self) -> Dict[str, str]:
         """
@@ -140,8 +141,15 @@ class ScraperTemplateEngine:
         return {
             "wordpress": self._get_wordpress_template(),
             "drupal": self._get_drupal_template(),
+            "joomla": self._get_joomla_template(),
+            "ghost": self._get_ghost_template(),
+            "hubspot": self._get_hubspot_template(),
+            "squarespace": self._get_squarespace_template(),
+            "webflow": self._get_webflow_template(),
             "custom_medical": self._get_custom_medical_template(),
             "news_site": self._get_news_site_template(),
+            "academic_journal": self._get_academic_journal_template(),
+            "magazine": self._get_magazine_template(),
             "generic_article": self._get_generic_article_template(),
             "generic": self._get_generic_template(),
         }
@@ -1321,3 +1329,421 @@ if __name__ == "__main__":
 
         # Default
         return "time, .date, .publish-date"
+
+    def _get_joomla_template(self) -> str:
+        """Joomla CMS scraper template with specific selectors."""
+        return self._get_wordpress_template().replace("WordPress", "Joomla").replace(
+            """                # WordPress-specific selectors
+                selectors = [
+                    "{{ article_link_selector }}",
+                    ".post-title a",
+                    ".entry-title a",
+                    "h2.post-title a",
+                    "h3.post-title a"
+                ]""",
+            """                # Joomla-specific selectors
+                selectors = [
+                    "{{ article_link_selector }}",
+                    ".item-title a",
+                    ".contentheading a",
+                    "h2.item-title a",
+                    ".article-title a",
+                    ".blog-item h2 a",
+                    ".category-item .item-title a"
+                ]"""
+        )
+
+    def _get_ghost_template(self) -> str:
+        """Ghost CMS scraper template with specific selectors."""
+        return self._get_wordpress_template().replace("WordPress", "Ghost").replace(
+            """                # WordPress-specific selectors
+                selectors = [
+                    "{{ article_link_selector }}",
+                    ".post-title a",
+                    ".entry-title a",
+                    "h2.post-title a",
+                    "h3.post-title a"
+                ]""",
+            """                # Ghost-specific selectors
+                selectors = [
+                    "{{ article_link_selector }}",
+                    ".post-card-title",
+                    ".post-title a",
+                    "h2.post-card-title a",
+                    ".post-feed .post-card-title",
+                    ".post-excerpt-title a",
+                    "article h2 a"
+                ]"""
+        )
+
+    def _get_hubspot_template(self) -> str:
+        """HubSpot CMS scraper template with specific selectors."""
+        return self._get_wordpress_template().replace("WordPress", "HubSpot").replace(
+            """                # WordPress-specific selectors
+                selectors = [
+                    "{{ article_link_selector }}",
+                    ".post-title a",
+                    ".entry-title a",
+                    "h2.post-title a",
+                    "h3.post-title a"
+                ]""",
+            """                # HubSpot-specific selectors
+                selectors = [
+                    "{{ article_link_selector }}",
+                    ".blog-post-title a",
+                    ".hs-blog-post-title a",
+                    ".blog-listing-item h3 a",
+                    ".hs-blog-post h2 a",
+                    ".blog-card-title a",
+                    ".content-wrapper h2 a"
+                ]"""
+        )
+
+    def _get_squarespace_template(self) -> str:
+        """Squarespace CMS scraper template with specific selectors."""
+        return self._get_wordpress_template().replace("WordPress", "Squarespace").replace(
+            """                # WordPress-specific selectors
+                selectors = [
+                    "{{ article_link_selector }}",
+                    ".post-title a",
+                    ".entry-title a",
+                    "h2.post-title a",
+                    "h3.post-title a"
+                ]""",
+            """                # Squarespace-specific selectors
+                selectors = [
+                    "{{ article_link_selector }}",
+                    ".blog-item-title a",
+                    ".entry-title a",
+                    ".blog-list-item h1 a",
+                    ".summary-title a",
+                    ".blog-basic-grid-item h1 a",
+                    ".eventlist-title a"
+                ]"""
+        )
+
+    def _get_webflow_template(self) -> str:
+        """Webflow CMS scraper template with specific selectors."""
+        return self._get_wordpress_template().replace("WordPress", "Webflow").replace(
+            """                # WordPress-specific selectors
+                selectors = [
+                    "{{ article_link_selector }}",
+                    ".post-title a",
+                    ".entry-title a",
+                    "h2.post-title a",
+                    "h3.post-title a"
+                ]""",
+            """                # Webflow-specific selectors
+                selectors = [
+                    "{{ article_link_selector }}",
+                    ".blog-post-title a",
+                    ".post-item-title a",
+                    ".collection-item h2 a",
+                    ".blog-grid-item h3 a",
+                    ".cms-item-title a",
+                    ".w-dyn-item h2 a"
+                ]"""
+        )
+
+    def _get_academic_journal_template(self) -> str:
+        """Academic journal scraper template with specific selectors."""
+        return self._get_wordpress_template().replace("WordPress", "Academic Journal").replace(
+            """                # WordPress-specific selectors
+                selectors = [
+                    "{{ article_link_selector }}",
+                    ".post-title a",
+                    ".entry-title a",
+                    "h2.post-title a",
+                    "h3.post-title a"
+                ]""",
+            """                # Academic journal-specific selectors
+                selectors = [
+                    "{{ article_link_selector }}",
+                    ".article-title a",
+                    ".citation-title a",
+                    ".art_title a",
+                    ".issue-item-title a",
+                    ".hlFld-Title a",
+                    ".article-header h1 a",
+                    ".obj_article_summary h3 a"
+                ]"""
+        ).replace(
+            """                        # Extract publication date
+                        date = datetime.now(timezone.utc)  # Default to current time
+                        date_elem = article_soup.select_one("{{ date_selector }}")
+                        if date_elem:
+                            date_text = date_elem.get_text(strip=True)
+                            date = parse_article_date(date_text)""",
+            """                        # Extract publication date (academic format)
+                        date = datetime.now(timezone.utc)  # Default to current time
+                        date_selectors = [
+                            "{{ date_selector }}",
+                            ".pub-date",
+                            ".article-date",
+                            ".published-date",
+                            ".citation-date",
+                            ".issue-date",
+                            ".obj_article_summary .published"
+                        ]
+                        for selector in date_selectors:
+                            if selector and selector != "":
+                                date_elem = article_soup.select_one(selector)
+                                if date_elem:
+                                    date_text = date_elem.get_text(strip=True)
+                                    date = parse_article_date(date_text)
+                                    break"""
+        )
+
+    def _get_magazine_template(self) -> str:
+        """Magazine/Publication scraper template with specific selectors."""
+        return self._get_wordpress_template().replace("WordPress", "Magazine").replace(
+            """                # WordPress-specific selectors
+                selectors = [
+                    "{{ article_link_selector }}",
+                    ".post-title a",
+                    ".entry-title a",
+                    "h2.post-title a",
+                    "h3.post-title a"
+                ]""",
+            """                # Magazine-specific selectors
+                selectors = [
+                    "{{ article_link_selector }}",
+                    ".magazine-item-title a",
+                    ".article-headline a",
+                    ".story-title a",
+                    ".feature-title a",
+                    ".mag-item h2 a",
+                    ".content-item-title a",
+                    ".story-card h3 a"
+                ]"""
+        ).replace(
+            """.entry-title a",""",
+            """.magazine-title a",
+                    ".publication-title a","""
+        )
+
+    def _load_cms_detection_patterns(self) -> Dict[str, List[str]]:
+        """
+        Load CMS detection patterns for automatic template selection.
+        
+        Returns:
+            Dictionary mapping CMS types to HTML/URL patterns
+        """
+        return {
+            "wordpress": [
+                "wp-content",
+                "wp-includes", 
+                "wp-admin",
+                "/wordpress/",
+                'name="generator" content="WordPress',
+                "wp-embed.min.js",
+                ".wp-block-",
+                "wp-json"
+            ],
+            "drupal": [
+                "drupal.js",
+                "sites/default/files",
+                "modules/",
+                "themes/",
+                'name="Generator" content="Drupal',
+                "drupal.settings",
+                "misc/drupal.js",
+                "node/"
+            ],
+            "joomla": [
+                "media/jui/js",
+                "media/system/js",
+                "components/",
+                "modules/mod_",
+                'name="generator" content="Joomla',
+                "option=com_",
+                "task=",
+                "Itemid="
+            ],
+            "ghost": [
+                "ghost-url",
+                "ghost-version",
+                "built with Ghost",
+                "ghost.css",
+                "assets/built/",
+                "ghost-sdk",
+                "ghost.min.js"
+            ],
+            "hubspot": [
+                "hs-scripts",
+                "hubspot.com",
+                "hs-analytics",
+                "_hstc=",
+                "hsforms.net",
+                "hs-blog-post",
+                "hbspt."
+            ],
+            "squarespace": [
+                "squarespace.com",
+                "static1.squarespace.com",
+                "squarespace-cdn.com",
+                "Y.Squarespace",
+                "sqsp",
+                "sqs"
+            ],
+            "webflow": [
+                "webflow.com",
+                "webflow.js",
+                "w-dyn-",
+                "w-cms-",
+                ".w-",
+                "webflow-style"
+            ],
+            "academic_journal": [
+                "citation",
+                "doi:",
+                "pubmed",
+                "crossref",
+                "journal",
+                "volume",
+                "issue",
+                "abstract",
+                ".bib",
+                "scholar"
+            ],
+            "magazine": [
+                "magazine",
+                "issue",
+                "story",
+                "feature",
+                "article-headline",
+                "publication",
+                "editorial"
+            ]
+        }
+
+    def detect_cms_type(self, html_content: str, url: str = "") -> str:
+        """
+        Automatically detect CMS type based on HTML content and URL patterns.
+        
+        Args:
+            html_content: HTML source code of the website
+            url: Website URL for additional pattern matching
+            
+        Returns:
+            Detected CMS type or 'generic' if no match found
+        """
+        html_lower = html_content.lower()
+        url_lower = url.lower()
+        
+        # Score each CMS type
+        cms_scores = {}
+        
+        for cms_type, patterns in self.cms_detection_patterns.items():
+            score = 0
+            
+            for pattern in patterns:
+                pattern_lower = pattern.lower()
+                
+                # Check HTML content
+                if pattern_lower in html_lower:
+                    score += 2
+                    
+                # Check URL
+                if pattern_lower in url_lower:
+                    score += 1
+                    
+                # Bonus for generator meta tags
+                if 'generator' in pattern_lower and pattern_lower in html_lower:
+                    score += 5
+                    
+                # Bonus for unique identifiers
+                if any(unique in pattern_lower for unique in ['wp-content', 'drupal.js', 'ghost-version']):
+                    if pattern_lower in html_lower:
+                        score += 3
+            
+            cms_scores[cms_type] = score
+        
+        # Find the highest scoring CMS
+        if cms_scores:
+            best_cms = max(cms_scores, key=cms_scores.get)
+            if cms_scores[best_cms] >= 3:  # Minimum confidence threshold
+                logger.info(f"Detected CMS type: {best_cms} (score: {cms_scores[best_cms]})")
+                return best_cms
+        
+        logger.info("No CMS detected, using generic template")
+        return "generic"
+
+    def auto_generate_scraper(self, site_structure: SiteStructure) -> str:
+        """
+        Automatically generate a scraper based on detected CMS type and site structure.
+        
+        Args:
+            site_structure: Analyzed site structure with selectors and patterns
+            
+        Returns:
+            Generated scraper code
+        """
+        # Detect CMS type if not provided
+        cms_type = getattr(site_structure, 'cms_type', None)
+        if not cms_type:
+            cms_type = self.detect_cms_type(
+                getattr(site_structure, 'sample_html', ''),
+                site_structure.base_url
+            )
+        
+        # Use detected CMS template
+        template = self.jinja_env.get_template(cms_type)
+        self.last_template_used = cms_type
+        
+        # Enhanced template variables
+        template_vars = {
+            "domain": site_structure.base_url.replace("https://", "").replace("http://", "").split("/")[0],
+            "domain_safe": site_structure.base_url.replace("https://", "").replace("http://", "").split("/")[0].replace(".", "_").replace("-", "_"),
+            "generation_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "cms_type": cms_type,
+            "article_list_url": getattr(site_structure, 'article_list_url', site_structure.base_url),
+            "article_link_selector": self._determine_article_selector(site_structure.patterns, cms_type),
+            "title_selector": self._determine_title_selector(site_structure.selectors, site_structure.patterns),
+            "content_selector": self._determine_content_selector(site_structure.selectors, site_structure.patterns),
+            "date_selector": self._determine_date_selector(site_structure.selectors, site_structure.patterns),
+            "crawl_delay": getattr(site_structure, 'crawl_delay', 2),
+            "max_articles": getattr(site_structure, 'max_articles', 50),
+            "language": getattr(site_structure, 'language', 'en'),
+            "country": getattr(site_structure, 'country', 'US'),
+        }
+        
+        # Add the date parsing function to the generated code
+        generated_code = template.render(**template_vars)
+        
+        # Insert the date parsing function at the beginning
+        lines = generated_code.split('\n')
+        
+        # Find the imports section and insert after it
+        insert_position = 0
+        for i, line in enumerate(lines):
+            if line.startswith('from services.data.database.connection'):
+                insert_position = i + 1
+                break
+        
+        # Insert the date parsing code
+        lines.insert(insert_position, '')
+        lines.insert(insert_position + 1, self.date_parsing_code)
+        
+        return '\n'.join(lines)
+
+    def _determine_article_selector(self, patterns: Dict[str, Any], cms_type: str) -> str:
+        """Enhanced article selector determination with CMS-specific fallbacks."""
+        # Check for custom selector first
+        if "article_selectors" in patterns and patterns["article_selectors"]:
+            return patterns["article_selectors"][0]
+        
+        # CMS-specific fallbacks
+        cms_selectors = {
+            "wordpress": ".post-title a, .entry-title a, h2.post-title a",
+            "drupal": ".node-title a, .view-content h2 a, .field-content a",
+            "joomla": ".item-title a, .contentheading a, .article-title a",
+            "ghost": ".post-card-title, .post-title a, article h2 a",
+            "hubspot": ".blog-post-title a, .hs-blog-post-title a",
+            "squarespace": ".blog-item-title a, .summary-title a",
+            "webflow": ".blog-post-title a, .cms-item-title a",
+            "academic_journal": ".article-title a, .citation-title a, .art_title a",
+            "magazine": ".magazine-item-title a, .story-title a, .feature-title a"
+        }
+        
+        return cms_selectors.get(cms_type, "h1 a, h2 a, h3 a, .title a")
