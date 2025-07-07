@@ -1,170 +1,493 @@
 """
-Authentication endpoints for legacy API compatibility.
-Provides JWT-based authentication for export and user features.
+Authentication router for FastAPI
+Implements login, user management, and role administration endpoints
 """
 
-from datetime import datetime, timedelta, timezone
-from typing import Optional
+from datetime import datetime, timedelta
+from typing import List, Optional
 
-import jwt
-from fastapi import APIRouter, Body, Depends, HTTPException, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from passlib.context import CryptContext
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials
+from sqlalchemy import select
+from sqlalchemy.orm import selectinload
+
+from services.api.auth.dependencies import (
+    AuthenticatedUser,
+    get_current_active_user,
+    get_current_user,
+    get_superuser,
+    require_permission,
+    require_role,
+)
+from services.api.auth.jwt_handler import create_access_token, decode_token
+from services.api.auth.models import (
+    LoginRequest,
+    LoginResponse,
+    PasswordChangeRequest,
+    RoleCreateRequest,
+    RoleResponse,
+    TokenValidationResponse,
+    UserCreateRequest,
+    UserResponse,
+    UserRoleAssignmentRequest,
+    UserUpdateRequest,
+)
+from services.api.auth.password_utils import hash_password, verify_password
+from services.api.auth.role_manager import get_user_permissions, role_manager
+from services.data.database.connection import db_manager
+from services.data.database.models import User, UserRole, UserRoleAssignment
 
 router = APIRouter(prefix="/api/v1/auth", tags=["authentication"])
 
-# Security configuration
-SECRET_KEY = "preventia-news-analytics-secret-key-change-in-production"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-security = HTTPBearer()
+@router.post("/login", response_model=LoginResponse)
+async def login(login_data: LoginRequest):
+    """
+    Authenticate user and return JWT token
 
-# Demo users (in production, this would be a database)
-DEMO_USERS = {
-    "demo@preventia.com": {
-        "email": "demo@preventia.com",
-        "hashed_password": pwd_context.hash("demo123"),
-        "full_name": "Demo User",
-        "role": "user",
-    },
-    "admin@preventia.com": {
-        "email": "admin@preventia.com",
-        "hashed_password": pwd_context.hash("admin123"),
-        "full_name": "Admin User",
-        "role": "admin",
-    },
-}
+    - **username**: Username or email address
+    - **password**: User password
+    - **remember_me**: Extend token expiration for persistent login
+    """
+
+    async with db_manager.get_session() as session:
+        # Find user by username or email
+        query = select(User).where(
+            (User.username == login_data.username) | (User.email == login_data.username)
+        )
+        result = await session.execute(query)
+        user = result.scalar()
+
+        if not user or not verify_password(login_data.password, user.password_hash):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect username or password",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        if not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Account is inactive"
+            )
+
+        # Check for account lockout
+        if user.account_locked_until and user.account_locked_until > datetime.utcnow():
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Account is temporarily locked",
+            )
+
+        # Get user roles and permissions
+        roles = await role_manager.get_user_roles(user.id)
+        permissions = await role_manager.get_user_permissions(user.id)
+
+        # Create JWT token
+        token_expiry = (
+            24 * 60 if login_data.remember_me else 30
+        )  # 24 hours or 30 minutes
+        token_data = {
+            "user_id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "roles": [role.name for role in roles],
+            "permissions": list(permissions),
+        }
+
+        access_token = create_access_token(
+            token_data, expires_delta=timedelta(minutes=token_expiry)
+        )
+
+        # Update last login
+        user.last_login = datetime.utcnow()
+        user.failed_login_attempts = 0  # Reset failed attempts
+        await session.commit()
+
+        # Prepare response
+        user_response = UserResponse(
+            id=user.id,
+            username=user.username,
+            email=user.email,
+            full_name=user.full_name,
+            is_active=user.is_active,
+            is_superuser=user.is_superuser,
+            roles=[role.name for role in roles],
+            permissions=list(permissions),
+            last_login=user.last_login,
+            created_at=user.created_at,
+        )
+
+        return LoginResponse(
+            access_token=access_token,
+            token_type="bearer",
+            expires_in=token_expiry * 60,  # Convert to seconds
+            user=user_response,
+        )
 
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify a password against its hash."""
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_user(email: str) -> Optional[dict]:
-    """Get user by email."""
-    return DEMO_USERS.get(email)
-
-
-def authenticate_user(email: str, password: str) -> Optional[dict]:
-    """Authenticate a user."""
-    user = get_user(email)
-    if not user or not verify_password(password, user["hashed_password"]):
-        return None
-    return user
-
-
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-    """Create a JWT access token."""
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
-    else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-
-def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> dict:
-    """Get current user from JWT token."""
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
+@router.post("/validate-token", response_model=TokenValidationResponse)
+async def validate_token(current_user: AuthenticatedUser = Depends(get_current_user)):
+    """
+    Validate current JWT token and return user information
+    """
+    return TokenValidationResponse(
+        valid=True,
+        user_id=current_user.id,
+        username=current_user.username,
+        expires_at=current_user.token_data.exp,
     )
 
-    try:
-        payload = jwt.decode(
-            credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM]
-        )
-        email: str = payload.get("sub")
-        if email is None:
-            raise credentials_exception
-    except jwt.PyJWTError:
-        raise credentials_exception
 
-    user = get_user(email)
-    if user is None:
-        raise credentials_exception
-    return user
+@router.post("/refresh-token", response_model=LoginResponse)
+async def refresh_token(current_user: AuthenticatedUser = Depends(get_current_user)):
+    """
+    Refresh JWT token with new expiration
+    """
+    # Create new token with same data
+    token_data = {
+        "user_id": current_user.id,
+        "username": current_user.username,
+        "email": current_user.email,
+        "roles": current_user.roles,
+        "permissions": current_user.permissions,
+    }
+
+    new_token = create_access_token(token_data)
+
+    user_response = UserResponse(
+        id=current_user.id,
+        username=current_user.username,
+        email=current_user.email,
+        full_name=current_user.full_name,
+        is_active=current_user.is_active,
+        is_superuser=current_user.is_superuser,
+        roles=current_user.roles,
+        permissions=current_user.permissions,
+        last_login=datetime.utcnow(),
+        created_at=datetime.utcnow(),  # Would need to fetch from DB for real value
+    )
+
+    return LoginResponse(
+        access_token=new_token,
+        token_type="bearer",
+        expires_in=1800,  # 30 minutes
+        user=user_response,
+    )
 
 
-@router.post("/login")
-async def login(
-    email: str = Body(..., description="User email"),
-    password: str = Body(..., description="User password"),
+@router.get("/me", response_model=UserResponse)
+async def get_current_user_info(
+    current_user: AuthenticatedUser = Depends(get_current_active_user),
 ):
-    """Authenticate user and return JWT token."""
+    """
+    Get current user information
+    """
+    return UserResponse(
+        id=current_user.id,
+        username=current_user.username,
+        email=current_user.email,
+        full_name=current_user.full_name,
+        is_active=current_user.is_active,
+        is_superuser=current_user.is_superuser,
+        roles=current_user.roles,
+        permissions=current_user.permissions,
+        last_login=datetime.utcnow(),
+        created_at=datetime.utcnow(),
+    )
 
-    user = authenticate_user(email, password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
+
+@router.post("/change-password")
+async def change_password(
+    password_data: PasswordChangeRequest,
+    current_user: AuthenticatedUser = Depends(get_current_active_user),
+):
+    """
+    Change current user's password
+    """
+
+    async with db_manager.get_session() as session:
+        # Get user from database
+        query = select(User).where(User.id == current_user.id)
+        result = await session.execute(query)
+        user = result.scalar()
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+            )
+
+        # Verify current password
+        if not verify_password(password_data.current_password, user.password_hash):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Current password is incorrect",
+            )
+
+        # Update password
+        user.password_hash = hash_password(password_data.new_password)
+        user.password_changed_at = datetime.utcnow()
+        await session.commit()
+
+        return {"message": "Password changed successfully"}
+
+
+# User Management Endpoints (Admin only)
+
+
+@router.post("/users", response_model=UserResponse)
+async def create_user(
+    user_data: UserCreateRequest,
+    current_user: AuthenticatedUser = Depends(require_permission("users:create")),
+):
+    """
+    Create a new user (requires users:create permission)
+    """
+
+    async with db_manager.get_session() as session:
+        # Check if username or email already exists
+        existing_query = select(User).where(
+            (User.username == user_data.username) | (User.email == user_data.email)
+        )
+        existing = await session.execute(existing_query)
+        if existing.scalar():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Username or email already exists",
+            )
+
+        # Create user
+        user = User(
+            username=user_data.username,
+            email=user_data.email,
+            full_name=user_data.full_name,
+            password_hash=hash_password(user_data.password),
+            is_active=user_data.is_active,
+            password_changed_at=datetime.utcnow(),
         )
 
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user["email"]}, expires_delta=access_token_expires
+        session.add(user)
+        await session.flush()  # Get user ID
+
+        # Assign roles
+        for role_name in user_data.roles:
+            role_query = select(UserRole).where(UserRole.name == role_name)
+            role_result = await session.execute(role_query)
+            role = role_result.scalar()
+
+            if role:
+                assignment = UserRoleAssignment(
+                    user_id=user.id, role_id=role.id, assigned_by=current_user.id
+                )
+                session.add(assignment)
+
+        await session.commit()
+        await session.refresh(user)
+
+        # Get user permissions
+        permissions = await role_manager.get_user_permissions(user.id)
+
+        return UserResponse(
+            id=user.id,
+            username=user.username,
+            email=user.email,
+            full_name=user.full_name,
+            is_active=user.is_active,
+            is_superuser=user.is_superuser,
+            roles=user_data.roles,
+            permissions=list(permissions),
+            last_login=user.last_login,
+            created_at=user.created_at,
+        )
+
+
+@router.get("/users", response_model=List[UserResponse])
+async def list_users(
+    skip: int = 0,
+    limit: int = 100,
+    current_user: AuthenticatedUser = Depends(require_permission("users:read")),
+):
+    """
+    List all users (requires users:read permission)
+    """
+
+    async with db_manager.get_session() as session:
+        query = select(User).offset(skip).limit(limit)
+        result = await session.execute(query)
+        users = result.scalars().all()
+
+        user_responses = []
+        for user in users:
+            roles = await role_manager.get_user_roles(user.id)
+            permissions = await role_manager.get_user_permissions(user.id)
+
+            user_responses.append(
+                UserResponse(
+                    id=user.id,
+                    username=user.username,
+                    email=user.email,
+                    full_name=user.full_name,
+                    is_active=user.is_active,
+                    is_superuser=user.is_superuser,
+                    roles=[role.name for role in roles],
+                    permissions=list(permissions),
+                    last_login=user.last_login,
+                    created_at=user.created_at,
+                )
+            )
+
+        return user_responses
+
+
+@router.get("/users/{user_id}", response_model=UserResponse)
+async def get_user(
+    user_id: int,
+    current_user: AuthenticatedUser = Depends(require_permission("users:read")),
+):
+    """
+    Get specific user by ID (requires users:read permission)
+    """
+
+    async with db_manager.get_session() as session:
+        query = select(User).where(User.id == user_id)
+        result = await session.execute(query)
+        user = result.scalar()
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+            )
+
+        roles = await role_manager.get_user_roles(user.id)
+        permissions = await role_manager.get_user_permissions(user.id)
+
+        return UserResponse(
+            id=user.id,
+            username=user.username,
+            email=user.email,
+            full_name=user.full_name,
+            is_active=user.is_active,
+            is_superuser=user.is_superuser,
+            roles=[role.name for role in roles],
+            permissions=list(permissions),
+            last_login=user.last_login,
+            created_at=user.created_at,
+        )
+
+
+# Role Management Endpoints
+
+
+@router.get("/roles", response_model=List[RoleResponse])
+async def list_roles(
+    current_user: AuthenticatedUser = Depends(require_permission("roles:read")),
+):
+    """
+    List all available roles (requires roles:read permission)
+    """
+
+    async with db_manager.get_session() as session:
+        query = select(UserRole)
+        result = await session.execute(query)
+        roles = result.scalars().all()
+
+        return [
+            RoleResponse(
+                id=role.id,
+                name=role.name,
+                description=role.description,
+                permissions=role.permissions,
+                is_system_role=role.is_system_role,
+                created_at=role.created_at,
+            )
+            for role in roles
+        ]
+
+
+@router.post("/roles", response_model=RoleResponse)
+async def create_role(
+    role_data: RoleCreateRequest,
+    current_user: AuthenticatedUser = Depends(require_permission("roles:create")),
+):
+    """
+    Create a new role (requires roles:create permission)
+    """
+
+    async with db_manager.get_session() as session:
+        # Check if role name already exists
+        existing_query = select(UserRole).where(UserRole.name == role_data.name)
+        existing = await session.execute(existing_query)
+        if existing.scalar():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Role name already exists",
+            )
+
+        # Create role
+        role = UserRole(
+            name=role_data.name,
+            description=role_data.description,
+            permissions=role_data.permissions,
+            is_system_role=False,
+        )
+
+        session.add(role)
+        await session.commit()
+        await session.refresh(role)
+
+        return RoleResponse(
+            id=role.id,
+            name=role.name,
+            description=role.description,
+            permissions=role.permissions,
+            is_system_role=role.is_system_role,
+            created_at=role.created_at,
+        )
+
+
+@router.post("/users/{user_id}/roles")
+async def assign_role_to_user(
+    user_id: int,
+    assignment_data: UserRoleAssignmentRequest,
+    current_user: AuthenticatedUser = Depends(require_permission("users:update")),
+):
+    """
+    Assign role to user (requires users:update permission)
+    """
+    if assignment_data.user_id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User ID in path must match user ID in request body",
+        )
+
+    success = await role_manager.assign_role(
+        user_id=assignment_data.user_id,
+        role_id=assignment_data.role_id,
+        assigned_by=current_user.id,
+        expires_at=assignment_data.expires_at,
     )
 
-    return {
-        "status": "success",
-        "data": {
-            "access_token": access_token,
-            "token_type": "bearer",
-            "expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-            "user": {
-                "email": user["email"],
-                "full_name": user["full_name"],
-                "role": user["role"],
-            },
-        },
-    }
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Failed to assign role (role may already be assigned)",
+        )
+
+    return {"message": "Role assigned successfully"}
 
 
-@router.post("/refresh")
-async def refresh_token(current_user: dict = Depends(get_current_user)):
-    """Refresh JWT token."""
+@router.delete("/users/{user_id}/roles/{role_id}")
+async def revoke_role_from_user(
+    user_id: int,
+    role_id: int,
+    current_user: AuthenticatedUser = Depends(require_permission("users:update")),
+):
+    """
+    Revoke role from user (requires users:update permission)
+    """
+    success = await role_manager.revoke_role(user_id, role_id)
 
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": current_user["email"]}, expires_delta=access_token_expires
-    )
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Role assignment not found"
+        )
 
-    return {
-        "status": "success",
-        "data": {
-            "access_token": access_token,
-            "token_type": "bearer",
-            "expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-        },
-    }
-
-
-@router.get("/profile")
-async def get_profile(current_user: dict = Depends(get_current_user)):
-    """Get current user profile."""
-
-    return {
-        "status": "success",
-        "data": {
-            "email": current_user["email"],
-            "full_name": current_user["full_name"],
-            "role": current_user["role"],
-        },
-    }
-
-
-@router.post("/logout")
-async def logout(current_user: dict = Depends(get_current_user)):
-    """Logout user (client-side token removal)."""
-
-    return {"status": "success", "data": {"message": "Successfully logged out"}}
+    return {"message": "Role revoked successfully"}
