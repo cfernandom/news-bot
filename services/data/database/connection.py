@@ -31,12 +31,15 @@ class DatabaseManager:
             "postgresql://", "postgresql+asyncpg://"
         )
 
-        # SQLAlchemy async engine
+        # SQLAlchemy async engine with proper connection pooling
         self.engine = create_async_engine(
             self.sqlalchemy_url,
             echo=bool(os.getenv("DATABASE_ECHO", False)),  # Set to True for SQL logging
-            poolclass=NullPool,  # Use connection pooling in production
-            pool_pre_ping=True,
+            pool_size=5,  # Base connection pool size
+            max_overflow=10,  # Additional connections beyond pool_size
+            pool_pre_ping=True,  # Verify connections before use
+            pool_recycle=3600,  # Recycle connections every hour
+            pool_timeout=30,  # Timeout for getting connection from pool
         )
 
         # Session factory
@@ -51,14 +54,30 @@ class DatabaseManager:
         """Initialize database connection pool"""
         if not self._pool:
             self._pool = await asyncpg.create_pool(
-                self.database_url, min_size=2, max_size=10, command_timeout=60
+                self.database_url, 
+                min_size=2, 
+                max_size=8,  # Reduced from 10 to avoid conflicts
+                command_timeout=30,  # Reduced timeout
+                server_settings={
+                    'application_name': 'preventia_analytics',
+                },
+                max_inactive_connection_lifetime=300,  # 5 minutes
             )
 
     async def close(self):
-        """Close all database connections"""
-        if self._pool:
-            await self._pool.close()
-        await self.engine.dispose()
+        """Close all database connections with proper cleanup"""
+        try:
+            if self._pool:
+                await self._pool.close()
+                self._pool = None
+        except Exception as e:
+            # Log error but don't raise to allow engine cleanup
+            print(f"Warning: Error closing asyncpg pool: {e}")
+        
+        try:
+            await self.engine.dispose()
+        except Exception as e:
+            print(f"Warning: Error disposing SQLAlchemy engine: {e}")
 
     @asynccontextmanager
     async def get_session(self) -> AsyncGenerator[AsyncSession, None]:
@@ -80,7 +99,7 @@ class DatabaseManager:
     @asynccontextmanager
     async def get_connection(self) -> AsyncGenerator[asyncpg.Connection, None]:
         """
-        Get raw asyncpg connection for complex SQL queries
+        Get raw asyncpg connection for complex SQL queries with proper error handling
         Usage:
             async with db.get_connection() as conn:
                 result = await conn.fetch("SELECT * FROM articles WHERE ...")
@@ -88,8 +107,20 @@ class DatabaseManager:
         if not self._pool:
             await self.initialize()
 
-        async with self._pool.acquire() as connection:
+        connection = None
+        try:
+            connection = await self._pool.acquire()
             yield connection
+        except Exception as e:
+            # Log error for debugging
+            print(f"Database connection error: {e}")
+            raise
+        finally:
+            if connection:
+                try:
+                    await self._pool.release(connection)
+                except Exception as e:
+                    print(f"Warning: Error releasing connection: {e}")
 
     async def execute_sql(self, query: str, *args) -> list:
         """

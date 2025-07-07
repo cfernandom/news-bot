@@ -4,7 +4,8 @@ Generates scraper code based on site structure and templates.
 """
 
 import logging
-from datetime import datetime
+import re
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from jinja2 import DictLoader, Environment, Template
@@ -12,6 +13,109 @@ from jinja2 import DictLoader, Environment, Template
 from .models import SiteStructure
 
 logger = logging.getLogger(__name__)
+
+
+def generate_date_parsing_code() -> str:
+    """
+    Generate comprehensive date parsing code for scrapers.
+    Handles multiple date formats commonly found in news websites.
+    """
+    return '''
+def parse_article_date(date_text: str) -> datetime:
+    """
+    Parse article publication date from various text formats.
+    
+    Args:
+        date_text: Raw date text from website
+        
+    Returns:
+        Parsed datetime object, defaults to current UTC time if parsing fails
+    """
+    import re
+    from datetime import datetime, timezone
+    from dateutil import parser as date_parser
+    
+    if not date_text or not date_text.strip():
+        return datetime.now(timezone.utc)
+    
+    # Clean the date text
+    date_text = date_text.strip()
+    
+    # Common date format patterns for news sites
+    date_patterns = [
+        # ISO formats
+        (r'\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}', '%Y-%m-%dT%H:%M:%S'),
+        (r'\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}', '%Y-%m-%d %H:%M:%S'),
+        (r'\\d{4}-\\d{2}-\\d{2}', '%Y-%m-%d'),
+        
+        # US formats
+        (r'\\d{1,2}/\\d{1,2}/\\d{4}', '%m/%d/%Y'),
+        (r'\\d{1,2}-\\d{1,2}-\\d{4}', '%m-%d-%Y'),
+        
+        # European formats  
+        (r'\\d{1,2}\\.\\d{1,2}\\.\\d{4}', '%d.%m.%Y'),
+        (r'\\d{1,2}/\\d{1,2}/\\d{4}', '%d/%m/%Y'),
+        
+        # Long formats
+        (r'\\w+ \\d{1,2}, \\d{4}', '%B %d, %Y'),
+        (r'\\d{1,2} \\w+ \\d{4}', '%d %B %Y'),
+        
+        # Medical/scientific formats
+        (r'\\d{4} \\w+ \\d{1,2}', '%Y %B %d'),
+        (r'\\w+ \\d{4}', '%B %Y'),
+    ]
+    
+    # Try pattern matching first
+    for pattern, format_str in date_patterns:
+        if re.search(pattern, date_text):
+            try:
+                # Extract the matched portion
+                match = re.search(pattern, date_text)
+                if match:
+                    date_str = match.group()
+                    parsed_date = datetime.strptime(date_str, format_str)
+                    # Add timezone info if missing
+                    if parsed_date.tzinfo is None:
+                        parsed_date = parsed_date.replace(tzinfo=timezone.utc)
+                    return parsed_date
+            except (ValueError, AttributeError):
+                continue
+    
+    # Try dateutil parser as fallback (handles many formats automatically)
+    try:
+        parsed_date = date_parser.parse(date_text)
+        # Ensure timezone awareness
+        if parsed_date.tzinfo is None:
+            parsed_date = parsed_date.replace(tzinfo=timezone.utc)
+        return parsed_date
+    except (ValueError, TypeError, AttributeError):
+        pass
+    
+    # Try to extract just the date part if text contains extra content
+    # Look for common date patterns in longer text
+    date_in_text_patterns = [
+        r'(\\d{4}-\\d{2}-\\d{2})',
+        r'(\\d{1,2}/\\d{1,2}/\\d{4})',
+        r'(\\w+ \\d{1,2}, \\d{4})',
+        r'(\\d{1,2} \\w+ \\d{4})',
+    ]
+    
+    for pattern in date_in_text_patterns:
+        match = re.search(pattern, date_text)
+        if match:
+            try:
+                extracted_date = match.group(1)
+                parsed_date = date_parser.parse(extracted_date)
+                if parsed_date.tzinfo is None:
+                    parsed_date = parsed_date.replace(tzinfo=timezone.utc)
+                return parsed_date
+            except (ValueError, TypeError, AttributeError):
+                continue
+    
+    # If all parsing fails, return current time with a warning log
+    logger.warning(f"Could not parse date text: '{date_text}', using current time")
+    return datetime.now(timezone.utc)
+'''
 
 
 class ScraperTemplateEngine:
@@ -24,6 +128,7 @@ class ScraperTemplateEngine:
         self.templates = self._load_templates()
         self.jinja_env = Environment(loader=DictLoader(self.templates))
         self.last_template_used = "none"
+        self.date_parsing_code = generate_date_parsing_code()
 
     def _load_templates(self) -> Dict[str, str]:
         """
@@ -191,11 +296,11 @@ async def scrape_{{ domain_safe }}_to_postgres() -> List[int]:
                                 summary = first_p.get_text(strip=True)[:500]
 
                         # Extract publication date
-                        date = datetime.utcnow()  # Default to current time
+                        date = datetime.now(timezone.utc)  # Default to current time
                         date_elem = article_soup.select_one("{{ date_selector }}")
                         if date_elem:
                             date_text = date_elem.get_text(strip=True)
-                            # TODO: Add date parsing logic based on site format
+                            date = parse_article_date(date_text)
 
                         # Calculate metadata
                         content_text = f"{title} {summary}"
@@ -429,11 +534,11 @@ async def scrape_{{ domain_safe }}_to_postgres() -> List[int]:
                                 summary = first_p.get_text(strip=True)[:500]
 
                         # Extract publication date
-                        date = datetime.utcnow()  # Default to current time
+                        date = datetime.now(timezone.utc)  # Default to current time
                         date_elem = article_soup.select_one("{{ date_selector }}")
                         if date_elem:
                             date_text = date_elem.get_text(strip=True)
-                            # TODO: Add date parsing logic based on site format
+                            date = parse_article_date(date_text)
 
                         # Calculate metadata
                         content_text = f"{title} {summary}"
@@ -669,11 +774,11 @@ async def scrape_{{ domain_safe }}_to_postgres() -> List[int]:
                                 summary = first_p.get_text(strip=True)[:500]
 
                         # Extract publication date
-                        date = datetime.utcnow()  # Default to current time
+                        date = datetime.now(timezone.utc)  # Default to current time
                         date_elem = article_soup.select_one("{{ date_selector }}")
                         if date_elem:
                             date_text = date_elem.get_text(strip=True)
-                            # TODO: Add date parsing logic based on site format
+                            date = parse_article_date(date_text)
 
                         # Calculate metadata
                         content_text = f"{title} {summary}"
@@ -925,11 +1030,11 @@ async def scrape_{{ domain_safe }}_to_postgres() -> List[int]:
                                 summary = first_p.get_text(strip=True)[:500]
 
                         # Extract publication date
-                        date = datetime.utcnow()  # Default to current time
+                        date = datetime.now(timezone.utc)  # Default to current time
                         date_elem = article_soup.select_one("{{ date_selector }}")
                         if date_elem:
                             date_text = date_elem.get_text(strip=True)
-                            # TODO: Add date parsing logic based on site format
+                            date = parse_article_date(date_text)
 
                         # Calculate metadata
                         content_text = f"{title} {summary}"
@@ -1043,9 +1148,12 @@ if __name__ == "__main__":
         template = self.jinja_env.get_template(template_name)
         scraper_code = template.render(**template_vars)
 
+        # Prepend date parsing function to the generated code
+        full_scraper_code = self.date_parsing_code + "\n\n" + scraper_code
+
         logger.info(f"✅ Generated scraper using template: {template_name}")
 
-        return scraper_code
+        return full_scraper_code
 
     def _select_template(self, site_structure: SiteStructure) -> str:
         """
