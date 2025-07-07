@@ -2,7 +2,7 @@
 // Implementation following fase4-react-dashboard-plan.md specifications
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { medicalApiClient } from '../services/api';
+import { medicalApiClient } from '../services/medical-api';
 import {
   MedicalFilters,
 } from '../types/medical';

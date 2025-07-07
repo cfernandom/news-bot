@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { DualModeProvider } from './contexts/DualModeContext';
@@ -12,6 +12,7 @@ import TopicsChart from './components/charts/TopicsChart';
 import ArticlesTableSection from './components/sections/ArticlesTableSection';
 import { useMedicalSentimentDistribution, useMedicalTopicsDistribution } from './hooks/useMedicalData';
 import LegacyRoutes from './routes/LegacyRoutes';
+import { AdminPage } from './pages/admin/AdminPage';
 
 // Create a query client
 const queryClient = new QueryClient({
@@ -43,8 +44,16 @@ const AppHeader: React.FC = () => {
             </div>
           </div>
 
-          {/* Mode toggle */}
+          {/* Navigation and Mode toggle */}
           <div className="flex items-center space-x-4">
+            {/* Admin link */}
+            <Link
+              to="/admin"
+              className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+            >
+              🛠️ Admin
+            </Link>
+
             <ModeToggle />
           </div>
         </div>
@@ -189,11 +198,14 @@ function App() {
       <MedicalErrorBoundary>
         <Router>
           <Routes>
-            {/* Legacy prototype routes as main routes */}
-            <Route path="/*" element={<LegacyRoutes />} />
+            {/* Admin route */}
+            <Route path="/admin" element={<AdminPage />} />
 
             {/* Main dashboard route */}
             <Route path="/dashboard" element={<MainDashboardApp />} />
+
+            {/* Legacy prototype routes as main routes */}
+            <Route path="/*" element={<LegacyRoutes />} />
           </Routes>
 
           {/* React Query DevTools (only in development) */}
