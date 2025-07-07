@@ -1,0 +1,315 @@
+# Monitoring Configuration for PreventIA News Analytics
+# Prometheus, Grafana, and application metrics
+
+prometheus:
+  # Global configuration
+  global:
+    scrape_interval: 15s
+    evaluation_interval: 15s
+    external_labels:
+      monitor: 'preventia-monitor'
+      environment: 'production'
+
+  # Rule files
+  rule_files:
+    - "alerts.yml"
+
+  # Scrape configurations
+  scrape_configs:
+    # Prometheus self-monitoring
+    - job_name: 'prometheus'
+      static_configs:
+        - targets: ['localhost:9090']
+
+    # FastAPI application metrics
+    - job_name: 'preventia-api'
+      static_configs:
+        - targets: ['api:8000']
+      metrics_path: '/metrics'
+      scrape_interval: 10s
+      scrape_timeout: 5s
+
+    # PostgreSQL database metrics
+    - job_name: 'postgres'
+      static_configs:
+        - targets: ['postgres:5432']
+      metrics_path: '/metrics'
+      scrape_interval: 30s
+
+    # Redis metrics
+    - job_name: 'redis'
+      static_configs:
+        - targets: ['redis:6379']
+      metrics_path: '/metrics'
+      scrape_interval: 30s
+
+    # Node exporter for system metrics
+    - job_name: 'node'
+      static_configs:
+        - targets: ['node-exporter:9100']
+      scrape_interval: 15s
+
+    # Nginx metrics
+    - job_name: 'nginx'
+      static_configs:
+        - targets: ['nginx:80']
+      metrics_path: '/metrics'
+      scrape_interval: 30s
+
+  # Alertmanager configuration
+  alerting:
+    alertmanagers:
+      - static_configs:
+          - targets:
+            - alertmanager:9093
+
+grafana:
+  # Database configuration
+  database:
+    type: postgres
+    host: postgres:5432
+    name: grafana
+    user: grafana
+    password: grafana_password
+
+  # Security settings
+  security:
+    admin_user: admin
+    admin_password: ${GRAFANA_PASSWORD}
+    secret_key: ${GRAFANA_SECRET_KEY}
+    disable_gravatar: true
+    cookie_secure: true
+    cookie_samesite: strict
+
+  # Server settings
+  server:
+    protocol: http
+    http_port: 3000
+    domain: monitoring.yourdomain.com
+    root_url: https://monitoring.yourdomain.com/
+
+  # Authentication
+  auth:
+    disable_login_form: false
+    disable_signout_menu: false
+    oauth_auto_login: false
+
+  # SMTP settings for alerts
+  smtp:
+    enabled: true
+    host: smtp.yourdomain.com:587
+    user: grafana@yourdomain.com
+    password: ${SMTP_PASSWORD}
+    from_address: grafana@yourdomain.com
+    from_name: PreventIA Monitoring
+
+  # Provisioning
+  provisioning:
+    datasources:
+      - name: 'Prometheus'
+        type: 'prometheus'
+        access: 'proxy'
+        url: 'http://prometheus:9090'
+        isDefault: true
+
+# Application metrics configuration
+application_metrics:
+  # FastAPI metrics
+  fastapi:
+    - name: http_requests_total
+      help: Total HTTP requests
+      type: counter
+      labels: [method, endpoint, status_code]
+
+    - name: http_request_duration_seconds
+      help: HTTP request duration
+      type: histogram
+      labels: [method, endpoint]
+      buckets: [0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0]
+
+    - name: database_queries_total
+      help: Total database queries
+      type: counter
+      labels: [query_type, status]
+
+    - name: database_query_duration_seconds
+      help: Database query duration
+      type: histogram
+      labels: [query_type]
+      buckets: [0.01, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5]
+
+    - name: articles_processed_total
+      help: Total articles processed
+      type: counter
+      labels: [source, status]
+
+    - name: sentiment_analysis_duration_seconds
+      help: Sentiment analysis duration
+      type: histogram
+      buckets: [0.1, 0.25, 0.5, 1.0, 2.0, 5.0]
+
+  # Custom business metrics
+  business:
+    - name: articles_by_sentiment
+      help: Articles count by sentiment
+      type: gauge
+      labels: [sentiment]
+
+    - name: sources_active_count
+      help: Number of active sources
+      type: gauge
+
+    - name: data_freshness_hours
+      help: Hours since last data update
+      type: gauge
+      labels: [source]
+
+# Alert rules
+alerts:
+  groups:
+    - name: preventia.alerts
+      rules:
+        # API response time alerts
+        - alert: HighResponseTime
+          expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 5
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High API response time"
+            description: "95th percentile response time is {{ $value }}s"
+
+        - alert: CriticalResponseTime
+          expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 10
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Critical API response time"
+            description: "95th percentile response time is {{ $value }}s"
+
+        # Error rate alerts
+        - alert: HighErrorRate
+          expr: rate(http_requests_total{status_code=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High error rate"
+            description: "Error rate is {{ $value | humanizePercentage }}"
+
+        # Database alerts
+        - alert: DatabaseConnectionsHigh
+          expr: pg_stat_database_numbackends > 80
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High database connections"
+            description: "Database has {{ $value }} active connections"
+
+        - alert: DatabaseQuerySlow
+          expr: histogram_quantile(0.95, rate(database_query_duration_seconds_bucket[5m])) > 2
+          for: 3m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Slow database queries"
+            description: "95th percentile query time is {{ $value }}s"
+
+        # Data freshness alerts
+        - alert: StaleData
+          expr: data_freshness_hours > 24
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Stale data detected"
+            description: "Data from {{ $labels.source }} is {{ $value }} hours old"
+
+        - alert: CriticalDataStaleness
+          expr: data_freshness_hours > 72
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Critical data staleness"
+            description: "Data from {{ $labels.source }} is {{ $value }} hours old"
+
+        # System resource alerts
+        - alert: HighCPUUsage
+          expr: rate(process_cpu_seconds_total[5m]) * 100 > 80
+          for: 3m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High CPU usage"
+            description: "CPU usage is {{ $value }}%"
+
+        - alert: HighMemoryUsage
+          expr: process_resident_memory_bytes / (1024 * 1024 * 1024) > 2
+          for: 3m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High memory usage"
+            description: "Memory usage is {{ $value }}GB"
+
+# Dashboard configurations
+dashboards:
+  main:
+    title: "PreventIA News Analytics"
+    panels:
+      - title: "API Performance"
+        type: graph
+        targets:
+          - expr: rate(http_requests_total[5m])
+            legend: "Requests/sec"
+          - expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
+            legend: "95th percentile response time"
+
+      - title: "Database Performance"
+        type: graph
+        targets:
+          - expr: rate(database_queries_total[5m])
+            legend: "Queries/sec"
+          - expr: histogram_quantile(0.95, rate(database_query_duration_seconds_bucket[5m]))
+            legend: "95th percentile query time"
+
+      - title: "Business Metrics"
+        type: stat
+        targets:
+          - expr: sum(articles_by_sentiment)
+            legend: "Total Articles"
+          - expr: sources_active_count
+            legend: "Active Sources"
+
+      - title: "System Resources"
+        type: graph
+        targets:
+          - expr: rate(process_cpu_seconds_total[5m]) * 100
+            legend: "CPU Usage %"
+          - expr: process_resident_memory_bytes / (1024 * 1024)
+            legend: "Memory Usage MB"
+
+# Health check endpoints
+health_checks:
+  api:
+    url: http://api:8000/health
+    interval: 30s
+    timeout: 5s
+    expected_status: 200
+
+  database:
+    type: postgres
+    connection: ${DATABASE_URL}
+    query: "SELECT 1"
+    interval: 60s
+    timeout: 10s
+
+  redis:
+    type: redis
+    connection: redis://redis:6379
+    command: "PING"
+    interval: 60s
+    timeout: 5s
