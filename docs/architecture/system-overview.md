@@ -33,6 +33,7 @@ graph TB
 
     subgraph "Collection Layer"
         SC[Smart Scrapers]
+        ASG[Automated Scraper Generation]
         SV[Source Validator]
         FT[Full-text Extractor]
     end
@@ -120,6 +121,12 @@ graph TB
 - Verification of robots.txt and policies
 - Extraction testing before activation
 - Health monitoring of existing sources
+
+#### Automated Scraper Generation (ASG)
+- Automated creation, validation, and deployment of new scrapers
+- Compliance-first approach with legal and ethical checks
+- Reduces scraper development time from days to minutes
+- Integrates with existing source validation and full-text extraction
 
 #### Full-text Extractor
 - Complete article content extraction
@@ -318,7 +325,7 @@ WebSocket Notification → Dashboard Update → User Notification
 ### MVP (Fase 1) - Semanas 1-4
 - ✅ PostgreSQL setup y migraciones
 - ✅ Scrapers básicos funcionando
-- 🔄 FastAPI con endpoints básicos
+- ✅ FastAPI con endpoints completos (Production Ready)
 - 🔄 Sentiment analysis pipeline
 - 🔄 Dashboard React básico
 
