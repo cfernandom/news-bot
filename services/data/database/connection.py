@@ -54,12 +54,12 @@ class DatabaseManager:
         """Initialize database connection pool"""
         if not self._pool:
             self._pool = await asyncpg.create_pool(
-                self.database_url, 
-                min_size=2, 
+                self.database_url,
+                min_size=2,
                 max_size=8,  # Reduced from 10 to avoid conflicts
                 command_timeout=30,  # Reduced timeout
                 server_settings={
-                    'application_name': 'preventia_analytics',
+                    "application_name": "preventia_analytics",
                 },
                 max_inactive_connection_lifetime=300,  # 5 minutes
             )
@@ -73,7 +73,7 @@ class DatabaseManager:
         except Exception as e:
             # Log error but don't raise to allow engine cleanup
             print(f"Warning: Error closing asyncpg pool: {e}")
-        
+
         try:
             await self.engine.dispose()
         except Exception as e:

@@ -24,47 +24,47 @@ def generate_date_parsing_code() -> str:
 def parse_article_date(date_text: str) -> datetime:
     """
     Parse article publication date from various text formats.
-    
+
     Args:
         date_text: Raw date text from website
-        
+
     Returns:
         Parsed datetime object, defaults to current UTC time if parsing fails
     """
     import re
     from datetime import datetime, timezone
     from dateutil import parser as date_parser
-    
+
     if not date_text or not date_text.strip():
         return datetime.now(timezone.utc)
-    
+
     # Clean the date text
     date_text = date_text.strip()
-    
+
     # Common date format patterns for news sites
     date_patterns = [
         # ISO formats
         (r'\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}', '%Y-%m-%dT%H:%M:%S'),
         (r'\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}', '%Y-%m-%d %H:%M:%S'),
         (r'\\d{4}-\\d{2}-\\d{2}', '%Y-%m-%d'),
-        
+
         # US formats
         (r'\\d{1,2}/\\d{1,2}/\\d{4}', '%m/%d/%Y'),
         (r'\\d{1,2}-\\d{1,2}-\\d{4}', '%m-%d-%Y'),
-        
-        # European formats  
+
+        # European formats
         (r'\\d{1,2}\\.\\d{1,2}\\.\\d{4}', '%d.%m.%Y'),
         (r'\\d{1,2}/\\d{1,2}/\\d{4}', '%d/%m/%Y'),
-        
+
         # Long formats
         (r'\\w+ \\d{1,2}, \\d{4}', '%B %d, %Y'),
         (r'\\d{1,2} \\w+ \\d{4}', '%d %B %Y'),
-        
+
         # Medical/scientific formats
         (r'\\d{4} \\w+ \\d{1,2}', '%Y %B %d'),
         (r'\\w+ \\d{4}', '%B %Y'),
     ]
-    
+
     # Try pattern matching first
     for pattern, format_str in date_patterns:
         if re.search(pattern, date_text):
@@ -80,7 +80,7 @@ def parse_article_date(date_text: str) -> datetime:
                     return parsed_date
             except (ValueError, AttributeError):
                 continue
-    
+
     # Try dateutil parser as fallback (handles many formats automatically)
     try:
         parsed_date = date_parser.parse(date_text)
@@ -90,7 +90,7 @@ def parse_article_date(date_text: str) -> datetime:
         return parsed_date
     except (ValueError, TypeError, AttributeError):
         pass
-    
+
     # Try to extract just the date part if text contains extra content
     # Look for common date patterns in longer text
     date_in_text_patterns = [
@@ -99,7 +99,7 @@ def parse_article_date(date_text: str) -> datetime:
         r'(\\w+ \\d{1,2}, \\d{4})',
         r'(\\d{1,2} \\w+ \\d{4})',
     ]
-    
+
     for pattern in date_in_text_patterns:
         match = re.search(pattern, date_text)
         if match:
@@ -111,7 +111,7 @@ def parse_article_date(date_text: str) -> datetime:
                 return parsed_date
             except (ValueError, TypeError, AttributeError):
                 continue
-    
+
     # If all parsing fails, return current time with a warning log
     logger.warning(f"Could not parse date text: '{date_text}', using current time")
     return datetime.now(timezone.utc)
