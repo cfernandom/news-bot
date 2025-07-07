@@ -36,7 +36,7 @@ describe('LegacySentimentChart', () => {
     render(<LegacySentimentChart data={mockData} />);
 
     expect(screen.getByText('Sentiment Analysis')).toBeInTheDocument();
-    expect(screen.getByTestId('pie-chart')).toBeInTheDocument();
+    expect(screen.getByTestId('recharts-pie-chart')).toBeInTheDocument();
   });
 
   it('renders with custom title', () => {
@@ -57,8 +57,13 @@ describe('LegacySentimentChart', () => {
     const { rerender } = render(<LegacySentimentChart data={mockData} />);
     expect(screen.getByText('Sentiment Analysis')).toBeInTheDocument();
 
-    // Test with type='language'
-    rerender(<LegacySentimentChart data={mockData} type="language" />);
+    // Test with type='language' - need language data
+    const mockLanguageData = [
+      { sentiment_label: 'english', count: 25 },
+      { sentiment_label: 'spanish', count: 60 },
+      { sentiment_label: 'other', count: 15 }
+    ];
+    rerender(<LegacySentimentChart data={mockLanguageData} type="language" />);
     expect(screen.getByText('Sentiment Analysis')).toBeInTheDocument();
 
     // Verify language data is being used
@@ -71,9 +76,6 @@ describe('LegacySentimentChart', () => {
     render(<LegacySentimentChart data={mockData} />);
 
     // Check that the chart structure is correct
-    const pieChartContainer = screen.getByTestId('pie-chart');
-    expect(pieChartContainer).toBeInTheDocument();
-
     const responsiveContainer = screen.getByTestId('recharts-responsive-container');
     expect(responsiveContainer).toBeInTheDocument();
 
@@ -124,7 +126,7 @@ describe('LegacySentimentChart', () => {
     expect(heading).toBeInTheDocument();
 
     // Chart should have proper container
-    const chartContainer = screen.getByTestId('pie-chart');
+    const chartContainer = screen.getByTestId('recharts-pie-chart');
     expect(chartContainer).toBeInTheDocument();
   });
 });

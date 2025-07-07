@@ -289,9 +289,7 @@ async def get_tones_timeline_legacy(
 ):
     """Legacy endpoint: Get tone evolution over time."""
 
-    cutoff_date = (datetime.now(timezone.utc) - timedelta(weeks=weeks)).replace(
-        tzinfo=None
-    )
+    cutoff_date = datetime.now() - timedelta(weeks=weeks)
 
     query = """
     SELECT
@@ -460,9 +458,7 @@ async def get_articles_daily_timeline_legacy(
 ):
     """Legacy endpoint: Get daily articles count over time."""
 
-    cutoff_date = (datetime.now(timezone.utc) - timedelta(days=days)).replace(
-        tzinfo=None
-    )
+    cutoff_date = datetime.now() - timedelta(days=days)
 
     query = """
     SELECT
@@ -494,9 +490,7 @@ async def get_topics_language_breakdown_legacy(
     """Legacy endpoint: Get topics distribution with language breakdown."""
 
     # Use a broader date range since our data spans multiple weeks
-    cutoff_date = (datetime.now(timezone.utc) - timedelta(weeks=weeks)).replace(
-        tzinfo=None
-    )
+    cutoff_date = datetime.now() - timedelta(weeks=weeks)
 
     query = """
     SELECT
