@@ -35,6 +35,28 @@ class SiteStructure(BaseModel):
     requires_playwright: bool = False
 
 
+class SourceQualityMetrics(BaseModel):
+    """Quality metrics for source evaluation."""
+
+    content_freshness: float
+    content_volume: float
+    content_structure: float
+    update_frequency: float
+
+
+class SourceEvaluationResult(BaseModel):
+    """Result of source discovery and evaluation."""
+
+    domain: str
+    compliance_result: ComplianceValidationResult
+    content_quality: SourceQualityMetrics
+    technical_quality: SourceQualityMetrics
+    medical_relevance: float
+    overall_score: float
+    recommendation: str
+    evaluation_timestamp: datetime
+
+
 class ScraperResult(BaseModel):
     """Result of scraper generation process."""
 
