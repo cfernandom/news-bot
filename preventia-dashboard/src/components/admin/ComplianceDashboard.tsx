@@ -145,45 +145,45 @@ export const ComplianceDashboard: React.FC<ComplianceDashboardProps> = ({ source
     switch (color) {
       case 'green':
         return {
-          bg: 'bg-green-50',
-          text: 'text-green-700',
-          icon: 'text-green-600',
-          border: 'border-green-200'
+          bg: 'admin-alert-success',
+          text: 'admin-stat-green',
+          icon: 'admin-stat-green',
+          border: ''
         };
       case 'yellow':
         return {
-          bg: 'bg-yellow-50',
-          text: 'text-yellow-700',
-          icon: 'text-yellow-600',
-          border: 'border-yellow-200'
+          bg: 'admin-alert-warning',
+          text: 'admin-stat-yellow',
+          icon: 'admin-stat-yellow',
+          border: ''
         };
       case 'red':
         return {
-          bg: 'bg-red-50',
-          text: 'text-red-700',
-          icon: 'text-red-600',
-          border: 'border-red-200'
+          bg: 'admin-alert-danger',
+          text: 'admin-stat-red',
+          icon: 'admin-stat-red',
+          border: ''
         };
       case 'blue':
         return {
-          bg: 'bg-blue-50',
-          text: 'text-blue-700',
-          icon: 'text-blue-600',
-          border: 'border-blue-200'
+          bg: 'admin-alert-info',
+          text: 'admin-stat-blue',
+          icon: 'admin-stat-blue',
+          border: ''
         };
       case 'purple':
         return {
-          bg: 'bg-purple-50',
-          text: 'text-purple-700',
-          icon: 'text-purple-600',
-          border: 'border-purple-200'
+          bg: 'admin-alert-info', // No direct purple in admin-theme, using info as fallback
+          text: 'admin-stat-blue',
+          icon: 'admin-stat-blue',
+          border: ''
         };
       default:
         return {
-          bg: 'bg-gray-50',
-          text: 'text-gray-700',
-          icon: 'text-gray-600',
-          border: 'border-gray-200'
+          bg: 'admin-secondary',
+          text: 'admin-text-primary',
+          icon: 'admin-text-secondary',
+          border: 'admin-border'
         };
     }
   };
@@ -227,14 +227,14 @@ export const ComplianceDashboard: React.FC<ComplianceDashboardProps> = ({ source
   const criticalIssues = getCriticalIssues();
 
   return (
-    <div className="space-y-6">
+    <div className="admin-space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Shield className="h-6 w-6 text-blue-600" />
-          <h2 className="text-xl font-semibold">Compliance Dashboard</h2>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-sm)' }}>
+          <Shield className="h-6 w-6" style={{ color: 'var(--admin-primary)' }} />
+          <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: 'var(--admin-text-primary)' }}>Compliance Dashboard</h2>
         </div>
-        <Badge variant="secondary" className="gap-1">
+        <Badge variant="secondary" style={{ display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-xs)' }}>
           <Zap className="h-3 w-3" />
           Live
         </Badge>
@@ -242,16 +242,16 @@ export const ComplianceDashboard: React.FC<ComplianceDashboardProps> = ({ source
 
       {/* Critical Issues Alert */}
       {criticalIssues.length > 0 && (
-        <Alert>
+        <div className="admin-alert admin-alert-danger">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            <div className="space-y-2">
-              <div className="font-medium">Critical Issues Detected:</div>
+            <div className="admin-space-y-2">
+              <div style={{ fontWeight: '500' }}>Critical Issues Detected:</div>
               {criticalIssues.map((issue, index) => (
-                <div key={index} className="text-sm">
-                  • <strong>{issue.title}:</strong> {issue.description}
+                <div key={index} style={{ fontSize: '0.875rem' }}>
+                  • <strong style={{ fontWeight: '600' }}>{issue.title}:</strong> {issue.description}
                   {issue.sources.length > 0 && (
-                    <div className="ml-4 text-muted-foreground">
+                    <div style={{ marginLeft: 'var(--admin-spacing-md)', color: 'var(--admin-text-muted)' }}>
                       Affected: {issue.sources.join(', ')}
                       {issue.sources.length < sources.length && ' ...'}
                     </div>
@@ -260,84 +260,84 @@ export const ComplianceDashboard: React.FC<ComplianceDashboardProps> = ({ source
               ))}
             </div>
           </AlertDescription>
-        </Alert>
+        </div>
       )}
 
       {/* Widgets Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--admin-spacing-md)' }}>
         {widgets.map((widget) => {
           const colors = getWidgetColorClasses(widget.color);
 
           return (
-            <Card key={widget.id} className={`${colors.bg} ${colors.border}`}>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+            <div key={widget.id} className={`admin-card ${colors.bg}`} style={{ borderColor: 'var(--admin-border)' }}>
+              <div style={{ paddingBottom: 'var(--admin-spacing-sm)' }}>
+                <div style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--admin-text-muted)', display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-sm)' }}>
                   <span className={colors.icon}>{widget.icon}</span>
                   {widget.title}
-                </CardTitle>
-              </CardHeader>
+                </div>
+              </div>
               <CardContent>
-                <div className="space-y-2">
-                  <div className={`text-2xl font-bold ${colors.text}`}>
+                <div className="admin-space-y-2">
+                  <div style={{ fontSize: '1.5rem', fontWeight: '700' }} className={colors.text}>
                     {widget.value}
                   </div>
                   {widget.description && (
-                    <div className="text-xs text-muted-foreground">
+                    <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>
                       {widget.description}
                     </div>
                   )}
                 </div>
               </CardContent>
-            </Card>
+            </div>
           );
         })}
       </div>
 
       {/* Compliance Summary */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
+      <div className="admin-card">
+        <div style={{ paddingBottom: 'var(--admin-spacing-md)' }}>
+          <div style={{ fontSize: '1.125rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-sm)' }}>
             <TrendingUp className="h-4 w-4" />
             Compliance Summary
-          </CardTitle>
-        </CardHeader>
+          </div>
+        </div>
         <CardContent>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <div className="text-sm font-medium">Status Distribution</div>
-                <div className="space-y-1">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-green-600">✓ Compliant</span>
+          <div className="admin-space-y-4">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--admin-spacing-md)' }}>
+              <div className="admin-space-y-2">
+                <div style={{ fontSize: '0.875rem', fontWeight: '500' }}>Status Distribution</div>
+                <div className="admin-space-y-1">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
+                    <span className="admin-stat-green">✓ Compliant</span>
                     <span>{sources.filter(s => s.validation_status === 'validated').length}</span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-yellow-600">⏳ Pending</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
+                    <span className="admin-stat-yellow">⏳ Pending</span>
                     <span>{sources.filter(s => s.validation_status === 'pending').length}</span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-red-600">✗ Failed</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
+                    <span className="admin-stat-red">✗ Failed</span>
                     <span>{sources.filter(s => s.validation_status === 'failed').length}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <div className="text-sm font-medium">Feature Coverage</div>
-                <div className="space-y-1">
-                  <div className="flex justify-between text-sm">
+              <div className="admin-space-y-2">
+                <div style={{ fontSize: '0.875rem', fontWeight: '500' }}>Feature Coverage</div>
+                <div className="admin-space-y-1">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
                     <span>Robots.txt</span>
                     <span>{Math.round((sources.filter(s => s.robots_txt_url).length / sources.length) * 100)}%</span>
                   </div>
-                  <div className="flex justify-between text-sm">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
                     <span>Terms of Service</span>
                     <span>{Math.round((sources.filter(s => s.terms_of_service_url).length / sources.length) * 100)}%</span>
                   </div>
-                  <div className="flex justify-between text-sm">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
                     <span>Legal Contact</span>
                     <span>{Math.round((sources.filter(s => s.legal_contact_email).length / sources.length) * 100)}%</span>
                   </div>
-                  <div className="flex justify-between text-sm">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
                     <span>Fair Use</span>
                     <span>{Math.round((sources.filter(s => s.fair_use_basis).length / sources.length) * 100)}%</span>
                   </div>
@@ -346,7 +346,7 @@ export const ComplianceDashboard: React.FC<ComplianceDashboardProps> = ({ source
             </div>
           </div>
         </CardContent>
-      </Card>
+      </div>
     </div>
   );
 };
