@@ -24,7 +24,7 @@ Documentación central del proyecto PreventIA News Analytics - Sistema inteligen
 ### 🛠️ Desarrollo
 - **Setup**
  - ✅ [Local Development](development/setup/local-development.md) - Configuración local
- - (Pendiente) [Docker Setup](development/setup/docker-setup.md) - Configuración Docker
+ - ✅ [Docker Setup](development/setup/docker-setup.md) - Configuración Docker
  - (Pendiente) [Environment Variables](development/setup/environment-variables.md) - Variables de entorno
 - **Estándares**
  - ✅ [Testing Strategy](development/standards/testing-strategy.md) - Estrategia completa de testing
