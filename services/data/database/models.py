@@ -106,6 +106,9 @@ class NewsSource(Base):
     articles = relationship(
         "Article", back_populates="source", cascade="all, delete-orphan"
     )
+    legal_notices = relationship(
+        "LegalNotice", back_populates="source", cascade="all, delete-orphan"
+    )
 
 
 class Article(Base):
@@ -386,3 +389,65 @@ class PaginatedResponse(BaseModel, Generic[T]):
     page: int
     size: int
     pages: int
+
+
+class LegalNotice(Base):
+    __tablename__ = "legal_notices"
+
+    id = Column(Integer, primary_key=True)
+    source_id = Column(Integer, ForeignKey("news_sources.id"), nullable=False)
+    notice_type = Column(String(50), nullable=False)
+    title = Column(String(200), nullable=False)
+    content = Column(Text, nullable=False)
+    effective_date = Column(Date, nullable=False)
+    expiration_date = Column(Date)
+    status = Column(String(20), default="active")
+    legal_contact = Column(String(255))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    source = relationship("NewsSource", back_populates="legal_notices")
+
+
+class UserRole(Base):
+    __tablename__ = "user_roles"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50), unique=True, nullable=False)
+    description = Column(Text)
+    permissions = Column(JSON, default=list)
+    is_system_role = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow)
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String(100), unique=True, nullable=False)
+    email = Column(String(255), unique=True, nullable=False)
+    full_name = Column(String(255), nullable=False)
+    password_hash = Column(String(255), nullable=False)
+    is_active = Column(Boolean, default=True)
+    is_superuser = Column(Boolean, default=False)
+    last_login = Column(DateTime)
+    failed_login_attempts = Column(Integer, default=0)
+    account_locked_until = Column(DateTime)
+    password_changed_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow)
+
+
+class UserRoleAssignment(Base):
+    __tablename__ = "user_role_assignments"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    role_id = Column(Integer, ForeignKey("user_roles.id"), nullable=False)
+    assigned_at = Column(DateTime, default=datetime.utcnow)
+    assigned_by = Column(Integer, ForeignKey("users.id"))
+    expires_at = Column(DateTime)
+
+    __table_args__ = (UniqueConstraint("user_id", "role_id", name="_user_role_uc"),)

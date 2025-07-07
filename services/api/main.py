@@ -33,8 +33,14 @@ async def lifespan(app: FastAPI):
     await db_manager.initialize()
     app.state.db_manager = db_manager
 
+    # Initialize authentication system
+    from services.api.auth.startup import initialize_auth_system
+
+    await initialize_auth_system()
+
     print("✅ FastAPI application started successfully")
     print("🔌 Database connection established")
+    print("🔐 Authentication system initialized")
 
     yield
 
