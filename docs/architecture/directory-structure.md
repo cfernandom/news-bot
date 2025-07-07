@@ -27,218 +27,218 @@ news_bot_3/
 ├── 📄 run_bot.sh                 # Execution script
 ├── 📄 crontab.template           # Cron jobs template
 │
-├── 📁 docs/                      # Documentación completa
-├── 📁 services/                  # Servicios del sistema
-├── 📁 venv/                      # Virtual environment Python
-└── 📁 logs/                      # Logs de aplicación (generado)
+├── 📁 docs/                      # Complete documentation
+├── 📁 services/                  # System services
+├── 📁 venv/                      # Python virtual environment
+└── 📁 logs/                      # Application logs (generated)
 ```
 
-## 📚 Documentación (`docs/`)
+## 📚 Documentation (`docs/`)
 
-### Estructura Completa
+### Complete Structure
 ```
 docs/
-├── 📄 README.md                          # Hub central de documentación
-├── 📁 architecture/                      # Arquitectura del sistema
-│   ├── 📄 system-overview.md            # Visión general con diagramas
-│   └── 📄 directory-structure.md        # Este documento
+├── 📄 README.md                          # Central documentation hub
+├── 📁 architecture/                      # System architecture
+│   ├── 📄 system-overview.md            # General overview with diagrams
+│   └── 📄 directory-structure.md        # This document
 ├── 📁 decisions/                         # Architecture Decision Records
-│   ├── 📄 README.md                     # Índice de ADRs
-│   ├── 📄 adr-template.md               # Template para nuevos ADRs
-│   ├── 📄 ADR-001-project-scope-change.md    # Cambio de alcance
-│   └── 📄 ADR-002-database-architecture.md   # Arquitectura BD
-├── 📁 development/                       # Guías de desarrollo
+│   ├── 📄 README.md                     # ADR index
+│   ├── 📄 adr-template.md               # Template for new ADRs
+│   ├── 📄 ADR-001-project-scope-change.md    # Scope change
+│   └── 📄 ADR-002-database-architecture.md   # Database architecture
+├── 📁 development/                       # Development guides
 │   ├── 📁 setup/
-│   │   └── 📄 local-development.md      # Setup completo local
-│   ├── 📁 standards/                    # Estándares de código (pendiente)
-│   └── 📁 guides/                       # Guías específicas (pendiente)
-├── 📁 conversations/                     # Conversaciones técnicas
-│   ├── 📄 README.md                     # Índice de conversaciones
+│   │   └── 📄 local-development.md      # Complete local setup
+│   ├── 📁 standards/                    # Code standards (pending)
+│   └── 📁 guides/                       # Specific guides (pending)
+├── 📁 conversations/                     # Technical conversations
+│   ├── 📄 README.md                     # Conversation index
 │   ├── 📁 templates/
-│   │   └── 📄 conversation-template.md  # Template para nuevas conversaciones
-│   ├── 📄 2025-06-27_project-kickoff.md      # Sesión inicial
-│   └── 📄 2025-06-27_database-implementation.md  # Implementación BD
-├── 📁 operations/                        # Operaciones y deployment
-│   ├── 📁 deployment/                   # (Estructura lista, pendiente contenido)
+│   │   └── 📄 conversation-template.md  # Template for new conversations
+│   ├── 📄 2025-06-27_project-kickoff.md      # Initial session
+│   └── 📄 2025-06-27_database-implementation.md  # Database implementation
+├── 📁 operations/                        # Operations and deployment
+│   ├── 📁 deployment/                   # (Structure ready, pending content)
 │   ├── 📁 monitoring/
 │   └── 📁 maintenance/
-├── 📁 api/                              # Documentación de APIs
-│   ├── 📁 services/                     # APIs internas
-│   └── 📁 external/                     # APIs externas
-├── 📁 product/                          # Documentación de producto
-│   ├── 📁 requirements/                 # Requirements funcionales
-│   ├── 📁 roadmap/                      # Roadmap y planificación
-│   └── 📁 research/                     # Investigación de mercado
-└── 📁 assets/                           # Assets de documentación
-    ├── 📁 diagrams/                     # Diagramas arquitectónicos
-    ├── 📁 screenshots/                  # Screenshots de UI
-    └── 📁 templates/                    # Templates diversos
+├── 📁 api/                              # API documentation
+│   ├── 📁 services/                     # Internal APIs
+│   └── 📁 external/                     # External APIs
+├── 📁 product/                          # Product documentation
+│   ├── 📁 requirements/                 # Functional requirements
+│   ├── 📁 roadmap/                      # Roadmap and planning
+│   └── 📁 research/                     # Market research
+└── 📁 assets/                           # Documentation assets
+    ├── 📁 diagrams/                     # Architecture diagrams
+    ├── 📁 screenshots/                  # UI screenshots
+    └── 📁 templates/                    # Various templates
 ```
 
-## 🔧 Servicios (`services/`)
+## 🔧 Services (`services/`)
 
-### Servicios Implementados
+### Implemented Services
 ```
 services/
-├── 📁 data/                             # 🆕 Nueva capa de datos
+├── 📁 data/                             # 🆕 New data layer
 │   └── 📁 database/
-│       ├── 📄 connection.py            # Manager de conexiones híbrido
-│       ├── 📄 models.py               # Modelos SQLAlchemy + Pydantic
+│       ├── 📄 connection.py            # Hybrid connection manager
+│       ├── 📄 models.py               # SQLAlchemy + Pydantic models
 │       └── 📁 migrations/
-│           └── 📄 001_initial_schema.sql    # Schema inicial PostgreSQL
+│           └── 📄 001_initial_schema.sql    # Initial PostgreSQL schema
 │
-├── 📁 scraper/                          # ♻️ Reutilizado/adaptado
+├── 📁 scraper/                          # ♻️ Reused/adapted
 │   ├── 📁 src/
 │   │   ├── 📄 main.py
 │   │   ├── 📄 utils.py
-│   │   └── 📁 extractors/              # 9 extractors existentes
+│   │   └── 📁 extractors/              # 9 existing extractors
 │   │       ├── 📄 www_breastcancer_org.py
 │   │       ├── 📄 www_curetoday_com_tumor_breast.py
 │   │       ├── 📄 www_medicalxpress_breast_cancer.py
-│   │       └── 📄 ... (6 más)
-│   └── 📁 fulltext/                    # Extracción texto completo
+│   │       └── 📄 ... (6 more)
+│   └── 📁 fulltext/                    # Full-text extraction
 │       └── 📁 src/
 │           ├── 📄 fulltext_scraper.py
 │           ├── 📄 registry.py
-│           └── 📁 extractors/          # 8 extractors full-text
+│           └── 📁 extractors/          # 8 full-text extractors
 │               ├── 📄 breastcancernow_org.py
 │               ├── 📄 www_nature_com.py
-│               └── 📄 ... (6 más)
+│               └── 📄 ... (6 more)
 │
-├── 📁 nlp/                             # ♻️ Reutilizado - base para analytics
+├── 📁 nlp/                             # ♻️ Reused - base for analytics
 │   └── 📁 src/
 │       ├── 📄 main.py
 │       ├── 📄 analyzer.py
 │       ├── 📄 keywords.py
 │       └── 📄 models.py
 │
-├── 📁 orchestrator/                     # ♻️ Evolucionando para analytics
+├── 📁 orchestrator/                     # ♻️ Evolving for analytics
 │   └── 📁 src/
-│       ├── 📄 main.py                  # Pipeline principal
+│       ├── 📄 main.py                  # Main pipeline
 │       └── 📄 utils.py
 │
-├── 📁 shared/                          # ♻️ Modelos compartidos
+├── 📁 shared/                          # ♻️ Shared models
 │   ├── 📁 models/
-│   │   └── 📄 article.py              # Modelo base Article
+│   │   └── 📄 article.py              # Base Article model
 │   └── 📁 utils/
 │       └── 📄 dates.py
 │
-└── 📁 legacy/                          # 🔄 Servicios en transición
-    ├── 📁 copywriter/                  # Para newsletter (deprecado)
+└── 📁 legacy/                          # 🔄 Services in transition
+    ├── 📁 copywriter/                  # For newsletter (deprecated)
     │   ├── 📁 src/
     │   ├── 📁 article_selector/
     │   ├── 📁 structure_builder/
     │   └── 📁 summary_generator/
-    ├── 📁 decision_engine/             # Evolucionará a analytics
+    ├── 📁 decision_engine/             # Will evolve to analytics
     │   └── 📁 src/
-    └── 📁 publisher/                   # Ya no publica a WordPress
+    └── 📁 publisher/                   # No longer publishes to WordPress
         └── 📁 src/
 ```
 
-## 🎯 Nueva Arquitectura de Servicios (Roadmap)
+## 🎯 New Service Architecture (Roadmap)
 
-### Servicios Futuros (a implementar)
+### Future Services (to be implemented)
 ```
 services/
 ├── 📁 api/                             # 🔮 FastAPI REST endpoints
-│   ├── 📄 main.py                     # FastAPI app principal
+│   ├── 📄 main.py                     # Main FastAPI app
 │   ├── 📁 endpoints/
-│   │   ├── 📄 articles.py             # CRUD artículos
-│   │   ├── 📄 sources.py              # Gestión fuentes
-│   │   ├── 📄 analytics.py            # Métricas analytics
-│   │   └── 📄 exports.py              # Exportación datos
+│   │   ├── 📄 articles.py             # Article CRUD
+│   │   ├── 📄 sources.py              # Source management
+│   │   ├── 📄 analytics.py            # Analytics metrics
+│   │   └── 📄 exports.py              # Data export
 │   ├── 📁 middleware/                 # Auth, CORS, rate limiting
-│   └── 📁 schemas/                    # Pydantic schemas API
+│   └── 📁 schemas/                    # API Pydantic schemas
 │
-├── 📁 analytics/                       # 🔮 Procesamiento analytics
-│   ├── 📁 sentiment/                  # Análisis sentimientos
-│   ├── 📁 topic_classifier/           # Clasificación temática
-│   ├── 📁 geographic/                 # Análisis geográfico
-│   └── 📁 aggregation/                # Métricas agregadas
+├── 📁 analytics/                       # 🔮 Analytics processing
+│   ├── 📁 sentiment/                  # Sentiment analysis
+│   ├── 📁 topic_classifier/           # Topic classification
+│   ├── 📁 geographic/                 # Geographic analysis
+│   └── 📁 aggregation/                # Aggregated metrics
 │
-├── 📁 collection/                      # 🔮 Recolección optimizada
-│   ├── 📁 source_validator/           # Validación fuentes dinámicas
-│   └── 📁 scheduler/                  # Scheduling inteligente
+├── 📁 collection/                      # 🔮 Optimized collection
+│   ├── 📁 source_validator/           # Dynamic source validation
+│   └── 📁 scheduler/                  # Intelligent scheduling
 │
-└── 📁 export/                          # 🔮 Exportación y reportes
-    ├── 📁 reports/                    # Generación reportes
+└── 📁 export/                          # 🔮 Export and reports
+    ├── 📁 reports/                    # Report generation
     └── 📁 formats/                    # CSV, PDF, Excel export
 ```
 
-## 📊 Archivos de Configuración
+## 📊 Configuration Files
 
-### Configuración Principal
+### Main Configuration
 ```
-├── 📄 .env.template                   # Template configuración (versionado)
-├── 📄 .env                           # Configuración local (ignorado)
-├── 📄 docker-compose.yml             # Servicios: PostgreSQL, Redis, Analytics
-├── 📄 requirements.txt               # 45+ dependencias verificadas
-├── 📄 Dockerfile                     # Imagen Python con dependencias
-└── 📄 .gitignore                     # Archivos ignorados
+├── 📄 .env.template                   # Configuration template (versioned)
+├── 📄 .env                           # Local configuration (ignored)
+├── 📄 docker-compose.yml             # Services: PostgreSQL, Redis, Analytics
+├── 📄 requirements.txt               # 45+ verified dependencies
+├── 📄 Dockerfile                     # Python image with dependencies
+└── 📄 .gitignore                     # Ignored files
 ```
 
-### Configuración de Desarrollo
+### Development Configuration
 ```
-├── 📄 .dockerignore                  # Archivos ignorados en build
+├── 📄 .dockerignore                  # Files ignored in build
 ├── 📄 .gitattributes                 # Git line endings
-└── 📁 venv/                          # Virtual environment (ignorado)
-    ├── 📁 bin/                       # Executables Python
-    ├── 📁 lib/                       # Site packages instalados
-    └── 📁 include/                   # Headers C
+└── 📁 venv/                          # Virtual environment (ignored)
+    ├── 📁 bin/                       # Python executables
+    ├── 📁 lib/                       # Installed site packages
+    └── 📁 include/                   # C headers
 ```
 
-## 🔍 Archivos por Tipo
+## 🔍 Files by Type
 
 ### Python (`.py`)
-- **Total**: ~25 archivos principales
-- **Nuevos**: `connection.py`, `models.py`, `test_database.py`
-- **Existentes**: Todo el directorio `services/` original
+- **Total**: ~25 main files
+- **New**: `connection.py`, `models.py`, `test_database.py`
+- **Existing**: All original `services/` directory
 
-### Documentación (`.md`)
-- **Total**: 10 archivos de documentación
-- **Estructura**: 8 directorios organizados
-- **Templates**: 2 templates reutilizables
+### Documentation (`.md`)
+- **Total**: 10 documentation files
+- **Structure**: 8 organized directories
+- **Templates**: 2 reusable templates
 
-### Configuración
+### Configuration
 - **Docker**: `docker-compose.yml`, `Dockerfile`, `.dockerignore`
 - **Python**: `requirements.txt`, `.env.template`
 - **Shell**: `run_bot.sh`, `entrypoint.sh`
 - **SQL**: `001_initial_schema.sql`
 
-## 📈 Estadísticas del Proyecto
+## 📈 Project Statistics
 
-### Líneas de Código
-- **Database Layer**: ~650 líneas (models, connection, migration)
-- **Documentation**: ~2,000 líneas
-- **Configuration**: ~100 líneas
-- **Tests**: ~120 líneas
+### Lines of Code
+- **Database Layer**: ~650 lines (models, connection, migration)
+- **Documentation**: ~2,000 lines
+- **Configuration**: ~100 lines
+- **Tests**: ~120 lines
 
-### Estructura de Archivos
-- **📁 Directorios**: 35+ directorios organizados
-- **📄 Archivos**: 50+ archivos activos
-- **🔧 Configuración**: 8 archivos de config
-- **📚 Documentación**: 10 archivos .md
+### File Structure
+- **📁 Directories**: 35+ organized directories
+- **📄 Files**: 50+ active files
+- **🔧 Configuration**: 8 config files
+- **📚 Documentation**: 10 .md files
 
-## 🎯 Estado de Implementación
+## 🎯 Implementation Status
 
-### ✅ Completado
-- ✅ **Database Layer**: PostgreSQL + SQLAlchemy híbrido
-- ✅ **Documentation**: Estructura completa y ADRs
+### ✅ Completed
+- ✅ **Database Layer**: PostgreSQL + hybrid SQLAlchemy
+- ✅ **Documentation**: Complete structure and ADRs
 - ✅ **Infrastructure**: Docker + PostgreSQL + Redis
-- ✅ **Testing**: Database tests funcionando
+- ✅ **Testing**: Database tests working
 
-### 🔄 En Progreso
-- 🔄 **API Layer**: FastAPI endpoints (próximo)
-- 🔄 **Analytics**: Sentiment analysis (próximo)
-- 🔄 **Migration**: Adaptar scrapers existentes
+### 🔄 In Progress
+- 🔄 **API Layer**: FastAPI endpoints (upcoming)
+- 🔄 **Analytics**: Sentiment analysis (upcoming)
+- 🔄 **Migration**: Adapting existing scrapers
 
-### 📋 Pendiente
+### 📋 Pending
 - 📋 **Frontend**: React dashboard
 - 📋 **Advanced Analytics**: Topic classification, geographic analysis
 - 📋 **Operations**: Monitoring, deployment automation
 
 ---
 
-**Última actualización**: 2025-06-27
-**Versión de la estructura**: v2.0 (Analytics Architecture)
-**Próxima actualización**: Cuando se implemente FastAPI layer
+**Last updated**: 2025-06-27
+**Structure version**: v2.0 (Analytics Architecture)
+**Next update**: When FastAPI layer is implemented

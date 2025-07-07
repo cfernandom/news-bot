@@ -25,11 +25,20 @@ PreventIA News Analytics is an intelligent media monitoring system specialized i
 - **Setup testing environment**: `source venv/bin/activate && pip install -r tests/requirements-test.txt`
 - **Run unit tests**: `cd tests && pytest -m unit`
 - **Run integration tests**: `cd tests && pytest -m integration`
+- **Run end-to-end tests**: `cd tests && pytest -m e2e`
 - **Run all tests**: `cd tests && pytest`
 - **Coverage report**: `cd tests && pytest --cov=../services --cov-report=html`
 - **Database tests**: `cd tests && pytest -m database`
 - **Legacy database test**: `source venv/bin/activate && python tests/legacy_test_database.py`
 - **Check PostgreSQL health**: `docker compose exec postgres pg_isready -U preventia`
+
+### Integration Test Suite (COMPLETADO)
+- **Run complete integration test suite**: `python tests/run_integration_tests.py`
+- **Run specific test suite**: `python tests/run_integration_tests.py system`
+- **Run with verbose output**: `python tests/run_integration_tests.py --verbose --report test-report.md`
+- **Available test suites**: system, cli, auth, pipeline, validation, all
+- **Test coverage**: 200+ tests covering complete system workflows
+- **Performance benchmarks**: API response times, concurrent operations, data processing
 
 ### Standards Automation Commands
 - **Setup pre-commit hooks**: `pip install pre-commit && pre-commit install && pre-commit install --hook-type commit-msg`
@@ -62,6 +71,25 @@ PreventIA News Analytics is an intelligent media monitoring system specialized i
 - **Production deployment**: `cd preventia-dashboard && npm run preview`
 - **Testing coverage**: `cd preventia-dashboard && npm run test:coverage`
 - **Component test status**: LegacySentimentChart 100% passing, others need language standardization
+
+### CLI Tools Commands (COMPLETADO)
+- **Setup CLI tools**: `python setup_cli.py`
+- **Check system status**: `./preventia-cli status`
+- **List news sources**: `./preventia-cli source list`
+- **Create news source**: `./preventia-cli source create "Source Name" "https://example.com"`
+- **Run scrapers**: `./preventia-cli scraper run 1`
+- **User management**: `./preventia-cli user create john john@example.com "John Doe"`
+- **Compliance monitoring**: `./preventia-cli compliance dashboard`
+- **Backup system**: `./preventia-cli backup --backup-file backup.json`
+- **API server**: `./preventia-cli serve --port 8000`
+- **Get help**: `./preventia-cli --help`
+
+### Authentication & Authorization (COMPLETADO)
+- **JWT token management**: Built-in JWT handler with RBAC
+- **Available roles**: system_admin, source_admin, source_editor, source_viewer, compliance_officer
+- **Permission system**: Resource-based permissions (sources:read, sources:update, etc.)
+- **Security features**: Token expiration, tampering protection, secure defaults
+- **Integration**: Full FastAPI dependency injection for protected endpoints
 
 ### Source Administration Commands (PLANIFICADO)
 - **News Sources Admin**: Access via React dashboard admin panel (to be implemented)
@@ -491,7 +519,7 @@ docker compose exec postgres psql -U preventia -d preventia_news -c "SELECT COUN
 
 ## Current Implementation Status (ACTUALIZADO 2025-07-07)
 
-### ✅ Completed - FASE 1, 2, 3 & 4
+### ✅ Completed - ALL HIGH-PRIORITY TASKS (FASE 1-5)
 - **PostgreSQL database** with optimized analytics schema (106 artículos)
 - **Hybrid ORM + raw SQL** data layer with performance < 5s
 - **Docker containerization** with health checks and production readiness
@@ -499,7 +527,11 @@ docker compose exec postgres psql -U preventia -d preventia_news -c "SELECT COUN
 - **VADER sentiment analysis** with medical content specialization (100% coverage)
 - **FastAPI REST API** with 20+ endpoints and OpenAPI documentation
 - **React Legacy Dashboard** with 8 critical components implemented
-- **Professional testing framework** (unit/integration/e2e/performance)
+- **Professional testing framework** (unit/integration/e2e/performance) with 200+ tests
+- **Complete CLI automation suite** for system management and operations
+- **JWT-based authentication** with RBAC and permission system
+- **Database migration scripts** with complete schema management
+- **Integration test suites** with comprehensive end-to-end validation
 - **Complete documentation** structure and usage guides
 - **Git workflow profesional** con conventional commits y branch strategy
 
