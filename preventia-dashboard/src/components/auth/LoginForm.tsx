@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, Eye, EyeOff, LogIn, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import '../../styles/admin-theme.css';
 
 export const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -30,31 +26,31 @@ export const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md shadow-xl">
-        <CardHeader className="space-y-1 text-center">
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--admin-bg)', padding: '1rem' }}>
+      <div className="admin-card w-full max-w-md">
+        <div className="admin-card-header text-center">
           <div className="flex items-center justify-center mb-6">
-            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="admin-logo-icon">
               <Shield className="h-6 w-6 text-white" />
             </div>
           </div>
-          <CardTitle className="text-3xl font-bold text-gray-900">Welcome Back</CardTitle>
-          <CardDescription className="text-gray-600 text-base">
+          <div className="admin-card-title">Welcome Back</div>
+          <div className="admin-card-subtitle">
             Sign in to access the News Sources Administration Panel
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          </div>
+        </div>
+        <div>
+          <form onSubmit={handleSubmit} className="admin-space-y-4">
             {error && (
-              <Alert variant="destructive">
+              <div className="admin-alert admin-alert-danger">
                 <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
+                <span>{error}</span>
+              </div>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
+            <div className="admin-form-group">
+              <label className="admin-label" htmlFor="email">Email</label>
+              <input
                 id="email"
                 type="email"
                 placeholder="admin@preventia.com"
@@ -62,13 +58,14 @@ export const LoginForm: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
+                className="admin-input"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+            <div className="admin-form-group">
+              <label className="admin-label" htmlFor="password">Password</label>
               <div className="relative">
-                <Input
+                <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
@@ -76,12 +73,20 @@ export const LoginForm: React.FC = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={isLoading}
+                  className="admin-input"
                 />
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  className="admin-btn-ghost"
+                  style={{
+                    position: 'absolute',
+                    right: '0',
+                    top: '0',
+                    height: '100%',
+                    padding: '0.5rem 0.75rem',
+                    border: 'none',
+                    background: 'transparent'
+                  }}
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={isLoading}
                 >
@@ -90,13 +95,13 @@ export const LoginForm: React.FC = () => {
                   ) : (
                     <Eye className="h-4 w-4" />
                   )}
-                </Button>
+                </button>
               </div>
             </div>
 
-            <Button
+            <button
               type="submit"
-              className="w-full"
+              className="admin-btn admin-btn-primary w-full"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -110,20 +115,20 @@ export const LoginForm: React.FC = () => {
                   Sign In
                 </>
               )}
-            </Button>
+            </button>
           </form>
 
-          <div className="mt-6 pt-4 border-t">
-            <div className="text-sm text-muted-foreground">
-              <p className="font-medium mb-2">Demo Credentials:</p>
-              <div className="space-y-1">
+          <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--admin-border)' }}>
+            <div style={{ fontSize: '0.875rem', color: 'var(--admin-text-secondary)' }}>
+              <p style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Demo Credentials:</p>
+              <div className="admin-space-y-4">
                 <p><strong>Admin:</strong> admin@preventia.com / admin123</p>
                 <p><strong>User:</strong> demo@preventia.com / demo123</p>
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
