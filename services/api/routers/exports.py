@@ -3,12 +3,18 @@ Export functionality for CSV, XLSX, and PDF reports.
 Provides data export capabilities for the legacy dashboard.
 """
 
+import base64
 import csv
 import io
 from datetime import datetime
-from typing import Optional
+from typing import Any, Dict, Optional
 
+import matplotlib
+import matplotlib.pyplot as plt
 import pandas as pd
+
+matplotlib.use("Agg")  # Use non-interactive backend
+import seaborn as sns
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from fastapi.responses import StreamingResponse
 from sqlalchemy import desc, func, or_, select, text
@@ -18,7 +24,194 @@ from sqlalchemy.orm import selectinload
 from services.data.database.connection import get_db_session
 from services.data.database.models import Article
 
+# In-memory export tracking (for demonstration - in production use database)
+export_history = []
+
+
+def track_export(
+    export_type: str, filename: str, user_id: str = "anonymous", file_size: int = 0
+):
+    """Track export operation for history."""
+    export_record = {
+        "id": len(export_history) + 1,
+        "type": export_type,
+        "filename": filename,
+        "user_id": user_id,
+        "timestamp": datetime.now().isoformat(),
+        "file_size": file_size,
+        "status": "completed",
+    }
+    export_history.append(export_record)
+
+    # Keep only last 100 exports to prevent memory issues
+    if len(export_history) > 100:
+        export_history.pop(0)
+
+    return export_record
+
+
 router = APIRouter(prefix="/api/v1/export", tags=["exports"])
+
+
+async def generate_sentiment_chart(
+    db: AsyncSession, chart_format: str = "png"
+) -> io.BytesIO:
+    """Generate sentiment distribution chart."""
+    # Get sentiment data
+    query = (
+        select(Article.sentiment_label, func.count(Article.id).label("count"))
+        .where(Article.sentiment_label.isnot(None))
+        .group_by(Article.sentiment_label)
+    )
+
+    result = await db.execute(query)
+    data = result.fetchall()
+
+    if not data:
+        raise HTTPException(status_code=404, detail="No sentiment data found")
+
+    # Create DataFrame
+    df = pd.DataFrame(data, columns=["sentiment", "count"])
+
+    # Set up the plot
+    plt.figure(figsize=(10, 6))
+    colors = {"positive": "#28a745", "negative": "#dc3545", "neutral": "#6c757d"}
+    chart_colors = [colors.get(sent, "#007bff") for sent in df["sentiment"]]
+
+    # Create pie chart
+    plt.pie(df["count"], labels=df["sentiment"], autopct="%1.1f%%", colors=chart_colors)
+    plt.title("Sentiment Distribution", fontsize=16, fontweight="bold")
+    plt.axis("equal")
+
+    # Save to BytesIO
+    img_buffer = io.BytesIO()
+    if chart_format.lower() == "svg":
+        plt.savefig(img_buffer, format="svg", bbox_inches="tight", dpi=300)
+    else:
+        plt.savefig(img_buffer, format="png", bbox_inches="tight", dpi=300)
+
+    img_buffer.seek(0)
+    plt.close()
+
+    return img_buffer
+
+
+async def generate_topics_chart(
+    db: AsyncSession, chart_format: str = "png"
+) -> io.BytesIO:
+    """Generate topic distribution chart."""
+    # Get topic data
+    query = (
+        select(Article.topic_category, func.count(Article.id).label("count"))
+        .where(Article.topic_category.isnot(None))
+        .group_by(Article.topic_category)
+        .order_by(func.count(Article.id).desc())
+    )
+
+    result = await db.execute(query)
+    data = result.fetchall()
+
+    if not data:
+        raise HTTPException(status_code=404, detail="No topic data found")
+
+    # Create DataFrame
+    df = pd.DataFrame(data, columns=["topic", "count"])
+
+    # Set up the plot
+    plt.figure(figsize=(12, 8))
+    sns.set_style("whitegrid")
+
+    # Create horizontal bar chart
+    bars = plt.barh(df["topic"], df["count"], color="#007bff")
+    plt.title("Topic Distribution", fontsize=16, fontweight="bold")
+    plt.xlabel("Number of Articles", fontsize=12)
+    plt.ylabel("Topic Category", fontsize=12)
+
+    # Add value labels on bars
+    for bar in bars:
+        width = bar.get_width()
+        plt.text(
+            width + 0.1,
+            bar.get_y() + bar.get_height() / 2,
+            f"{int(width)}",
+            ha="left",
+            va="center",
+        )
+
+    plt.tight_layout()
+
+    # Save to BytesIO
+    img_buffer = io.BytesIO()
+    if chart_format.lower() == "svg":
+        plt.savefig(img_buffer, format="svg", bbox_inches="tight", dpi=300)
+    else:
+        plt.savefig(img_buffer, format="png", bbox_inches="tight", dpi=300)
+
+    img_buffer.seek(0)
+    plt.close()
+
+    return img_buffer
+
+
+async def generate_timeline_chart(
+    db: AsyncSession, chart_format: str = "png"
+) -> io.BytesIO:
+    """Generate articles timeline chart."""
+    # Get timeline data
+    query = (
+        select(
+            func.date_trunc("month", Article.published_at).label("month"),
+            func.count(Article.id).label("count"),
+        )
+        .where(Article.published_at.isnot(None))
+        .group_by(func.date_trunc("month", Article.published_at))
+        .order_by("month")
+    )
+
+    result = await db.execute(query)
+    data = result.fetchall()
+
+    if not data:
+        raise HTTPException(status_code=404, detail="No timeline data found")
+
+    # Create DataFrame
+    df = pd.DataFrame(data, columns=["month", "count"])
+    df["month"] = pd.to_datetime(df["month"])
+
+    # Set up the plot
+    plt.figure(figsize=(14, 6))
+    plt.plot(
+        df["month"], df["count"], marker="o", linewidth=2, markersize=6, color="#007bff"
+    )
+    plt.title("Articles Published Over Time", fontsize=16, fontweight="bold")
+    plt.xlabel("Month", fontsize=12)
+    plt.ylabel("Number of Articles", fontsize=12)
+    plt.grid(True, alpha=0.3)
+    plt.xticks(rotation=45)
+
+    # Format x-axis dates
+    plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter("%Y-%m"))
+
+    plt.tight_layout()
+
+    # Save to BytesIO
+    img_buffer = io.BytesIO()
+    if chart_format.lower() == "svg":
+        plt.savefig(img_buffer, format="svg", bbox_inches="tight", dpi=300)
+    else:
+        plt.savefig(img_buffer, format="png", bbox_inches="tight", dpi=300)
+
+    img_buffer.seek(0)
+    plt.close()
+
+    return img_buffer
+
+
+CHART_GENERATORS = {
+    "sentiment": generate_sentiment_chart,
+    "topics": generate_topics_chart,
+    "timeline": generate_timeline_chart,
+}
 
 
 async def get_filtered_articles(
@@ -225,19 +418,61 @@ async def export_news_xlsx(
         raise HTTPException(status_code=500, detail=f"Excel export failed: {str(e)}")
 
 
-# Chart export endpoints (placeholder implementations)
+# Chart export endpoints
 @router.get("/charts/{chart_id}.png")
-async def export_chart_png(chart_id: str):
+async def export_chart_png(chart_id: str, db: AsyncSession = Depends(get_db_session)):
     """Export chart as PNG image."""
-    # TODO: Implement chart generation using matplotlib or plotly
-    raise HTTPException(status_code=501, detail="Chart export not yet implemented")
+    if chart_id not in CHART_GENERATORS:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Chart '{chart_id}' not found. Available charts: {list(CHART_GENERATORS.keys())}",
+        )
+
+    try:
+        chart_generator = CHART_GENERATORS[chart_id]
+        img_buffer = await chart_generator(db, "png")
+
+        # Track export
+        filename = f"{chart_id}_chart.png"
+        track_export("chart_png", filename, file_size=len(img_buffer.getvalue()))
+
+        return StreamingResponse(
+            io.BytesIO(img_buffer.read()),
+            media_type="image/png",
+            headers={"Content-Disposition": f"attachment; filename={filename}"},
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Chart generation failed: {str(e)}"
+        )
 
 
 @router.get("/charts/{chart_id}.svg")
-async def export_chart_svg(chart_id: str):
+async def export_chart_svg(chart_id: str, db: AsyncSession = Depends(get_db_session)):
     """Export chart as SVG image."""
-    # TODO: Implement chart generation using matplotlib or plotly
-    raise HTTPException(status_code=501, detail="Chart export not yet implemented")
+    if chart_id not in CHART_GENERATORS:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Chart '{chart_id}' not found. Available charts: {list(CHART_GENERATORS.keys())}",
+        )
+
+    try:
+        chart_generator = CHART_GENERATORS[chart_id]
+        img_buffer = await chart_generator(db, "svg")
+
+        # Track export
+        filename = f"{chart_id}_chart.svg"
+        track_export("chart_svg", filename, file_size=len(img_buffer.getvalue()))
+
+        return StreamingResponse(
+            io.BytesIO(img_buffer.read()),
+            media_type="image/svg+xml",
+            headers={"Content-Disposition": f"attachment; filename={filename}"},
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Chart generation failed: {str(e)}"
+        )
 
 
 # PDF report generation (placeholder)
@@ -656,13 +891,56 @@ async def generate_pdf_report(
         temp_file.close()
 
 
-# User export history (placeholder)
+# User export history
 @router.get("/user/exports")
 async def get_user_exports(
-    limit: int = Query(20, le=100, description="Maximum exports to return")
+    limit: int = Query(20, le=100, description="Maximum exports to return"),
+    user_id: str = Query("anonymous", description="User ID for filtering exports"),
 ):
     """Get user's export history."""
-    # TODO: Implement user session tracking and export history
-    # For now, return empty list
+    # Filter exports by user_id and limit
+    user_exports = [export for export in export_history if export["user_id"] == user_id]
 
-    return {"status": "success", "data": [], "meta": {"total": 0, "limit": limit}}
+    # Sort by timestamp (most recent first) and apply limit
+    user_exports.sort(key=lambda x: x["timestamp"], reverse=True)
+    limited_exports = user_exports[:limit]
+
+    return {
+        "status": "success",
+        "data": limited_exports,
+        "meta": {
+            "total": len(user_exports),
+            "limit": limit,
+            "returned": len(limited_exports),
+        },
+    }
+
+
+@router.get("/exports/stats")
+async def get_export_stats():
+    """Get export statistics."""
+    if not export_history:
+        return {
+            "status": "success",
+            "data": {"total_exports": 0, "by_type": {}, "recent_activity": []},
+        }
+
+    # Count by type
+    type_counts = {}
+    for export in export_history:
+        export_type = export["type"]
+        type_counts[export_type] = type_counts.get(export_type, 0) + 1
+
+    # Get recent activity (last 10)
+    recent_activity = sorted(
+        export_history, key=lambda x: x["timestamp"], reverse=True
+    )[:10]
+
+    return {
+        "status": "success",
+        "data": {
+            "total_exports": len(export_history),
+            "by_type": type_counts,
+            "recent_activity": recent_activity,
+        },
+    }
