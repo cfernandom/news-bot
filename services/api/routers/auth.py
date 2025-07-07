@@ -3,7 +3,7 @@ Authentication router for FastAPI
 Implements login, user management, and role administration endpoints
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -71,7 +71,9 @@ async def login(login_data: LoginRequest):
             )
 
         # Check for account lockout
-        if user.account_locked_until and user.account_locked_until > datetime.utcnow():
+        if user.account_locked_until and user.account_locked_until > datetime.now(
+            timezone.utc
+        ):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Account is temporarily locked",
@@ -98,7 +100,7 @@ async def login(login_data: LoginRequest):
         )
 
         # Update last login
-        user.last_login = datetime.utcnow()
+        user.last_login = datetime.now(timezone.utc)
         user.failed_login_attempts = 0  # Reset failed attempts
         await session.commit()
 
@@ -162,8 +164,10 @@ async def refresh_token(current_user: AuthenticatedUser = Depends(get_current_us
         is_superuser=current_user.is_superuser,
         roles=current_user.roles,
         permissions=current_user.permissions,
-        last_login=datetime.utcnow(),
-        created_at=datetime.utcnow(),  # Would need to fetch from DB for real value
+        last_login=datetime.now(timezone.utc),
+        created_at=datetime.now(
+            timezone.utc
+        ),  # Would need to fetch from DB for real value
     )
 
     return LoginResponse(
@@ -190,8 +194,8 @@ async def get_current_user_info(
         is_superuser=current_user.is_superuser,
         roles=current_user.roles,
         permissions=current_user.permissions,
-        last_login=datetime.utcnow(),
-        created_at=datetime.utcnow(),
+        last_login=datetime.now(timezone.utc),
+        created_at=datetime.now(timezone.utc),
     )
 
 
@@ -224,7 +228,7 @@ async def change_password(
 
         # Update password
         user.password_hash = hash_password(password_data.new_password)
-        user.password_changed_at = datetime.utcnow()
+        user.password_changed_at = datetime.now(timezone.utc)
         await session.commit()
 
         return {"message": "Password changed successfully"}
@@ -261,7 +265,7 @@ async def create_user(
             full_name=user_data.full_name,
             password_hash=hash_password(user_data.password),
             is_active=user_data.is_active,
-            password_changed_at=datetime.utcnow(),
+            password_changed_at=datetime.now(timezone.utc),
         )
 
         session.add(user)

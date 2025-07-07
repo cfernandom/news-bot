@@ -4,7 +4,7 @@ Implements secure JWT token creation, verification, and management
 """
 
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional
 
 import jwt
@@ -63,9 +63,9 @@ class JWTHandler:
 
         # Set expiration time
         if expires_delta:
-            expire = datetime.utcnow() + expires_delta
+            expire = datetime.now(timezone.utc) + expires_delta
         else:
-            expire = datetime.utcnow() + timedelta(
+            expire = datetime.now(timezone.utc) + timedelta(
                 minutes=self.access_token_expire_minutes
             )
 
@@ -73,7 +73,7 @@ class JWTHandler:
         to_encode.update(
             {
                 "exp": expire,
-                "iat": datetime.utcnow(),
+                "iat": datetime.now(timezone.utc),
                 "iss": "preventia-analytics",  # Issuer
                 "aud": "preventia-users",  # Audience
                 "sub": str(user_data.get("user_id")),  # Subject

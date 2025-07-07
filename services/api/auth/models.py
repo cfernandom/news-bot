@@ -6,7 +6,7 @@ Includes request/response models for login, registration, and user management
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, EmailStr, Field, validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 from services.api.auth.password_utils import check_password_strength
 
@@ -80,7 +80,8 @@ class UserCreateRequest(BaseModel):
     )
     is_active: bool = Field(default=True, description="Account active status")
 
-    @validator("password")
+    @field_validator("password")
+    @classmethod
     def validate_password_strength(cls, v):
         """Validate password meets strength requirements"""
         strength = check_password_strength(v)
@@ -91,7 +92,8 @@ class UserCreateRequest(BaseModel):
             )
         return v
 
-    @validator("username")
+    @field_validator("username")
+    @classmethod
     def validate_username_format(cls, v):
         """Validate username format"""
         if v.lower() in ["admin", "root", "system", "api", "test"]:
@@ -140,14 +142,16 @@ class PasswordChangeRequest(BaseModel):
     new_password: str = Field(..., min_length=8, description="New password")
     confirm_password: str = Field(..., description="Confirm new password")
 
-    @validator("confirm_password")
-    def passwords_match(cls, v, values):
+    @field_validator("confirm_password")
+    @classmethod
+    def passwords_match(cls, v, info):
         """Validate passwords match"""
-        if "new_password" in values and v != values["new_password"]:
+        if info.data.get("new_password") and v != info.data["new_password"]:
             raise ValueError("Passwords do not match")
         return v
 
-    @validator("new_password")
+    @field_validator("new_password")
+    @classmethod
     def validate_new_password_strength(cls, v):
         """Validate new password strength"""
         strength = check_password_strength(v)
@@ -272,7 +276,8 @@ class RoleCreateRequest(BaseModel):
         ..., min_items=1, description="List of permissions for this role"
     )
 
-    @validator("permissions")
+    @field_validator("permissions")
+    @classmethod
     def validate_permissions(cls, v):
         """Validate permission format"""
         from services.api.auth.role_manager import RoleManager

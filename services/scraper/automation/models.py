@@ -2,7 +2,7 @@
 Data models for automated scraper generation system.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel
@@ -67,7 +67,7 @@ class ScraperResult(BaseModel):
     template_used: str
     test_results: Optional[Dict[str, Any]] = None
     deployment_status: str = "pending"
-    generation_timestamp: datetime = datetime.utcnow()
+    generation_timestamp: datetime = datetime.now(timezone.utc)
     performance_metrics: Dict[str, float] = {}
 
 
@@ -115,7 +115,7 @@ class TestResults(BaseModel):
     error_handling_passed: bool
     success_rate: float
     detailed_results: Dict[str, Any] = {}
-    test_timestamp: datetime = datetime.utcnow()
+    test_timestamp: datetime = datetime.now(timezone.utc)
 
 
 class DeploymentResult(BaseModel):
@@ -125,7 +125,7 @@ class DeploymentResult(BaseModel):
     deployment_status: str
     monitoring_enabled: bool
     health_check_scheduled: bool
-    deployment_timestamp: datetime = datetime.utcnow()
+    deployment_timestamp: datetime = datetime.now(timezone.utc)
     errors: List[str] = []
 
 
@@ -138,4 +138,4 @@ class HealthStatus(BaseModel):
     error_rate: float
     compliance_status: str
     last_successful_run: Optional[datetime] = None
-    last_check: datetime = datetime.utcnow()
+    last_check: datetime = datetime.now(timezone.utc)

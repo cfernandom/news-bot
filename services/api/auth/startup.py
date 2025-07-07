@@ -4,7 +4,7 @@ Creates default admin user and initializes role manager
 """
 
 import asyncio
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import select
 
@@ -46,7 +46,7 @@ async def create_default_admin():
             password_hash=hash_password("PreventIA@2025!"),  # Strong default password
             is_active=True,
             is_superuser=True,
-            password_changed_at=datetime.utcnow(),
+            password_changed_at=datetime.now(timezone.utc),
         )
 
         session.add(admin_user)
