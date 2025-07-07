@@ -15,6 +15,7 @@ from services.api.routers import (
     analytics,
     articles,
     auth,
+    automation,
     exports,
     legacy,
     nlp,
@@ -69,6 +70,7 @@ app.add_middleware(
 app.include_router(articles.router, prefix="/api")
 app.include_router(analytics.router, prefix="/api")
 app.include_router(nlp.router, prefix="/api")
+app.include_router(automation.router, prefix="/api")
 app.include_router(sources.router)
 
 # Include legacy API routers
