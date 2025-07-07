@@ -136,11 +136,11 @@ export const ComplianceMonitor: React.FC<ComplianceMonitorProps> = ({
       <div className="admin-compliance-header">
         <div className="admin-compliance-title">
           <Activity className="h-5 w-5" style={{ color: 'var(--admin-primary)' }} />
-          <span>Compliance Monitor</span>
+          <span>Monitor de Cumplimiento</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-sm)' }}>
           <span style={{ fontSize: '0.875rem', color: 'var(--admin-text-secondary)' }}>
-            Next refresh: {nextRefresh}s
+            Próxima actualización: {nextRefresh}s
           </span>
           <button
             onClick={handleRefresh}
@@ -149,7 +149,7 @@ export const ComplianceMonitor: React.FC<ComplianceMonitorProps> = ({
             style={{ fontSize: '0.875rem', padding: 'var(--admin-spacing-sm) var(--admin-spacing-md)' }}
           >
             <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Refresh
+            Actualizar
           </button>
         </div>
       </div>
@@ -159,31 +159,31 @@ export const ComplianceMonitor: React.FC<ComplianceMonitorProps> = ({
         <div className="admin-compliance-header">
           <div className="admin-compliance-title">
             <Shield className="h-4 w-4" style={{ color: 'var(--admin-primary)' }} />
-            <span>Overall Compliance Status</span>
+            <span>Estado General de Cumplimiento</span>
           </div>
         </div>
         <div className="admin-compliance-stats">
           <div className="admin-stat-card">
             <div className="admin-stat-value admin-stat-blue">{stats.total}</div>
-            <div className="admin-stat-label">Total Sources</div>
+            <div className="admin-stat-label">Total Fuentes</div>
           </div>
           <div className="admin-stat-card">
             <div className="admin-stat-value admin-stat-green">{stats.compliant}</div>
-            <div className="admin-stat-label">Compliant</div>
+            <div className="admin-stat-label">Conformes</div>
           </div>
           <div className="admin-stat-card">
             <div className="admin-stat-value admin-stat-yellow">{stats.pending}</div>
-            <div className="admin-stat-label">Pending</div>
+            <div className="admin-stat-label">Pendientes</div>
           </div>
           <div className="admin-stat-card">
             <div className="admin-stat-value admin-stat-red">{stats.failed}</div>
-            <div className="admin-stat-label">Failed</div>
+            <div className="admin-stat-label">Fallidas</div>
           </div>
         </div>
 
         <div style={{ marginTop: 'var(--admin-spacing-lg)', paddingTop: 'var(--admin-spacing-lg)', borderTop: '1px solid var(--admin-border)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--admin-text-primary)' }}>Compliance Rate</span>
+            <span style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--admin-text-primary)' }}>Tasa de Cumplimiento</span>
             <span className={`admin-stat-value ${
               complianceRate >= 80 ? 'admin-stat-green' :
               complianceRate >= 60 ? 'admin-stat-yellow' : 'admin-stat-red'
@@ -210,8 +210,8 @@ export const ComplianceMonitor: React.FC<ComplianceMonitorProps> = ({
             <div className="admin-alert admin-alert-danger">
               <AlertCircle className="h-4 w-4" />
               <div>
-                <strong>{stats.failed} source{stats.failed > 1 ? 's' : ''}</strong> failed compliance validation.
-                Review and fix issues immediately.
+                <strong>{stats.failed} fuente{stats.failed > 1 ? 's' : ''}</strong> fallaron la validación de cumplimiento.
+                Revise y solucione los problemas inmediatamente.
               </div>
             </div>
           )}
@@ -220,8 +220,8 @@ export const ComplianceMonitor: React.FC<ComplianceMonitorProps> = ({
             <div className="admin-alert admin-alert-warning">
               <Clock className="h-4 w-4" />
               <div>
-                <strong>{staleValidations.length} source{staleValidations.length > 1 ? 's' : ''}</strong> need
-                validation update (older than 24 hours).
+                <strong>{staleValidations.length} fuente{staleValidations.length > 1 ? 's' : ''}</strong> necesitan
+                actualización de validación (más de 24 horas).
               </div>
             </div>
           )}
@@ -233,7 +233,7 @@ export const ComplianceMonitor: React.FC<ComplianceMonitorProps> = ({
         <div className="admin-compliance-header">
           <div className="admin-compliance-title">
             <TrendingUp className="h-4 w-4" style={{ color: 'var(--admin-primary)' }} />
-            <span>Recent Activity</span>
+            <span>Actividad Reciente</span>
           </div>
         </div>
         <div className="admin-space-y-6">
@@ -263,7 +263,7 @@ export const ComplianceMonitor: React.FC<ComplianceMonitorProps> = ({
           ) : (
             <div style={{ textAlign: 'center', padding: 'var(--admin-spacing-xl)', color: 'var(--admin-text-secondary)' }}>
               <Clock className="h-8 w-8" style={{ margin: '0 auto var(--admin-spacing-sm) auto', opacity: '0.5' }} />
-              <p>No recent validation activity</p>
+              <p>No hay actividad de validación reciente</p>
             </div>
           )}
         </div>
@@ -271,7 +271,7 @@ export const ComplianceMonitor: React.FC<ComplianceMonitorProps> = ({
 
       {/* Last updated timestamp */}
       <div style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>
-        Last updated: {stats.lastUpdated.toLocaleString()}
+        Última actualización: {stats.lastUpdated.toLocaleString()}
       </div>
     </div>
   );

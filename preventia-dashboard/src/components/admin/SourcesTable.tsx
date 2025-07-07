@@ -30,17 +30,17 @@ export const SourcesTable: React.FC<SourcesTableProps> = ({
       case 'validated':
         return <div className="admin-compliance-indicator validated">
           <CheckCircle className="h-3 w-3" />
-          Validated
+          Validado
         </div>;
       case 'pending':
         return <div className="admin-compliance-indicator pending">
           <Clock className="h-3 w-3" />
-          Pending
+          Pendiente
         </div>;
       case 'failed':
         return <div className="admin-compliance-indicator failed">
           <AlertTriangle className="h-3 w-3" />
-          Failed
+          Fallido
         </div>;
       default:
         return <div className="admin-compliance-indicator pending">{status}</div>;
@@ -70,7 +70,7 @@ export const SourcesTable: React.FC<SourcesTableProps> = ({
       indicators.push(
         <div key="tos" style={{ display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-xs)', fontSize: '0.75rem', color: 'var(--admin-primary)' }}>
           <Globe className="h-3 w-3" />
-          ToS
+          Términos de Servicio
         </div>
       );
     }
@@ -79,7 +79,7 @@ export const SourcesTable: React.FC<SourcesTableProps> = ({
       indicators.push(
         <div key="contact" style={{ display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-xs)', fontSize: '0.75rem', color: '#9333ea' }}>
           <Mail className="h-3 w-3" />
-          Contact
+          Contacto
         </div>
       );
     }
@@ -88,7 +88,7 @@ export const SourcesTable: React.FC<SourcesTableProps> = ({
       indicators.push(
         <div key="fair-use" style={{ display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-xs)', fontSize: '0.75rem', color: '#4f46e5' }}>
           <CheckCircle className="h-3 w-3" />
-          Fair Use
+          Uso Justo
         </div>
       );
     }
@@ -103,7 +103,7 @@ export const SourcesTable: React.FC<SourcesTableProps> = ({
   };
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return 'Never';
+    if (!dateString) return 'Nunca';
     return new Date(dateString).toLocaleDateString();
   };
 
@@ -112,20 +112,20 @@ export const SourcesTable: React.FC<SourcesTableProps> = ({
       <table className="admin-table">
         <thead>
           <tr>
-            <th>Source</th>
+            <th>Fuente</th>
             <th>URL</th>
-            <th>Country</th>
-            <th>Language</th>
+            <th>País</th>
+            <th>Idioma</th>
             {showComplianceColumns && (
               <>
-                <th>Validation Status</th>
-                <th>Compliance Score</th>
-                <th>Compliance Features</th>
-                <th>Last Validated</th>
+                <th>Estado de Validación</th>
+                <th>Puntuación de Cumplimiento</th>
+                <th>Características de Cumplimiento</th>
+                <th>Última Validación</th>
               </>
             )}
-            <th>Status</th>
-            <th>Actions</th>
+            <th>Estado</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -200,7 +200,7 @@ export const SourcesTable: React.FC<SourcesTableProps> = ({
 
               <td>
                 <div className={`admin-compliance-indicator ${source.is_active ? 'validated' : 'pending'}`}>
-                  {source.is_active ? 'Active' : 'Inactive'}
+                  {source.is_active ? 'Activo' : 'Inactivo'}
                 </div>
               </td>
 
@@ -212,7 +212,7 @@ export const SourcesTable: React.FC<SourcesTableProps> = ({
                     style={{ fontSize: '0.875rem', padding: 'var(--admin-spacing-xs) var(--admin-spacing-sm)' }}
                   >
                     <Edit className="h-3 w-3" />
-                    Edit
+                    Editar
                   </button>
 
                   <button
@@ -226,7 +226,7 @@ export const SourcesTable: React.FC<SourcesTableProps> = ({
                     }}
                   >
                     <Shield className="h-3 w-3" />
-                    Validate
+                    Validar
                   </button>
                 </div>
               </td>
@@ -237,7 +237,7 @@ export const SourcesTable: React.FC<SourcesTableProps> = ({
 
       {sources.length === 0 && (
         <div style={{ textAlign: 'center', padding: 'var(--admin-spacing-2xl)', color: 'var(--admin-text-secondary)' }}>
-          No news sources found. Add your first source to get started.
+          No se encontraron fuentes de noticias. Agregue su primera fuente para comenzar.
         </div>
       )}
     </div>

@@ -32,7 +32,7 @@ export const UserMenu: React.FC = () => {
           <div className="admin-user-name">{user.full_name}</div>
           <div className="admin-user-role">
             {user.role === 'admin' && <Shield className="h-3 w-3" style={{ color: 'var(--admin-primary)' }} />}
-            <span>{user.role}</span>
+            <span>{user.role === 'admin' ? 'Administrador' : 'Usuario'}</span>
           </div>
         </div>
         <ChevronDown className="h-4 w-4" style={{ color: 'var(--admin-text-muted)' }} />
@@ -59,7 +59,7 @@ export const UserMenu: React.FC = () => {
                   <div style={{ marginTop: '0.25rem' }}>
                     <Badge variant={user.role === 'admin' ? 'default' : 'secondary'} className="text-xs">
                       {user.role === 'admin' && <Shield className="h-3 w-3 mr-1" />}
-                      <span className="capitalize">{user.role}</span>
+                      <span className="capitalize">{user.role === 'admin' ? 'Administrador' : 'Usuario'}</span>
                     </Badge>
                   </div>
                 </div>
@@ -75,7 +75,7 @@ export const UserMenu: React.FC = () => {
                 }}
               >
                 <Settings className="h-4 w-4" />
-                Account Settings
+                Configuración de la Cuenta
               </button>
 
               <button
@@ -86,7 +86,7 @@ export const UserMenu: React.FC = () => {
                 }}
               >
                 <LogOut className="h-4 w-4" />
-                Sign Out
+                Cerrar Sesión
               </button>
             </div>
           </div>

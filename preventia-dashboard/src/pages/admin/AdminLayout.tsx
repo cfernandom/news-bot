@@ -22,7 +22,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 </div>
                 <div>
                   <div className="admin-logo-text">PreventIA</div>
-                  <div className="admin-logo-subtitle">News Sources Administration</div>
+                  <div className="admin-logo-subtitle">Administración de Fuentes de Noticias</div>
                 </div>
               </div>
               <UserMenu />

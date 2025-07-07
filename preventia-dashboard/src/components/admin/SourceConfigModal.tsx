@@ -34,16 +34,16 @@ interface ComplianceValidation {
 }
 
 const COUNTRIES = [
-  'United States', 'United Kingdom', 'Canada', 'Australia', 'Germany',
-  'France', 'Spain', 'Italy', 'Netherlands', 'Mexico', 'Colombia', 'Other'
+  'Estados Unidos', 'Reino Unido', 'Canadá', 'Australia', 'Alemania',
+  'Francia', 'España', 'Italia', 'Países Bajos', 'México', 'Colombia', 'Otro'
 ];
 
 const LANGUAGES = [
-  { code: 'en', name: 'English' },
-  { code: 'es', name: 'Spanish' },
-  { code: 'fr', name: 'French' },
-  { code: 'de', name: 'German' },
-  { code: 'it', name: 'Italian' },
+  { code: 'en', name: 'Inglés' },
+  { code: 'es', name: 'Español' },
+  { code: 'fr', name: 'Francés' },
+  { code: 'de', name: 'Alemán' },
+  { code: 'it', name: 'Italiano' },
 ];
 
 export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
@@ -56,13 +56,13 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
     name: '',
     base_url: '',
     language: 'en',
-    country: 'United States',
+    country: 'Estados Unidos',
     extractor_class: '',
     robots_txt_url: '',
     terms_of_service_url: '',
     legal_contact_email: '',
     crawl_delay_seconds: 2,
-    fair_use_basis: 'Academic research under Colombian Law 1581/2012 and fair use doctrine for breast cancer prevention analysis'
+    fair_use_basis: 'Investigación académica bajo la Ley Colombiana 1581/2012 y doctrina de uso justo para el análisis de prevención del cáncer de mama'
   });
 
   const [complianceValidation, setComplianceValidation] = useState<ComplianceValidation | null>(null);
@@ -83,20 +83,20 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
         terms_of_service_url: source.terms_of_service_url || '',
         legal_contact_email: source.legal_contact_email || '',
         crawl_delay_seconds: source.crawl_delay_seconds,
-        fair_use_basis: source.fair_use_basis || 'Academic research under Colombian Law 1581/2012 and fair use doctrine for breast cancer prevention analysis'
+        fair_use_basis: source.fair_use_basis || 'Investigación académica bajo la Ley Colombiana 1581/2012 y doctrina de uso justo para el análisis de prevención del cáncer de mama'
       });
     } else {
       setFormData({
         name: '',
         base_url: '',
         language: 'en',
-        country: 'United States',
+        country: 'Estados Unidos',
         extractor_class: '',
         robots_txt_url: '',
         terms_of_service_url: '',
         legal_contact_email: '',
         crawl_delay_seconds: 2,
-        fair_use_basis: 'Academic research under Colombian Law 1581/2012 and fair use doctrine for breast cancer prevention analysis'
+        fair_use_basis: 'Investigación académica bajo la Ley Colombiana 1581/2012 y doctrina de uso justo para el análisis de prevención del cáncer de mama'
       });
     }
     setComplianceValidation(null);
@@ -115,7 +115,7 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
 
   const validateCompliance = async () => {
     if (!formData.base_url || !formData.name) {
-      setError('Name and Base URL are required for validation');
+      setError('El nombre y la URL base son obligatorios para la validación');
       return;
     }
 
@@ -170,31 +170,31 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
         validation.validation_results.robots_txt_live_check = true;
         score += 0.2;
       } catch {
-        validation.violations.push('Unable to verify robots.txt accessibility');
-        validation.recommendations.push('Ensure robots.txt URL is accessible');
+        validation.violations.push('No se pudo verificar la accesibilidad de robots.txt');
+        validation.recommendations.push('Asegúrese de que la URL de robots.txt sea accesible');
       }
 
       validation.compliance_score = score;
 
       // Check for violations
       if (!checks.robots_txt_provided) {
-        validation.violations.push('Missing robots.txt URL');
-        validation.recommendations.push('Add robots.txt URL for compliance verification');
+        validation.violations.push('Falta la URL de robots.txt');
+        validation.recommendations.push('Agregue la URL de robots.txt para la verificación de cumplimiento');
       }
 
       if (!checks.terms_of_service_provided) {
-        validation.violations.push('Missing terms of service URL');
-        validation.recommendations.push('Add terms of service URL for legal review');
+        validation.violations.push('Falta la URL de los términos de servicio');
+        validation.recommendations.push('Agregue la URL de los términos de servicio para revisión legal');
       }
 
       if (!checks.legal_contact_provided) {
-        validation.violations.push('Missing legal contact email');
-        validation.recommendations.push('Add legal contact email for compliance communication');
+        validation.violations.push('Falta el correo electrónico de contacto legal');
+        validation.recommendations.push('Agregue el correo electrónico de contacto legal para la comunicación de cumplimiento');
       }
 
       if (!checks.fair_use_documented) {
-        validation.violations.push('Missing fair use basis documentation');
-        validation.recommendations.push('Document fair use basis for academic research');
+        validation.violations.push('Falta la documentación de la base de uso justo');
+        validation.recommendations.push('Documente la base de uso justo para la investigación académica');
       }
 
       validation.is_compliant = validation.violations.length === 0;
@@ -203,8 +203,8 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
       setHasValidated(true);
 
     } catch (err) {
-      setError('Failed to validate compliance. Please try again.');
-      console.error('Compliance validation error:', err);
+      setError('No se pudo validar el cumplimiento. Inténtelo de nuevo.');
+      console.error('Error de validación de cumplimiento:', err);
     } finally {
       setIsValidating(false);
     }
@@ -214,12 +214,12 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
     e.preventDefault();
 
     if (!hasValidated) {
-      setError('Please validate compliance before submitting');
+      setError('Por favor, valide el cumplimiento antes de enviar');
       return;
     }
 
     if (complianceValidation && !complianceValidation.is_compliant) {
-      setError('Source must be compliant before creation. Please fix compliance violations.');
+      setError('La fuente debe ser conforme antes de la creación. Por favor, corrija las infracciones de cumplimiento.');
       return;
     }
 
@@ -229,7 +229,7 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
     try {
       await onSubmit(formData);
     } catch (err: any) {
-      setError(err.response?.data?.detail?.error || err.message || 'Failed to save source');
+      setError(err.response?.data?.detail?.error || err.message || 'No se pudo guardar la fuente');
     } finally {
       setIsSubmitting(false);
     }
@@ -242,7 +242,7 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
         <div className="admin-modal-header">
           <div className="admin-modal-title" style={{ display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-sm)' }}>
             <Shield className="h-5 w-5" style={{ color: 'var(--admin-primary)' }} />
-            {source ? 'Edit News Source' : 'Add News Source'}
+            {source ? 'Editar Fuente de Noticias' : 'Agregar Fuente de Noticias'}
           </div>
         </div>
 
@@ -251,31 +251,31 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
             {/* Basic Information */}
             <div style={{ display: 'grid', gap: 'var(--admin-spacing-lg)', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
               <div className="admin-form-group">
-                <label htmlFor="name" className="admin-label">Source Name *</label>
+                <label htmlFor="name" className="admin-label">Nombre de la Fuente *</label>
                 <input
                   id="name"
                   className="admin-input"
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
-                  placeholder="e.g., WebMD Health News"
+                  placeholder="ej., Noticias de Salud WebMD"
                   required
                 />
               </div>
 
               <div className="admin-form-group">
-                <label htmlFor="base_url" className="admin-label">Base URL *</label>
+                <label htmlFor="base_url" className="admin-label">URL Base *</label>
                 <input
                   id="base_url"
                   className="admin-input"
                   value={formData.base_url}
                   onChange={(e) => handleInputChange('base_url', e.target.value)}
-                  placeholder="https://example.com"
+                  placeholder="https://ejemplo.com"
                   required
                 />
               </div>
 
               <div className="admin-form-group">
-                <label htmlFor="language" className="admin-label">Language</label>
+                <label htmlFor="language" className="admin-label">Idioma</label>
                 <select
                   id="language"
                   className="admin-select"
@@ -291,7 +291,7 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
               </div>
 
               <div className="admin-form-group">
-                <label htmlFor="country" className="admin-label">Country</label>
+                <label htmlFor="country" className="admin-label">País</label>
                 <select
                   id="country"
                   className="admin-select"
@@ -312,42 +312,42 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
               <Shield className="h-5 w-5" />
               <div>
                 <div style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: 'var(--admin-spacing-md)' }}>
-                  Legal Compliance Requirements
+                  Requisitos de Cumplimiento Legal
                 </div>
 
                 <div style={{ display: 'grid', gap: 'var(--admin-spacing-lg)', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
                   <div className="admin-form-group">
                     <label htmlFor="robots_txt_url" className="admin-label" style={{ display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-xs)' }}>
                       <Globe className="h-4 w-4" />
-                      Robots.txt URL
+                      URL de Robots.txt
                     </label>
                     <input
                       id="robots_txt_url"
                       className="admin-input"
                       value={formData.robots_txt_url}
                       onChange={(e) => handleInputChange('robots_txt_url', e.target.value)}
-                      placeholder="https://example.com/robots.txt"
+                      placeholder="https://ejemplo.com/robots.txt"
                     />
                   </div>
 
                   <div className="admin-form-group">
                     <label htmlFor="terms_of_service_url" className="admin-label" style={{ display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-xs)' }}>
                       <Globe className="h-4 w-4" />
-                      Terms of Service URL
+                      URL de Términos de Servicio
                     </label>
                     <input
                       id="terms_of_service_url"
                       className="admin-input"
                       value={formData.terms_of_service_url}
                       onChange={(e) => handleInputChange('terms_of_service_url', e.target.value)}
-                      placeholder="https://example.com/terms"
+                      placeholder="https://ejemplo.com/terminos"
                     />
                   </div>
 
                   <div className="admin-form-group">
                     <label htmlFor="legal_contact_email" className="admin-label" style={{ display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-xs)' }}>
                       <Mail className="h-4 w-4" />
-                      Legal Contact Email
+                      Correo Electrónico de Contacto Legal
                     </label>
                     <input
                       id="legal_contact_email"
@@ -355,14 +355,14 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
                       className="admin-input"
                       value={formData.legal_contact_email}
                       onChange={(e) => handleInputChange('legal_contact_email', e.target.value)}
-                      placeholder="legal@example.com"
+                      placeholder="legal@ejemplo.com"
                     />
                   </div>
 
                   <div className="admin-form-group">
                     <label htmlFor="crawl_delay_seconds" className="admin-label" style={{ display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-xs)' }}>
                       <Clock className="h-4 w-4" />
-                      Crawl Delay (seconds)
+                      Retraso de Rastreo (segundos)
                     </label>
                     <input
                       id="crawl_delay_seconds"
@@ -377,13 +377,13 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
                 </div>
 
                 <div className="admin-form-group">
-                  <label htmlFor="fair_use_basis" className="admin-label">Fair Use Basis *</label>
+                  <label htmlFor="fair_use_basis" className="admin-label">Base de Uso Justo *</label>
                   <textarea
                     id="fair_use_basis"
                     className="admin-input admin-textarea"
                     value={formData.fair_use_basis}
                     onChange={(e) => handleInputChange('fair_use_basis', e.target.value)}
-                    placeholder="Document the legal basis for fair use..."
+                    placeholder="Documente la base legal para el uso justo..."
                     rows={3}
                     required
                   />
@@ -394,7 +394,7 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
             {/* Compliance Validation Section */}
             <div className="admin-space-y-4">
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--admin-text-primary)' }}>Compliance Validation</h3>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--admin-text-primary)' }}>Validación de Cumplimiento</h3>
                 <button
                   type="button"
                   onClick={validateCompliance}
@@ -410,7 +410,7 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
                   ) : (
                     <Shield className="h-4 w-4" />
                   )}
-                  {isValidating ? 'Validating...' : 'Validate Compliance'}
+                  {isValidating ? 'Validando...' : 'Validar Cumplimiento'}
                 </button>
               </div>
 
@@ -424,11 +424,11 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
                         <AlertTriangle className="h-5 w-5" style={{ color: 'var(--admin-danger)' }} />
                       )}
                       <span style={{ fontWeight: '600', color: 'var(--admin-text-primary)' }}>
-                        {complianceValidation.is_compliant ? 'Compliant' : 'Non-Compliant'}
+                        {complianceValidation.is_compliant ? 'Conforme' : 'No Conforme'}
                       </span>
                     </div>
                     <div className={`admin-compliance-indicator ${complianceValidation.is_compliant ? 'validated' : 'failed'}`}>
-                      Score: <span className={`admin-stat-value ${
+                      Puntuación: <span className={`admin-stat-value ${
                         complianceValidation.compliance_score >= 0.8 ? 'admin-stat-green' :
                         complianceValidation.compliance_score >= 0.6 ? 'admin-stat-yellow' : 'admin-stat-red'
                       }`} style={{ fontSize: '0.875rem' }}>
@@ -441,7 +441,7 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
                     <div className="admin-alert admin-alert-danger" style={{ marginBottom: 'var(--admin-spacing-lg)' }}>
                       <AlertTriangle className="h-4 w-4" />
                       <div>
-                        <div style={{ fontWeight: '600', marginBottom: 'var(--admin-spacing-sm)' }}>Compliance Violations:</div>
+                        <div style={{ fontWeight: '600', marginBottom: 'var(--admin-spacing-sm)' }}>Infracciones de Cumplimiento:</div>
                         <ul style={{ listStyleType: 'disc', paddingLeft: 'var(--admin-spacing-lg)' }}>
                           {complianceValidation.violations.map((violation, index) => (
                             <li key={index} style={{ fontSize: '0.875rem', marginBottom: 'var(--admin-spacing-xs)' }}>{violation}</li>
@@ -455,7 +455,7 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
                     <div className="admin-alert admin-alert-warning" style={{ marginBottom: 'var(--admin-spacing-lg)' }}>
                       <AlertTriangle className="h-4 w-4" />
                       <div>
-                        <div style={{ fontWeight: '600', marginBottom: 'var(--admin-spacing-sm)' }}>Recommendations:</div>
+                        <div style={{ fontWeight: '600', marginBottom: 'var(--admin-spacing-sm)' }}>Recomendaciones:</div>
                         <ul style={{ listStyleType: 'disc', paddingLeft: 'var(--admin-spacing-lg)' }}>
                           {complianceValidation.recommendations.map((rec, index) => (
                             <li key={index} style={{ fontSize: '0.875rem', marginBottom: 'var(--admin-spacing-xs)' }}>{rec}</li>
@@ -493,15 +493,15 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
 
             {/* Advanced Settings */}
             <div style={{ padding: 'var(--admin-spacing-lg)', backgroundColor: 'var(--admin-secondary)', borderRadius: 'var(--admin-radius-lg)' }}>
-              <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--admin-text-primary)', marginBottom: 'var(--admin-spacing-lg)' }}>Advanced Settings</h3>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--admin-text-primary)', marginBottom: 'var(--admin-spacing-lg)' }}>Configuración Avanzada</h3>
               <div className="admin-form-group">
-                <label htmlFor="extractor_class" className="admin-label">Extractor Class (Optional)</label>
+                <label htmlFor="extractor_class" className="admin-label">Clase de Extractor (Opcional)</label>
                 <input
                   id="extractor_class"
                   className="admin-input"
                   value={formData.extractor_class}
                   onChange={(e) => handleInputChange('extractor_class', e.target.value)}
-                  placeholder="custom_extractor_class"
+                  placeholder="clase_extractor_personalizada"
                 />
               </div>
             </div>
@@ -515,7 +515,7 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
             className="admin-btn admin-btn-secondary"
             style={{ opacity: isSubmitting ? 0.5 : 1 }}
           >
-            Cancel
+            Cancelar
           </button>
           <button
             onClick={handleSubmit}
@@ -531,8 +531,8 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
             ) : (
               <Shield className="h-4 w-4" />
             )}
-            {isSubmitting ? 'Saving...' : (source ? 'Update Source' : 'Create Source')}
-            (Compliance Required)
+            {isSubmitting ? 'Guardando...' : (source ? 'Actualizar Fuente' : 'Crear Fuente')}
+            (Cumplimiento Requerido)
           </button>
         </div>
       </div>

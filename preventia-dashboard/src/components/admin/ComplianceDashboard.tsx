@@ -65,35 +65,35 @@ export const ComplianceDashboard: React.FC<ComplianceDashboardProps> = ({ source
       return [
         {
           id: 'compliance-rate',
-          title: 'Compliance Rate',
+          title: 'Tasa de Cumplimiento',
           value: `${complianceRate}%`,
           icon: <Shield className="h-5 w-5" />,
           color: complianceRate >= 80 ? 'green' : complianceRate >= 60 ? 'yellow' : 'red',
-          description: `${compliant} of ${total} sources fully compliant`
+          description: `${compliant} de ${total} fuentes totalmente conformes`
         },
         {
           id: 'avg-score',
-          title: 'Average Score',
+          title: 'Puntuación Promedio',
           value: `${avgScore}%`,
           icon: <BarChart3 className="h-5 w-5" />,
           color: avgScore >= 80 ? 'green' : avgScore >= 60 ? 'yellow' : 'red',
-          description: `Based on ${sourcesWithScore.length} evaluated sources`
+          description: `Basado en ${sourcesWithScore.length} fuentes evaluadas`
         },
         {
           id: 'pending-review',
-          title: 'Pending Review',
+          title: 'Pendiente de Revisión',
           value: pending,
           icon: <Clock className="h-5 w-5" />,
           color: pending > 0 ? 'yellow' : 'green',
-          description: `${pending} sources awaiting validation`
+          description: `${pending} fuentes esperando validación`
         },
         {
           id: 'failed-validation',
-          title: 'Failed Validation',
+          title: 'Validación Fallida',
           value: failed,
           icon: <AlertTriangle className="h-5 w-5" />,
           color: failed > 0 ? 'red' : 'green',
-          description: `${failed} sources with compliance issues`
+          description: `${failed} fuentes con problemas de cumplimiento`
         },
         {
           id: 'robots-txt',
@@ -101,39 +101,39 @@ export const ComplianceDashboard: React.FC<ComplianceDashboardProps> = ({ source
           value: `${withRobotsTxt}/${total}`,
           icon: <Shield className="h-5 w-5" />,
           color: withRobotsTxt === total ? 'green' : 'yellow',
-          description: 'Sources with robots.txt configured'
+          description: 'Fuentes con robots.txt configurado'
         },
         {
           id: 'terms-service',
-          title: 'Terms of Service',
+          title: 'Términos de Servicio',
           value: `${withTermsOfService}/${total}`,
           icon: <FileText className="h-5 w-5" />,
           color: withTermsOfService === total ? 'green' : 'yellow',
-          description: 'Sources with ToS documentation'
+          description: 'Fuentes con documentación de Términos de Servicio'
         },
         {
           id: 'legal-contact',
-          title: 'Legal Contact',
+          title: 'Contacto Legal',
           value: `${withLegalContact}/${total}`,
           icon: <Globe className="h-5 w-5" />,
           color: withLegalContact === total ? 'green' : 'yellow',
-          description: 'Sources with legal contact info'
+          description: 'Fuentes con información de contacto legal'
         },
         {
           id: 'fair-use',
-          title: 'Fair Use Basis',
+          title: 'Base de Uso Justo',
           value: `${withFairUse}/${total}`,
           icon: <CheckCircle className="h-5 w-5" />,
           color: withFairUse === total ? 'green' : 'yellow',
-          description: 'Sources with fair use documentation'
+          description: 'Fuentes con documentación de uso justo'
         },
         {
           id: 'recent-validations',
-          title: 'Recent Validations',
+          title: 'Validaciones Recientes',
           value: recentValidations,
           icon: <Activity className="h-5 w-5" />,
           color: recentValidations > 0 ? 'green' : 'yellow',
-          description: 'Validations in the last 7 days'
+          description: 'Validaciones en los últimos 7 días'
         }
       ];
     };
@@ -195,8 +195,8 @@ export const ComplianceDashboard: React.FC<ComplianceDashboardProps> = ({ source
     if (failed.length > 0) {
       issues.push({
         severity: 'high',
-        title: 'Failed Validations',
-        description: `${failed.length} sources failed compliance validation`,
+        title: 'Validaciones Fallidas',
+        description: `${failed.length} fuentes fallaron la validación de cumplimiento`,
         sources: failed.map(s => s.name).slice(0, 3)
       });
     }
@@ -205,8 +205,8 @@ export const ComplianceDashboard: React.FC<ComplianceDashboardProps> = ({ source
     if (noRobots.length > 0) {
       issues.push({
         severity: 'medium',
-        title: 'Missing Robots.txt',
-        description: `${noRobots.length} sources missing robots.txt configuration`,
+        title: 'Robots.txt Faltante',
+        description: `${noRobots.length} fuentes sin configuración de robots.txt`,
         sources: noRobots.map(s => s.name).slice(0, 3)
       });
     }
@@ -215,8 +215,8 @@ export const ComplianceDashboard: React.FC<ComplianceDashboardProps> = ({ source
     if (noContact.length > 0) {
       issues.push({
         severity: 'medium',
-        title: 'Missing Legal Contact',
-        description: `${noContact.length} sources missing legal contact information`,
+        title: 'Contacto Legal Faltante',
+        description: `${noContact.length} fuentes sin información de contacto legal`,
         sources: noContact.map(s => s.name).slice(0, 3)
       });
     }
@@ -232,11 +232,11 @@ export const ComplianceDashboard: React.FC<ComplianceDashboardProps> = ({ source
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-sm)' }}>
           <Shield className="h-6 w-6" style={{ color: 'var(--admin-primary)' }} />
-          <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: 'var(--admin-text-primary)' }}>Compliance Dashboard</h2>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: 'var(--admin-text-primary)' }}>Panel de Cumplimiento</h2>
         </div>
         <Badge variant="secondary" style={{ display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-xs)' }}>
           <Zap className="h-3 w-3" />
-          Live
+          En Vivo
         </Badge>
       </div>
 
@@ -246,13 +246,13 @@ export const ComplianceDashboard: React.FC<ComplianceDashboardProps> = ({ source
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
             <div className="admin-space-y-2">
-              <div style={{ fontWeight: '500' }}>Critical Issues Detected:</div>
+              <div style={{ fontWeight: '500' }}>Problemas Críticos Detectados:</div>
               {criticalIssues.map((issue, index) => (
                 <div key={index} style={{ fontSize: '0.875rem' }}>
                   • <strong style={{ fontWeight: '600' }}>{issue.title}:</strong> {issue.description}
                   {issue.sources.length > 0 && (
                     <div style={{ marginLeft: 'var(--admin-spacing-md)', color: 'var(--admin-text-muted)' }}>
-                      Affected: {issue.sources.join(', ')}
+                      Afectadas: {issue.sources.join(', ')}
                       {issue.sources.length < sources.length && ' ...'}
                     </div>
                   )}
@@ -298,47 +298,47 @@ export const ComplianceDashboard: React.FC<ComplianceDashboardProps> = ({ source
         <div style={{ paddingBottom: 'var(--admin-spacing-md)' }}>
           <div style={{ fontSize: '1.125rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: 'var(--admin-spacing-sm)' }}>
             <TrendingUp className="h-4 w-4" />
-            Compliance Summary
+            Resumen de Cumplimiento
           </div>
         </div>
         <CardContent>
           <div className="admin-space-y-4">
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--admin-spacing-md)' }}>
               <div className="admin-space-y-2">
-                <div style={{ fontSize: '0.875rem', fontWeight: '500' }}>Status Distribution</div>
+                <div style={{ fontSize: '0.875rem', fontWeight: '500' }}>Distribución de Estado</div>
                 <div className="admin-space-y-1">
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                    <span className="admin-stat-green">✓ Compliant</span>
+                    <span className="admin-stat-green">✓ Conforme</span>
                     <span>{sources.filter(s => s.validation_status === 'validated').length}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                    <span className="admin-stat-yellow">⏳ Pending</span>
+                    <span className="admin-stat-yellow">⏳ Pendiente</span>
                     <span>{sources.filter(s => s.validation_status === 'pending').length}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                    <span className="admin-stat-red">✗ Failed</span>
+                    <span className="admin-stat-red">✗ Fallido</span>
                     <span>{sources.filter(s => s.validation_status === 'failed').length}</span>
                   </div>
                 </div>
               </div>
 
               <div className="admin-space-y-2">
-                <div style={{ fontSize: '0.875rem', fontWeight: '500' }}>Feature Coverage</div>
+                <div style={{ fontSize: '0.875rem', fontWeight: '500' }}>Cobertura de Características</div>
                 <div className="admin-space-y-1">
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
                     <span>Robots.txt</span>
                     <span>{Math.round((sources.filter(s => s.robots_txt_url).length / sources.length) * 100)}%</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                    <span>Terms of Service</span>
+                    <span>Términos de Servicio</span>
                     <span>{Math.round((sources.filter(s => s.terms_of_service_url).length / sources.length) * 100)}%</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                    <span>Legal Contact</span>
+                    <span>Contacto Legal</span>
                     <span>{Math.round((sources.filter(s => s.legal_contact_email).length / sources.length) * 100)}%</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                    <span>Fair Use</span>
+                    <span>Uso Justo</span>
                     <span>{Math.round((sources.filter(s => s.fair_use_basis).length / sources.length) * 100)}%</span>
                   </div>
                 </div>

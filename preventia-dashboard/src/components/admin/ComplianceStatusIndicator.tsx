@@ -47,17 +47,17 @@ export const ComplianceStatusIndicator: React.FC<ComplianceStatusIndicatorProps>
       case 'validated':
         return <Badge variant="default" className={`gap-1 ${badgeSize}`}>
           <CheckCircle className="h-3 w-3" />
-          Compliant
+          Conforme
         </Badge>;
       case 'pending':
         return <Badge variant="secondary" className={`gap-1 ${badgeSize}`}>
           <Clock className="h-3 w-3" />
-          Pending
+          Pendiente
         </Badge>;
       case 'failed':
         return <Badge variant="destructive" className={`gap-1 ${badgeSize}`}>
           <AlertTriangle className="h-3 w-3" />
-          Non-Compliant
+          No Conforme
         </Badge>;
       default:
         return <Badge variant="outline" className={badgeSize}>{status}</Badge>;
@@ -82,7 +82,7 @@ export const ComplianceStatusIndicator: React.FC<ComplianceStatusIndicatorProps>
       features.push(
         <div key="tos" className={`flex items-center gap-1 ${textSize} text-blue-600`}>
           <Globe className={iconSize} />
-          {size !== 'sm' && 'ToS'}
+          {size !== 'sm' && 'Términos de Servicio'}
         </div>
       );
     }
@@ -91,7 +91,7 @@ export const ComplianceStatusIndicator: React.FC<ComplianceStatusIndicatorProps>
       features.push(
         <div key="contact" className={`flex items-center gap-1 ${textSize} text-purple-600`}>
           <Mail className={iconSize} />
-          {size !== 'sm' && 'Contact'}
+          {size !== 'sm' && 'Contacto'}
         </div>
       );
     }
@@ -100,7 +100,7 @@ export const ComplianceStatusIndicator: React.FC<ComplianceStatusIndicatorProps>
       features.push(
         <div key="fair-use" className={`flex items-center gap-1 ${textSize} text-indigo-600`}>
           <CheckCircle className={iconSize} />
-          {size !== 'sm' && 'Fair Use'}
+          {size !== 'sm' && 'Uso Justo'}
         </div>
       );
     }
@@ -131,9 +131,9 @@ export const ComplianceStatusIndicator: React.FC<ComplianceStatusIndicatorProps>
         <div className="flex items-center gap-2">
           {getComplianceIcon(source.compliance_score)}
           <span className={`font-medium ${getComplianceColor(source.validation_status)}`}>
-            {source.validation_status === 'validated' ? 'Compliant' :
-             source.validation_status === 'pending' ? 'Pending Review' :
-             source.validation_status === 'failed' ? 'Non-Compliant' : 'Unknown'}
+            {source.validation_status === 'validated' ? 'Conforme' :
+             source.validation_status === 'pending' ? 'Pendiente de Revisión' :
+             source.validation_status === 'failed' ? 'No Conforme' : 'Desconocido'}
           </span>
         </div>
         {getValidationStatusBadge(source.validation_status)}
@@ -141,7 +141,7 @@ export const ComplianceStatusIndicator: React.FC<ComplianceStatusIndicatorProps>
 
       {/* Compliance Score */}
       <div className="flex items-center justify-between">
-        <span className="text-sm text-muted-foreground">Compliance Score:</span>
+        <span className="text-sm text-muted-foreground">Puntuación de Cumplimiento:</span>
         <span className={`font-semibold ${getComplianceColor(source.validation_status)}`}>
           {formatComplianceScore(source.compliance_score)}
         </span>
@@ -150,7 +150,7 @@ export const ComplianceStatusIndicator: React.FC<ComplianceStatusIndicatorProps>
       {/* Compliance Features */}
       {showDetails && (
         <div className="space-y-2">
-          <span className="text-sm font-medium text-muted-foreground">Features:</span>
+          <span className="text-sm font-medium text-muted-foreground">Características:</span>
           <div className="flex flex-wrap gap-2">
             {getComplianceFeatures()}
           </div>
@@ -158,14 +158,14 @@ export const ComplianceStatusIndicator: React.FC<ComplianceStatusIndicatorProps>
           {/* Validation Error */}
           {source.validation_error && (
             <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-xs text-red-700">
-              <strong>Issues:</strong> {source.validation_error}
+              <strong>Problemas:</strong> {source.validation_error}
             </div>
           )}
 
           {/* Last Validated */}
           {source.last_validation_at && (
             <div className="text-xs text-muted-foreground">
-              Last validated: {new Date(source.last_validation_at).toLocaleDateString()}
+              Última validación: {new Date(source.last_validation_at).toLocaleDateString()}
             </div>
           )}
         </div>

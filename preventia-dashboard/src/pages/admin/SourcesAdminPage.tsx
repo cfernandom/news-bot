@@ -126,7 +126,7 @@ export const SourcesAdminPage: React.FC = () => {
     return (
       <div className="container mx-auto p-6">
         <div className="flex items-center justify-center h-64">
-          <div className="text-lg">Loading news sources...</div>
+          <div className="text-lg">Cargando fuentes de noticias...</div>
         </div>
       </div>
     );
@@ -139,14 +139,14 @@ export const SourcesAdminPage: React.FC = () => {
         <div className="admin-card-header">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="admin-card-title">News Sources Administration</h1>
+              <h1 className="admin-card-title">Administración de Fuentes de Noticias</h1>
               <p className="admin-card-subtitle">
-                Manage news sources with compliance-first approach and real-time monitoring
+                Gestione las fuentes de noticias con un enfoque de cumplimiento primero y monitoreo en tiempo real
               </p>
             </div>
             <button onClick={() => setShowCreateModal(true)} className="admin-btn admin-btn-primary">
               <Plus className="h-5 w-5" />
-              Add New Source
+              Agregar Nueva Fuente
             </button>
           </div>
         </div>
@@ -174,7 +174,7 @@ export const SourcesAdminPage: React.FC = () => {
             onClick={() => setActiveTab('overview')}
             className={`admin-tab-button ${activeTab === 'overview' ? 'active' : ''}`}
           >
-            📊 Overview
+            📊 Resumen
           </button>
           <button
             onClick={() => setActiveTab('monitor')}
@@ -186,7 +186,7 @@ export const SourcesAdminPage: React.FC = () => {
             onClick={() => setActiveTab('dashboard')}
             className={`admin-tab-button ${activeTab === 'dashboard' ? 'active' : ''}`}
           >
-            📈 Dashboard
+            📈 Panel
           </button>
         </nav>
 
@@ -197,10 +197,10 @@ export const SourcesAdminPage: React.FC = () => {
               <div className="admin-section-header">
                 <div className="admin-section-title">
                   <Shield className="h-6 w-6" style={{ color: 'var(--admin-primary)' }} />
-                  <span>News Sources ({sources.length})</span>
+                  <span>Fuentes de Noticias ({sources.length})</span>
                 </div>
                 <div className="admin-section-badge">
-                  Total sources managed with compliance tracking
+                  Total de fuentes gestionadas con seguimiento de cumplimiento
                 </div>
               </div>
               <SourcesTable
@@ -219,11 +219,11 @@ export const SourcesAdminPage: React.FC = () => {
                 <div className="admin-section-title">
                   <div className="admin-status-indicator">
                     <div className="admin-status-dot pulse" style={{ backgroundColor: 'var(--admin-accent)' }}></div>
-                    <span>Real-time Compliance Monitor</span>
+                    <span>Monitor de Cumplimiento en Tiempo Real</span>
                   </div>
                 </div>
                 <div className="admin-section-badge" style={{ backgroundColor: '#f0fdf4', color: 'var(--admin-accent)' }}>
-                  Live monitoring active
+                  Monitoreo en vivo activo
                 </div>
               </div>
               <ComplianceMonitor
@@ -238,10 +238,10 @@ export const SourcesAdminPage: React.FC = () => {
             <div className="admin-space-y-8">
               <div className="admin-section-header">
                 <div className="admin-section-title">
-                  <span>Compliance Analytics Dashboard</span>
+                  <span>Panel de Análisis de Cumplimiento</span>
                 </div>
                 <div className="admin-section-badge" style={{ backgroundColor: '#eff6ff', color: 'var(--admin-primary)' }}>
-                  Comprehensive analytics
+                  Análisis exhaustivo
                 </div>
               </div>
               <ComplianceDashboard sources={sources} />

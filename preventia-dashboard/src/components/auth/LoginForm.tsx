@@ -19,7 +19,7 @@ export const LoginForm: React.FC = () => {
     try {
       await login(email, password);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      setError(err instanceof Error ? err.message : 'Inicio de sesión fallido');
     } finally {
       setIsLoading(false);
     }
@@ -34,9 +34,9 @@ export const LoginForm: React.FC = () => {
               <Shield className="h-6 w-6 text-white" />
             </div>
           </div>
-          <div className="admin-card-title">Welcome Back</div>
+          <div className="admin-card-title">Bienvenido de Nuevo</div>
           <div className="admin-card-subtitle">
-            Sign in to access the News Sources Administration Panel
+            Inicie sesión para acceder al Panel de Administración de Fuentes de Noticias
           </div>
         </div>
         <div>
@@ -49,7 +49,7 @@ export const LoginForm: React.FC = () => {
             )}
 
             <div className="admin-form-group">
-              <label className="admin-label" htmlFor="email">Email</label>
+              <label className="admin-label" htmlFor="email">Correo Electrónico</label>
               <input
                 id="email"
                 type="email"
@@ -63,12 +63,12 @@ export const LoginForm: React.FC = () => {
             </div>
 
             <div className="admin-form-group">
-              <label className="admin-label" htmlFor="password">Password</label>
+              <label className="admin-label" htmlFor="password">Contraseña</label>
               <div className="relative">
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Enter your password"
+                  placeholder="Ingrese su contraseña"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -107,12 +107,12 @@ export const LoginForm: React.FC = () => {
               {isLoading ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                  Signing in...
+                  Iniciando sesión...
                 </>
               ) : (
                 <>
                   <LogIn className="h-4 w-4 mr-2" />
-                  Sign In
+                  Iniciar Sesión
                 </>
               )}
             </button>
@@ -120,10 +120,10 @@ export const LoginForm: React.FC = () => {
 
           <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--admin-border)' }}>
             <div style={{ fontSize: '0.875rem', color: 'var(--admin-text-secondary)' }}>
-              <p style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Demo Credentials:</p>
+              <p style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Credenciales de Demostración:</p>
               <div className="admin-space-y-4">
-                <p><strong>Admin:</strong> admin@preventia.com / admin123</p>
-                <p><strong>User:</strong> demo@preventia.com / demo123</p>
+                <p><strong>Administrador:</strong> admin@preventia.com / admin123</p>
+                <p><strong>Usuario:</strong> demo@preventia.com / demo123</p>
               </div>
             </div>
           </div>
