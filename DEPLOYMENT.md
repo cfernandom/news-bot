@@ -1,3 +1,8 @@
+<!--
+ADVERTENCIA: Este documento describe el despliegue de un componente específico (el bot de noticias que publica en WordPress) y NO la plataforma principal de análisis de noticias PreventIA (FastAPI y React Dashboard).
+Para la documentación de despliegue de la plataforma principal, por favor, consulte:
+- docs/implementation/production-deployment-roadmap.md
+-->
 # Guía de Despliegue – Bot de Noticias sobre Cáncer de Mama
 
 El presente documento describe el procedimiento para la implementación del sistema autónomo de recopilación y publicación de noticias relacionadas con el cáncer de mama. Este proyecto ha sido diseñado para operar de manera periódica y autónoma, generando contenido susceptible de ser publicado en una plataforma WordPress mediante su interfaz de programación de aplicaciones (API).
