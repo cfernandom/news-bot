@@ -696,6 +696,20 @@ pytest integration/test_api/test_legacy_api.py -v | grep -E "(PASSED|FAILED)"
 - **Target**: 90%+ API test pass rate
 - **Verification**: Test documentation updated
 
+### 📋 **DOCUMENTACIÓN EXHAUSTIVA DE TAREAS PENDIENTES**
+
+**Ver análisis completo en**: `docs/implementation/pending-tasks-comprehensive-2025-07-07.md`
+
+#### **Resumen Ejecutivo de Tareas Pendientes (2025-07-07)**
+- **🚨 CRÍTICAS**: 6 tareas (11 horas total) - Pydantic V2, datetime deprecation, country detection, template engine, chart export, database stability
+- **⚡ URGENTES**: 1 tarea (1 hora) - Connection pool management
+- **📋 PLANIFICADAS**: 3 tareas (6-20 sessions) - Automated scraper generation, source discovery, production deployment
+- **🔧 MEJORAS**: 5 tareas (8-10 horas) - Language consistency, chart standardization, test coverage, session tracking, advanced features
+
+**Prioridad inmediata**: Migración Pydantic V2 + datetime deprecation (3.5 horas) para eliminar 20+ warnings de compatibilidad.
+
+**Estado actual**: Sistema operativo con core functionality completa, pendientes principalmente technical debt y enhancement features.
+
 ---
 
 # important-instruction-reminders
