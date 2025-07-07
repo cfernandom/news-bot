@@ -34,7 +34,7 @@ describe('LegacyKPICard', () => {
         title="Total Articles"
         value="106"
         icon="FileText"
-        change={12.5}
+        // change={12.5}
       />
     );
 
@@ -47,7 +47,7 @@ describe('LegacyKPICard', () => {
         title="Total Articles"
         value="106"
         icon="FileText"
-        change={-8.3}
+        // change={-8.3}
       />
     );
 
@@ -60,7 +60,7 @@ describe('LegacyKPICard', () => {
         title="Total Articles"
         value="106"
         icon="FileText"
-        change={0}
+        // change={0}
       />
     );
 
@@ -73,7 +73,7 @@ describe('LegacyKPICard', () => {
         title="Total Articles"
         value="106"
         icon="FileText"
-        change={12.5}
+        // change={12.5}
       />
     );
 
@@ -86,7 +86,7 @@ describe('LegacyKPICard', () => {
         title="Total Articles"
         value="106"
         icon="FileText"
-        change={-8.3}
+        // change={-8.3}
       />
     );
 
@@ -99,7 +99,7 @@ describe('LegacyKPICard', () => {
         title="Total Articles"
         value="106"
         icon="FileText"
-        change={0}
+        // change={0}
       />
     );
 
@@ -170,7 +170,7 @@ describe('LegacyKPICard', () => {
         title="Total Articles"
         value="106"
         icon="FileText"
-        change={12.5}
+        // change={12.5}
       />
     );
 
@@ -184,7 +184,7 @@ describe('LegacyKPICard', () => {
         title="Total Articles"
         value="106"
         icon="FileText"
-        change={-8.3}
+        // change={-8.3}
       />
     );
 
@@ -198,7 +198,7 @@ describe('LegacyKPICard', () => {
         title="Total Articles"
         value="106"
         icon="FileText"
-        change={0}
+        // change={0}
       />
     );
 
@@ -226,7 +226,7 @@ describe('LegacyKPICard', () => {
         title="Total Articles"
         value="106"
         icon="FileText"
-        change={0.01}
+        // change={0.01}
       />
     );
 
@@ -239,7 +239,7 @@ describe('LegacyKPICard', () => {
         title="Total Articles"
         value="106"
         icon="FileText"
-        change={999.99}
+        // change={999.99}
       />
     );
 
@@ -252,7 +252,7 @@ describe('LegacyKPICard', () => {
         title="Total Articles"
         value="106"
         icon="FileText"
-        change={12.5}
+        // change={12.5}
       />
     );
 

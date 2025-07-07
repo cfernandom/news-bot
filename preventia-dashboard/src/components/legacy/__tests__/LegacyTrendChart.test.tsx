@@ -27,12 +27,13 @@ vi.mock('react-chartjs-2', () => ({
 }));
 
 describe('LegacyTrendChart', () => {
-  const mockData = {
-    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
-    positive: [10, 15, 12, 18, 20],
-    negative: [25, 20, 28, 15, 22],
-    neutral: [5, 8, 6, 7, 10]
-  };
+  const mockData = [
+    { date: 'Week 1', positive: 10, negative: 25, neutral: 5 },
+    { date: 'Week 2', positive: 15, negative: 20, neutral: 8 },
+    { date: 'Week 3', positive: 12, negative: 28, neutral: 6 },
+    { date: 'Week 4', positive: 18, negative: 15, neutral: 7 },
+    { date: 'Week 5', positive: 20, negative: 22, neutral: 10 }
+  ];
 
   it('renders correctly with default props', () => {
     render(<LegacyTrendChart data={mockData} />);
@@ -94,12 +95,7 @@ describe('LegacyTrendChart', () => {
   });
 
   it('handles empty data gracefully', () => {
-    const emptyData = {
-      labels: [],
-      positive: [],
-      negative: [],
-      neutral: []
-    };
+    const emptyData: any[] = [];
 
     render(<LegacyTrendChart data={emptyData} />);
 
@@ -108,12 +104,9 @@ describe('LegacyTrendChart', () => {
   });
 
   it('handles single data point', () => {
-    const singlePointData = {
-      labels: ['Week 1'],
-      positive: [10],
-      negative: [5],
-      neutral: [3]
-    };
+    const singlePointData = [
+      { date: 'Week 1', positive: 10, negative: 5, neutral: 3 }
+    ];
 
     render(<LegacyTrendChart data={singlePointData} />);
 
@@ -153,12 +146,12 @@ describe('LegacyTrendChart', () => {
   });
 
   it('handles large data sets', () => {
-    const largeData = {
-      labels: Array.from({ length: 52 }, (_, i) => `Week ${i + 1}`),
-      positive: Array.from({ length: 52 }, (_, i) => i * 2),
-      negative: Array.from({ length: 52 }, (_, i) => i * 3),
-      neutral: Array.from({ length: 52 }, (_, i) => i)
-    };
+    const largeData = Array.from({ length: 52 }, (_, i) => ({
+      date: `Week ${i + 1}`,
+      positive: i * 2,
+      negative: i * 3,
+      neutral: i
+    }));
 
     render(<LegacyTrendChart data={largeData} />);
 
@@ -170,12 +163,11 @@ describe('LegacyTrendChart', () => {
   });
 
   it('handles zero values correctly', () => {
-    const zeroData = {
-      labels: ['Week 1', 'Week 2', 'Week 3'],
-      positive: [0, 0, 0],
-      negative: [0, 0, 0],
-      neutral: [0, 0, 0]
-    };
+    const zeroData = [
+      { date: 'Week 1', positive: 0, negative: 0, neutral: 0 },
+      { date: 'Week 2', positive: 0, negative: 0, neutral: 0 },
+      { date: 'Week 3', positive: 0, negative: 0, neutral: 0 }
+    ];
 
     render(<LegacyTrendChart data={zeroData} />);
 
@@ -188,12 +180,10 @@ describe('LegacyTrendChart', () => {
   });
 
   it('handles negative values correctly', () => {
-    const negativeData = {
-      labels: ['Week 1', 'Week 2'],
-      positive: [10, -5], // Should handle negative values
-      negative: [-3, 8],
-      neutral: [2, -1]
-    };
+    const negativeData = [
+      { date: 'Week 1', positive: 10, negative: -3, neutral: 2 },
+      { date: 'Week 2', positive: -5, negative: 8, neutral: -1 }
+    ];
 
     render(<LegacyTrendChart data={negativeData} />);
 
@@ -225,12 +215,11 @@ describe('LegacyTrendChart', () => {
   });
 
   it('handles mismatched data arrays', () => {
-    const mismatchedData = {
-      labels: ['Week 1', 'Week 2', 'Week 3'],
-      positive: [10, 15], // shorter than labels
-      negative: [25, 20, 28, 15], // longer than labels
-      neutral: [5, 8, 6]
-    };
+    const mismatchedData = [
+      { date: 'Week 1', positive: 10, negative: 25, neutral: 5 },
+      { date: 'Week 2', positive: 15, negative: 20, neutral: 8 },
+      { date: 'Week 3', positive: 0, negative: 28, neutral: 6 }
+    ];
 
     render(<LegacyTrendChart data={mismatchedData} />);
 
@@ -239,7 +228,7 @@ describe('LegacyTrendChart', () => {
   });
 
   it('handles time period customization', () => {
-    render(<LegacyTrendChart data={mockData} timePeriod="monthly" />);
+    render(<LegacyTrendChart data={mockData} />);
 
     expect(screen.getByText('Sentiment Trends')).toBeInTheDocument();
     // Should handle different time periods
@@ -260,12 +249,10 @@ describe('LegacyTrendChart', () => {
   it('handles data updates correctly', () => {
     const { rerender } = render(<LegacyTrendChart data={mockData} />);
 
-    const newData = {
-      labels: ['Week 6', 'Week 7'],
-      positive: [25, 30],
-      negative: [10, 5],
-      neutral: [15, 20]
-    };
+    const newData = [
+      { date: 'Week 6', positive: 25, negative: 10, neutral: 15 },
+      { date: 'Week 7', positive: 30, negative: 5, neutral: 20 }
+    ];
 
     rerender(<LegacyTrendChart data={newData} />);
 

@@ -519,11 +519,11 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
           </button>
           <button
             onClick={handleSubmit}
-            disabled={isSubmitting || !hasValidated || (complianceValidation && !complianceValidation.is_compliant)}
+            disabled={isSubmitting || !hasValidated || (complianceValidation?.is_compliant === false)}
             className="admin-btn admin-btn-primary"
             style={{
-              opacity: (isSubmitting || !hasValidated || (complianceValidation && !complianceValidation.is_compliant)) ? 0.5 : 1,
-              cursor: (isSubmitting || !hasValidated || (complianceValidation && !complianceValidation.is_compliant)) ? 'not-allowed' : 'pointer'
+              opacity: (isSubmitting || !hasValidated || (complianceValidation?.is_compliant === false)) ? 0.5 : 1,
+              cursor: (isSubmitting || !hasValidated || (complianceValidation?.is_compliant === false)) ? 'not-allowed' : 'pointer'
             }}
           >
             {isSubmitting ? (

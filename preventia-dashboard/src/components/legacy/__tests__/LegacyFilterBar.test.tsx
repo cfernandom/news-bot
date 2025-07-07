@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import LegacyFilterBar from '../Common/LegacyFilterBar';
 
 // Mock Lucide React icons
@@ -12,13 +12,20 @@ vi.mock('lucide-react', () => ({
 
 describe('LegacyFilterBar', () => {
   const mockOnFilterChange = vi.fn();
+  const mockFilters = {
+    country: '',
+    language: '',
+    date: '',
+    topic: '',
+    keyword: ''
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('renders correctly with default props', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     expect(screen.getByTestId('filter-icon')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Search articles...')).toBeInTheDocument();
@@ -28,7 +35,7 @@ describe('LegacyFilterBar', () => {
   });
 
   it('displays search input correctly', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     const searchInput = screen.getByPlaceholderText('Search articles...');
     expect(searchInput).toBeInTheDocument();
@@ -36,7 +43,7 @@ describe('LegacyFilterBar', () => {
   });
 
   it('handles search input changes', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     const searchInput = screen.getByPlaceholderText('Search articles...');
     fireEvent.change(searchInput, { target: { value: 'breast cancer' } });
@@ -49,7 +56,7 @@ describe('LegacyFilterBar', () => {
   });
 
   it('displays topic filter dropdown', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     const topicSelect = screen.getByDisplayValue('All Topics');
     expect(topicSelect).toBeInTheDocument();
@@ -60,7 +67,7 @@ describe('LegacyFilterBar', () => {
   });
 
   it('handles topic filter changes', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     const topicSelect = screen.getByDisplayValue('All Topics');
     fireEvent.change(topicSelect, { target: { value: 'treatment' } });
@@ -73,14 +80,14 @@ describe('LegacyFilterBar', () => {
   });
 
   it('displays country filter dropdown', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     const countrySelect = screen.getByDisplayValue('All Countries');
     expect(countrySelect).toBeInTheDocument();
   });
 
   it('handles country filter changes', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     const countrySelect = screen.getByDisplayValue('All Countries');
     fireEvent.change(countrySelect, { target: { value: 'US' } });
@@ -93,14 +100,14 @@ describe('LegacyFilterBar', () => {
   });
 
   it('displays sentiment filter dropdown', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     const sentimentSelect = screen.getByDisplayValue('All Sentiments');
     expect(sentimentSelect).toBeInTheDocument();
   });
 
   it('handles sentiment filter changes', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     const sentimentSelect = screen.getByDisplayValue('All Sentiments');
     fireEvent.change(sentimentSelect, { target: { value: 'positive' } });
@@ -113,7 +120,7 @@ describe('LegacyFilterBar', () => {
   });
 
   it('displays date range inputs', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     const fromDateInput = screen.getByLabelText('From Date');
     const toDateInput = screen.getByLabelText('To Date');
@@ -125,7 +132,7 @@ describe('LegacyFilterBar', () => {
   });
 
   it('handles date range changes', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     const fromDateInput = screen.getByLabelText('From Date');
     const toDateInput = screen.getByLabelText('To Date');
@@ -147,7 +154,7 @@ describe('LegacyFilterBar', () => {
   });
 
   it('provides clear filters functionality', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     // First apply some filters
     const searchInput = screen.getByPlaceholderText('Search articles...');
@@ -168,7 +175,7 @@ describe('LegacyFilterBar', () => {
   });
 
   it('shows active filter count', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     // Apply some filters
     const searchInput = screen.getByPlaceholderText('Search articles...');
@@ -183,15 +190,14 @@ describe('LegacyFilterBar', () => {
 
   it('handles initial filter values', () => {
     const initialFilters = {
-      search: 'initial search',
-      topic: 'treatment',
       country: 'US',
-      sentiment: 'positive',
-      dateFrom: '2024-01-01',
-      dateTo: '2024-12-31'
+      language: 'en',
+      date: '2024-01-01',
+      topic: 'treatment',
+      keyword: 'initial search'
     };
 
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} initialFilters={initialFilters} />);
+    render(<LegacyFilterBar filters={initialFilters} onFilterChange={mockOnFilterChange} />);
 
     expect(screen.getByDisplayValue('initial search')).toBeInTheDocument();
     expect(screen.getByDisplayValue('treatment')).toBeInTheDocument();
@@ -202,7 +208,7 @@ describe('LegacyFilterBar', () => {
   });
 
   it('validates date range input', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     const fromDateInput = screen.getByLabelText('From Date');
     const toDateInput = screen.getByLabelText('To Date');
@@ -216,14 +222,14 @@ describe('LegacyFilterBar', () => {
   });
 
   it('applies correct CSS classes', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     const filterContainer = screen.getByTestId('filter-icon').closest('div');
     expect(filterContainer).toHaveClass('bg-white', 'p-4', 'rounded-lg', 'shadow-sm');
   });
 
   it('maintains accessibility standards', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     // Check for proper labels
     expect(screen.getByLabelText('Search articles')).toBeInTheDocument();
@@ -235,7 +241,7 @@ describe('LegacyFilterBar', () => {
   });
 
   it('handles multiple rapid filter changes', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     const searchInput = screen.getByPlaceholderText('Search articles...');
 
@@ -249,7 +255,7 @@ describe('LegacyFilterBar', () => {
   });
 
   it('handles empty filter state correctly', () => {
-    render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     // Should show no active filters initially
     expect(screen.queryByText('active filters')).not.toBeInTheDocument();
@@ -261,14 +267,14 @@ describe('LegacyFilterBar', () => {
   });
 
   it('persists filter state correctly', () => {
-    const { rerender } = render(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    const { rerender } = render(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     // Apply a filter
     const searchInput = screen.getByPlaceholderText('Search articles...');
     fireEvent.change(searchInput, { target: { value: 'test search' } });
 
     // Re-render with same props
-    rerender(<LegacyFilterBar onFilterChange={mockOnFilterChange} />);
+    rerender(<LegacyFilterBar filters={mockFilters} onFilterChange={mockOnFilterChange} />);
 
     // State should be persisted
     expect(screen.getByDisplayValue('test search')).toBeInTheDocument();

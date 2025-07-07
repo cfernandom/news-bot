@@ -39,11 +39,11 @@ vi.mock('react-leaflet', () => ({
 
 describe('LegacyGeographicMap', () => {
   const mockData = [
-    { country: 'US', total: 85, tone: 'negative', language: 'EN' },
-    { country: 'UK', total: 21, tone: 'positive', language: 'EN' },
-    { country: 'CA', total: 15, tone: 'neutral', language: 'EN' },
-    { country: 'AU', total: 10, tone: 'negative', language: 'EN' },
-    { country: 'DE', total: 5, tone: 'positive', language: 'EN' }
+    { country: 'US', lat: 39.8283, lon: -98.5795, total: 85, tono: 'negative', idioma: 'EN' },
+    { country: 'UK', lat: 55.3781, lon: -3.4360, total: 21, tono: 'positive', idioma: 'EN' },
+    { country: 'CA', lat: 56.1304, lon: -106.3468, total: 15, tono: 'neutral', idioma: 'EN' },
+    { country: 'AU', lat: -25.2744, lon: 133.7751, total: 10, tono: 'negative', idioma: 'EN' },
+    { country: 'DE', lat: 51.1657, lon: 10.4515, total: 5, tono: 'positive', idioma: 'EN' }
   ];
 
   beforeEach(() => {
@@ -101,7 +101,7 @@ describe('LegacyGeographicMap', () => {
 
   it('handles single country data', () => {
     const singleCountryData = [
-      { country: 'US', total: 100, tone: 'positive', language: 'EN' }
+      { country: 'US', lat: 39.8283, lon: -98.5795, total: 100, tono: 'positive', idioma: 'EN' }
     ];
 
     render(<LegacyGeographicMap data={singleCountryData} />);
@@ -135,8 +135,8 @@ describe('LegacyGeographicMap', () => {
 
   it('handles unknown countries gracefully', () => {
     const unknownCountryData = [
-      { country: 'XX', total: 10, tone: 'neutral', language: 'EN' },
-      { country: 'YY', total: 5, tone: 'positive', language: 'EN' }
+      { country: 'XX', lat: 0, lon: 0, total: 10, tono: 'neutral', idioma: 'EN' },
+      { country: 'YY', lat: 0, lon: 0, total: 5, tono: 'positive', idioma: 'EN' }
     ];
 
     render(<LegacyGeographicMap data={unknownCountryData} />);
@@ -179,9 +179,11 @@ describe('LegacyGeographicMap', () => {
   it('handles large datasets correctly', () => {
     const largeData = Array.from({ length: 50 }, (_, i) => ({
       country: `Country${i}`,
+      lat: 40 + (i % 10),
+      lon: -100 + (i % 10),
       total: Math.floor(Math.random() * 100),
-      tone: ['positive', 'negative', 'neutral'][i % 3],
-      language: 'EN'
+      tono: ['positive', 'negative', 'neutral'][i % 3],
+      idioma: 'EN'
     }));
 
     render(<LegacyGeographicMap data={largeData} />);
@@ -193,8 +195,8 @@ describe('LegacyGeographicMap', () => {
 
   it('handles missing data properties', () => {
     const incompleteData = [
-      { country: 'US', total: 85 }, // missing tone and language
-      { country: 'UK', tone: 'positive' } // missing total and language
+      { country: 'US', lat: 39.8283, lon: -98.5795, total: 85, tono: '', idioma: '' },
+      { country: 'UK', lat: 55.3781, lon: -3.4360, total: 0, tono: 'positive', idioma: '' }
     ];
 
     render(<LegacyGeographicMap data={incompleteData} />);
@@ -212,7 +214,7 @@ describe('LegacyGeographicMap', () => {
     expect(markers).toHaveLength(5);
 
     const newData = [
-      { country: 'US', total: 100, tone: 'positive', language: 'EN' }
+      { country: 'US', lat: 39.8283, lon: -98.5795, total: 100, tono: 'positive', idioma: 'EN' }
     ];
 
     rerender(<LegacyGeographicMap data={newData} />);

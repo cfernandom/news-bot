@@ -1,77 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-interface ExportHistoryItem {
+export interface ExportHistoryItem {
   id: string;
   filename: string;
   format: 'CSV' | 'XLSX' | 'PDF';
   timestamp: string;
   size: string;
   downloadUrl: string;
-  status: 'completed' | 'failed';
+  status: 'completed' | 'failed' | 'pending';
 }
 
 interface LegacyExportHistoryProps {
+  exports: ExportHistoryItem[];
+  onDownload: (item: ExportHistoryItem) => void;
+  onDelete: (id: string) => void;
   className?: string;
+  title?: string; // Added title prop for consistency with tests
 }
 
-const LegacyExportHistory: React.FC<LegacyExportHistoryProps> = ({ className = '' }) => {
-  const [exportHistory, setExportHistory] = useState<ExportHistoryItem[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    loadExportHistory();
-  }, []);
-
-  const loadExportHistory = async () => {
-    setLoading(true);
-    try {
-      // Simulate API call - in real implementation this would fetch from backend
-      const mockHistory: ExportHistoryItem[] = [
-        {
-          id: '1',
-          filename: 'preventia_analytics_2025-07-03.csv',
-          format: 'CSV',
-          timestamp: '2025-07-03T10:30:00Z',
-          size: '2.4 MB',
-          downloadUrl: '#',
-          status: 'completed'
-        },
-        {
-          id: '2',
-          filename: 'preventia_report_2025-07-02.pdf',
-          format: 'PDF',
-          timestamp: '2025-07-02T15:45:00Z',
-          size: '8.7 MB',
-          downloadUrl: '#',
-          status: 'completed'
-        },
-        {
-          id: '3',
-          filename: 'preventia_data_2025-07-01.xlsx',
-          format: 'XLSX',
-          timestamp: '2025-07-01T09:20:00Z',
-          size: '3.1 MB',
-          downloadUrl: '#',
-          status: 'completed'
-        },
-        {
-          id: '4',
-          filename: 'preventia_backup_2025-06-30.csv',
-          format: 'CSV',
-          timestamp: '2025-06-30T14:10:00Z',
-          size: '2.2 MB',
-          downloadUrl: '#',
-          status: 'failed'
-        }
-      ];
-
-      setExportHistory(mockHistory);
-    } catch (error) {
-      console.error('Error loading export history:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+const LegacyExportHistory: React.FC<LegacyExportHistoryProps> = ({
+  exports,
+  onDownload,
+  onDelete,
+  className = '',
+  title = 'Historial de Exportaciones'
+}) => {
 
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
@@ -110,46 +63,17 @@ const LegacyExportHistory: React.FC<LegacyExportHistoryProps> = ({ className = '
     }
   };
 
-  const handleDownload = (item: ExportHistoryItem) => {
-    if (item.status === 'completed') {
-      // In real implementation, this would trigger actual download
-      console.log('Downloading:', item.filename);
-      // For demo purposes, just show a message
-      alert(`Descargando ${item.filename}...`);
-    }
-  };
-
-  const handleDelete = (id: string) => {
-    setExportHistory(prev => prev.filter(item => item.id !== id));
-  };
-
-  if (loading) {
-    return (
-      <div className={`legacy-export-history ${className}`}>
-        <h3>Historial de Exportaciones</h3>
-        <div className="legacy-loading-container">
-          <i className="fas fa-spinner fa-spin" style={{ color: 'var(--primary-blue)' }}></i>
-          <span>Cargando historial...</span>
-        </div>
-      </div>
-    );
-  }
+  // Sort exports by timestamp, newest first
+  const sortedExports = [...exports].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
   return (
     <div className={`legacy-export-history ${className}`}>
       <div className="legacy-export-history-header">
-        <h3>Historial de Exportaciones</h3>
-        <button
-          className="legacy-btn-secondary"
-          onClick={loadExportHistory}
-          disabled={loading}
-        >
-          <i className="fas fa-sync-alt"></i>
-          Actualizar
-        </button>
+        <h3>{title}</h3>
+        {/* Removed update button as data is now passed via props */}
       </div>
 
-      {exportHistory.length === 0 ? (
+      {sortedExports.length === 0 ? (
         <div className="legacy-empty-state">
           <i className="fas fa-download" style={{ fontSize: '48px', color: 'var(--text-secondary)' }}></i>
           <p>No hay exportaciones disponibles</p>
@@ -157,7 +81,7 @@ const LegacyExportHistory: React.FC<LegacyExportHistoryProps> = ({ className = '
         </div>
       ) : (
         <div className="legacy-export-history-list">
-          {exportHistory.map((item) => (
+          {sortedExports.map((item) => (
             <div key={item.id} className={`legacy-export-history-item ${item.status}`}>
               <div className="export-file-info">
                 <div className="export-file-icon">
@@ -182,7 +106,7 @@ const LegacyExportHistory: React.FC<LegacyExportHistoryProps> = ({ className = '
                 {item.status === 'completed' ? (
                   <button
                     className="legacy-btn-icon"
-                    onClick={() => handleDownload(item)}
+                    onClick={() => onDownload(item)}
                     title="Descargar archivo"
                   >
                     <i className="fas fa-download"></i>
@@ -199,7 +123,7 @@ const LegacyExportHistory: React.FC<LegacyExportHistoryProps> = ({ className = '
 
                 <button
                   className="legacy-btn-icon delete"
-                  onClick={() => handleDelete(item.id)}
+                  onClick={() => onDelete(item.id)}
                   title="Eliminar del historial"
                 >
                   <i className="fas fa-trash"></i>

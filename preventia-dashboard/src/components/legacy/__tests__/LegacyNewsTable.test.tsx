@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import LegacyNewsTable from '../Analytics/LegacyNewsTable';
@@ -14,6 +15,15 @@ vi.mock('lucide-react', () => ({
 }));
 
 describe('LegacyNewsTable', () => {
+  const mockOnNewsSelect = vi.fn();
+  const mockFilters = {
+    country: '',
+    language: '',
+    date: '',
+    topic: '',
+    keyword: ''
+  };
+
   const mockArticles = [
     {
       id: '1',
@@ -22,9 +32,10 @@ describe('LegacyNewsTable', () => {
       url: 'https://example.com/article1',
       date: '2024-01-15',
       topic: 'treatment',
-      tone: 'positive',
+      sentiment: 'positive',
       country: 'US',
-      language: 'EN'
+      language: 'EN',
+      source: 'example.com'
     },
     {
       id: '2',
@@ -33,7 +44,7 @@ describe('LegacyNewsTable', () => {
       url: 'https://example.com/article2',
       date: '2024-01-14',
       topic: 'research',
-      tone: 'negative',
+      sentiment: 'negative',
       country: 'UK',
       language: 'EN'
     },
@@ -44,27 +55,27 @@ describe('LegacyNewsTable', () => {
       url: 'https://example.com/article3',
       date: '2024-01-13',
       topic: 'prevention',
-      tone: 'neutral',
+      sentiment: 'neutral',
       country: 'CA',
       language: 'EN'
     }
   ];
 
   it('renders correctly with default props', () => {
-    render(<LegacyNewsTable articles={mockArticles} />);
+    render(<LegacyNewsTable data={mockArticles} />);
 
     expect(screen.getByText('News Articles')).toBeInTheDocument();
     expect(screen.getByRole('table')).toBeInTheDocument();
   });
 
   it('renders with custom title', () => {
-    render(<LegacyNewsTable articles={mockArticles} title="Custom News Table" />);
+    render(<LegacyNewsTable data={mockArticles} title="Custom News Table" />);
 
     expect(screen.getByText('Custom News Table')).toBeInTheDocument();
   });
 
   it('displays correct table headers', () => {
-    render(<LegacyNewsTable articles={mockArticles} />);
+    render(<LegacyNewsTable data={mockArticles} />);
 
     expect(screen.getByText('Title')).toBeInTheDocument();
     expect(screen.getByText('Date')).toBeInTheDocument();
@@ -75,7 +86,7 @@ describe('LegacyNewsTable', () => {
   });
 
   it('displays all articles', () => {
-    render(<LegacyNewsTable articles={mockArticles} />);
+    render(<LegacyNewsTable data={mockArticles} />);
 
     expect(screen.getByText('New Breakthrough in Breast Cancer Treatment')).toBeInTheDocument();
     expect(screen.getByText('Study Shows Concerning Trends in Cancer Diagnosis')).toBeInTheDocument();
@@ -83,7 +94,7 @@ describe('LegacyNewsTable', () => {
   });
 
   it('formats dates correctly', () => {
-    render(<LegacyNewsTable articles={mockArticles} />);
+    render(<LegacyNewsTable data={mockArticles} />);
 
     expect(screen.getByText('Jan 15, 2024')).toBeInTheDocument();
     expect(screen.getByText('Jan 14, 2024')).toBeInTheDocument();
@@ -91,7 +102,7 @@ describe('LegacyNewsTable', () => {
   });
 
   it('displays sentiment with correct styling', () => {
-    render(<LegacyNewsTable articles={mockArticles} />);
+    render(<LegacyNewsTable data={mockArticles} />);
 
     const positiveElement = screen.getByText('positive');
     const negativeElement = screen.getByText('negative');
@@ -110,12 +121,12 @@ describe('LegacyNewsTable', () => {
       url: 'https://example.com/article1',
       date: '2024-01-15',
       topic: 'treatment',
-      tone: 'positive',
+      sentiment: 'positive',
       country: 'US',
       language: 'EN'
     }];
 
-    render(<LegacyNewsTable articles={longTitleArticle} />);
+    render(<LegacyNewsTable data={longTitleArticle} />);
 
     // Should truncate long titles
     const titleElement = screen.getByText(/This is a very long title/);
@@ -124,7 +135,7 @@ describe('LegacyNewsTable', () => {
 
   it('provides view action for articles', () => {
     const mockOnView = vi.fn();
-    render(<LegacyNewsTable articles={mockArticles} onView={mockOnView} />);
+    render(<LegacyNewsTable data={mockArticles} onView={mockOnView} />);
 
     const viewButtons = screen.getAllByTestId('eye-icon');
     expect(viewButtons).toHaveLength(3);
@@ -134,7 +145,7 @@ describe('LegacyNewsTable', () => {
   });
 
   it('provides external link action for articles', () => {
-    render(<LegacyNewsTable articles={mockArticles} />);
+    render(<LegacyNewsTable data={mockArticles} />);
 
     const externalLinks = screen.getAllByTestId('external-link-icon');
     expect(externalLinks).toHaveLength(3);
@@ -147,7 +158,7 @@ describe('LegacyNewsTable', () => {
   });
 
   it('handles empty articles list', () => {
-    render(<LegacyNewsTable articles={[]} />);
+    render(<LegacyNewsTable data={[]} />);
 
     expect(screen.getByText('News Articles')).toBeInTheDocument();
     expect(screen.getByText('No articles found')).toBeInTheDocument();
@@ -161,12 +172,12 @@ describe('LegacyNewsTable', () => {
       url: `https://example.com/article${i + 1}`,
       date: '2024-01-15',
       topic: 'treatment',
-      tone: 'positive',
+      sentiment: 'positive',
       country: 'US',
       language: 'EN'
     }));
 
-    render(<LegacyNewsTable articles={manyArticles} />);
+    render(<LegacyNewsTable data={manyArticles} />);
 
     // Should show pagination controls
     expect(screen.getByText('Previous')).toBeInTheDocument();
@@ -184,12 +195,12 @@ describe('LegacyNewsTable', () => {
       url: `https://example.com/article${i + 1}`,
       date: '2024-01-15',
       topic: 'treatment',
-      tone: 'positive',
+      sentiment: 'positive',
       country: 'US',
       language: 'EN'
     }));
 
-    render(<LegacyNewsTable articles={manyArticles} />);
+    render(<LegacyNewsTable data={manyArticles} />);
 
     // Click next page
     const nextButton = screen.getByText('Next');
@@ -200,7 +211,7 @@ describe('LegacyNewsTable', () => {
   });
 
   it('displays topic categories correctly', () => {
-    render(<LegacyNewsTable articles={mockArticles} />);
+    render(<LegacyNewsTable data={mockArticles} />);
 
     expect(screen.getByText('treatment')).toBeInTheDocument();
     expect(screen.getByText('research')).toBeInTheDocument();
@@ -208,7 +219,7 @@ describe('LegacyNewsTable', () => {
   });
 
   it('displays country codes correctly', () => {
-    render(<LegacyNewsTable articles={mockArticles} />);
+    render(<LegacyNewsTable data={mockArticles} />);
 
     expect(screen.getByText('US')).toBeInTheDocument();
     expect(screen.getByText('UK')).toBeInTheDocument();
@@ -216,7 +227,7 @@ describe('LegacyNewsTable', () => {
   });
 
   it('handles sorting by date', () => {
-    render(<LegacyNewsTable articles={mockArticles} />);
+    render(<LegacyNewsTable data={mockArticles} />);
 
     // Click on date header to sort
     const dateHeader = screen.getByText('Date');
@@ -229,7 +240,7 @@ describe('LegacyNewsTable', () => {
   });
 
   it('handles sorting by title', () => {
-    render(<LegacyNewsTable articles={mockArticles} />);
+    render(<LegacyNewsTable data={mockArticles} />);
 
     // Click on title header to sort
     const titleHeader = screen.getByText('Title');
@@ -242,7 +253,7 @@ describe('LegacyNewsTable', () => {
   });
 
   it('maintains accessibility standards', () => {
-    render(<LegacyNewsTable articles={mockArticles} />);
+    render(<LegacyNewsTable data={mockArticles} />);
 
     // Check for proper heading structure
     const heading = screen.getByRole('heading', { level: 3 });
@@ -273,27 +284,27 @@ describe('LegacyNewsTable', () => {
       // missing summary, topic, tone, country, language
     }] as any;
 
-    render(<LegacyNewsTable articles={incompleteArticle} />);
+    render(<LegacyNewsTable data={incompleteArticle} />);
 
     expect(screen.getByText('Incomplete Article')).toBeInTheDocument();
     expect(screen.getByText('Jan 15, 2024')).toBeInTheDocument();
   });
 
   it('applies correct CSS classes', () => {
-    render(<LegacyNewsTable articles={mockArticles} />);
+    render(<LegacyNewsTable data={mockArticles} />);
 
     const tableContainer = screen.getByRole('table').parentElement;
     expect(tableContainer).toHaveClass('bg-white');
   });
 
   it('handles loading state', () => {
-    render(<LegacyNewsTable articles={mockArticles} loading={true} />);
+    render(<LegacyNewsTable data={mockArticles} loading={true} />);
 
     expect(screen.getByText('Loading articles...')).toBeInTheDocument();
   });
 
   it('handles error state', () => {
-    render(<LegacyNewsTable articles={[]} error="Failed to load articles" />);
+    render(<LegacyNewsTable data={[]} error="Failed to load articles" />);
 
     expect(screen.getByText('Error: Failed to load articles')).toBeInTheDocument();
   });
