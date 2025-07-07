@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, List
 
 import pytest
+import requests
 from fastapi.testclient import TestClient
 
 from services.api.main import app
@@ -17,25 +18,47 @@ from services.api.main import app
 class TestAPIPerformance:
     """Performance tests for critical API endpoints."""
 
+    BASE_URL = "http://localhost:8000"
+
     @pytest.fixture
     def client(self):
-        """Create test client."""
+        """Create test client that uses live server."""
+        # Try live server first, fallback to TestClient
+        try:
+            response = requests.get(f"{self.BASE_URL}/health", timeout=2)
+            if response.status_code == 200:
+                return "live_server"
+        except:
+            pass
         return TestClient(app)
 
     def measure_endpoint_time(
-        self, client: TestClient, method: str, endpoint: str, **kwargs
+        self, client, method: str, endpoint: str, **kwargs
     ) -> float:
         """Measure response time for an endpoint."""
         start_time = time.time()
 
-        if method.upper() == "GET":
-            response = client.get(endpoint, **kwargs)
-        elif method.upper() == "POST":
-            response = client.post(endpoint, **kwargs)
-        elif method.upper() == "PUT":
-            response = client.put(endpoint, **kwargs)
-        elif method.upper() == "DELETE":
-            response = client.delete(endpoint, **kwargs)
+        if client == "live_server":
+            # Use requests for live server
+            url = f"{self.BASE_URL}{endpoint}"
+            if method.upper() == "GET":
+                response = requests.get(url, **kwargs)
+            elif method.upper() == "POST":
+                response = requests.post(url, **kwargs)
+            elif method.upper() == "PUT":
+                response = requests.put(url, **kwargs)
+            elif method.upper() == "DELETE":
+                response = requests.delete(url, **kwargs)
+        else:
+            # Use TestClient
+            if method.upper() == "GET":
+                response = client.get(endpoint, **kwargs)
+            elif method.upper() == "POST":
+                response = client.post(endpoint, **kwargs)
+            elif method.upper() == "PUT":
+                response = client.put(endpoint, **kwargs)
+            elif method.upper() == "DELETE":
+                response = client.delete(endpoint, **kwargs)
 
         end_time = time.time()
 
@@ -44,7 +67,7 @@ class TestAPIPerformance:
             200,
             201,
             204,
-        ], f"Request failed with status {response.status_code}"
+        ], f"Request failed with status {response.status_code}: {response.text if hasattr(response, 'text') else 'N/A'}"
 
         return end_time - start_time
 
