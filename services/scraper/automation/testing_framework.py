@@ -9,7 +9,7 @@ import logging
 import re
 import subprocess
 import tempfile
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from .models import SiteStructure, TestResults
@@ -88,7 +88,7 @@ class AutomatedTestingFramework:
                 error_handling_passed=error_handling_result.get("passed", False),
                 success_rate=success_rate,
                 detailed_results=detailed_results,
-                test_timestamp=datetime.utcnow(),
+                test_timestamp=datetime.now(timezone.utc),
             )
 
             # Store in history
@@ -109,7 +109,7 @@ class AutomatedTestingFramework:
                 error_handling_passed=False,
                 success_rate=0.0,
                 detailed_results={"error": str(e)},
-                test_timestamp=datetime.utcnow(),
+                test_timestamp=datetime.now(timezone.utc),
             )
 
     async def _test_code_quality(self, scraper_code: str) -> Dict[str, Any]:

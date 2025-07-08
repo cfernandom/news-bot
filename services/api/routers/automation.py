@@ -4,7 +4,7 @@ Provides API access to the scraper automation system.
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException
@@ -118,8 +118,8 @@ async def generate_scraper(
             domain=result.domain,
             status=result.deployment_status,
             template_used=result.template_used,
-            compliance_result=result.compliance_result.dict(),
-            site_structure=result.site_structure.dict(),
+            compliance_result=result.compliance_result.model_dump(),
+            site_structure=result.site_structure.model_dump(),
             test_results=result.test_results,
             code_preview=code_preview,
             generation_timestamp=result.generation_timestamp,
@@ -158,7 +158,7 @@ async def analyze_domain(request: AnalyzeDomainRequest) -> Dict[str, Any]:
             "detected_selectors_count": len(site_structure.detected_selectors),
             "navigation_links": len(site_structure.navigation.get("main_nav", [])),
             "content_structure": site_structure.content_structure,
-            "analysis_timestamp": datetime.utcnow(),
+            "analysis_timestamp": datetime.now(timezone.utc),
         }
 
     except Exception as e:
@@ -193,7 +193,7 @@ async def validate_compliance(request: ComplianceCheckRequest) -> Dict[str, Any]
             "data_minimization_applied": compliance_result.data_minimization_applied,
             "violations": compliance_result.violations,
             "crawl_delay": compliance_result.crawl_delay,
-            "validation_timestamp": datetime.utcnow(),
+            "validation_timestamp": datetime.now(timezone.utc),
         }
 
     except Exception as e:
@@ -301,8 +301,8 @@ async def batch_generate_scrapers(
                         domain=result.domain,
                         status=result.deployment_status,
                         template_used=result.template_used,
-                        compliance_result=result.compliance_result.dict(),
-                        site_structure=result.site_structure.dict(),
+                        compliance_result=result.compliance_result.model_dump(),
+                        site_structure=result.site_structure.model_dump(),
                         test_results=result.test_results,
                         code_preview=code_preview,
                         generation_timestamp=result.generation_timestamp,
@@ -349,7 +349,7 @@ async def clear_automation_cache() -> Dict[str, str]:
 
         return {
             "message": "Automation caches cleared successfully",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         }
 
     except Exception as e:
@@ -371,7 +371,7 @@ async def automation_health_check() -> Dict[str, Any]:
         "scraper_generator": "ready",
         "structure_analyzer": "ready",
         "compliance_validator": "ready",
-        "timestamp": datetime.utcnow(),
+        "timestamp": datetime.now(timezone.utc),
         "version": "1.0.0",
     }
 

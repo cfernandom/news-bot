@@ -5,7 +5,7 @@ Discovers new medical news sources and evaluates their suitability for scraping.
 
 import asyncio
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Set, Tuple
 from urllib.parse import urljoin, urlparse
 
@@ -168,7 +168,7 @@ class SourceDiscoverer:
                 medical_relevance=relevance_score,
                 overall_score=overall_score,
                 recommendation=recommendation,
-                evaluation_timestamp=datetime.utcnow(),
+                evaluation_timestamp=datetime.now(timezone.utc),
             )
 
             self.discovery_history.append(result)
@@ -203,7 +203,7 @@ class SourceDiscoverer:
                 medical_relevance=0.0,
                 overall_score=0.0,
                 recommendation="evaluation_failed",
-                evaluation_timestamp=datetime.utcnow(),
+                evaluation_timestamp=datetime.now(timezone.utc),
             )
 
     async def _analyze_content_quality(self, domain: str) -> SourceQualityMetrics:

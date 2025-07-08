@@ -4,7 +4,7 @@ Generates scrapers based on site structure analysis and templates.
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional
 
 from .compliance_validator import ComplianceValidator
@@ -102,9 +102,9 @@ class ScraperGenerator:
                 compliance_result=compliance_result,
                 site_structure=site_structure,
                 template_used=self.template_engine.last_template_used,
-                test_results=test_results.dict() if test_results else None,
+                test_results=test_results.model_dump() if test_results else None,
                 deployment_status=deployment_status,
-                generation_timestamp=datetime.utcnow(),
+                generation_timestamp=datetime.now(timezone.utc),
             )
 
             # 7. Store in history
@@ -204,6 +204,7 @@ class ScraperGenerator:
                 "compliance_rate": 0.0,
                 "deployment_ready": 0,
                 "templates_used": {},
+                "last_generation": None,
             }
 
         successful = sum(
