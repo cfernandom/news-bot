@@ -197,9 +197,9 @@ class ScraperTestFramework(ABC):
                     * 100,
                     "language_completeness": (quality["with_language"] / total) * 100,
                     "country_completeness": (quality["with_country"] / total) * 100,
-                    "url_uniqueness": (quality["unique_urls"] / total) * 100
-                    if total > 0
-                    else 100,
+                    "url_uniqueness": (
+                        (quality["unique_urls"] / total) * 100 if total > 0 else 100
+                    ),
                 }
 
             self.test_results["data_quality"] = {
@@ -241,17 +241,17 @@ class ScraperTestFramework(ABC):
                 execution_time = exec_data["execution_time_seconds"]
 
                 performance_metrics = {
-                    "articles_per_second": articles_added / execution_time
-                    if execution_time > 0
-                    else 0,
-                    "seconds_per_article": execution_time / articles_added
-                    if articles_added > 0
-                    else 0,
-                    "execution_efficiency": "excellent"
-                    if execution_time < 60
-                    else "good"
-                    if execution_time < 120
-                    else "needs_optimization",
+                    "articles_per_second": (
+                        articles_added / execution_time if execution_time > 0 else 0
+                    ),
+                    "seconds_per_article": (
+                        execution_time / articles_added if articles_added > 0 else 0
+                    ),
+                    "execution_efficiency": (
+                        "excellent"
+                        if execution_time < 60
+                        else "good" if execution_time < 120 else "needs_optimization"
+                    ),
                 }
 
                 self.test_results["performance"] = {
@@ -266,7 +266,9 @@ class ScraperTestFramework(ABC):
                 print(
                     f"   ⏱️  Seconds per article: {performance_metrics['seconds_per_article']:.2f}"
                 )
-                print(f"   🎯 Efficiency: {performance_metrics['execution_efficiency']}")
+                print(
+                    f"   🎯 Efficiency: {performance_metrics['execution_efficiency']}"
+                )
             else:
                 self.test_results["performance"] = {
                     "status": "skipped",
@@ -319,11 +321,11 @@ class ScraperTestFramework(ABC):
             "total_tests": total_tests,
             "passed_tests": passed_tests,
             "success_rate": success_rate,
-            "status": "excellent"
-            if success_rate >= 80
-            else "good"
-            if success_rate >= 60
-            else "needs_improvement",
+            "status": (
+                "excellent"
+                if success_rate >= 80
+                else "good" if success_rate >= 60 else "needs_improvement"
+            ),
         }
 
 

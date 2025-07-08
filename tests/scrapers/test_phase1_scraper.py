@@ -214,7 +214,9 @@ async def main():
 
         # Verify results
         if article_ids:
-            print(f"\n✅ Migration test successful: {len(article_ids)} articles scraped")
+            print(
+                f"\n✅ Migration test successful: {len(article_ids)} articles scraped"
+            )
 
             # Show first article details
             first_id = article_ids[0]

@@ -348,7 +348,9 @@ class DocQualityChecker:
     def generate_report(self, issues: List[QualityIssue]) -> str:
         """Generate a formatted quality report."""
         if not issues:
-            return "✅ No quality issues found! Documentation is in excellent condition."
+            return (
+                "✅ No quality issues found! Documentation is in excellent condition."
+            )
 
         # Group issues by severity
         errors = [i for i in issues if i.severity == "error"]

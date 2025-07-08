@@ -180,21 +180,25 @@ async def get_sources_performance(db_conn=Depends(get_db_connection)):
                 "source_url": row["source_url"],
                 "total_articles": row["total_articles"],
                 "analyzed_articles": row["analyzed_articles"],
-                "analysis_coverage": round(
-                    (row["analyzed_articles"] / row["total_articles"]) * 100, 1
-                )
-                if row["total_articles"] > 0
-                else 0,
-                "avg_sentiment": round(float(row["avg_sentiment"]), 3)
-                if row["avg_sentiment"]
-                else None,
+                "analysis_coverage": (
+                    round((row["analyzed_articles"] / row["total_articles"]) * 100, 1)
+                    if row["total_articles"] > 0
+                    else 0
+                ),
+                "avg_sentiment": (
+                    round(float(row["avg_sentiment"]), 3)
+                    if row["avg_sentiment"]
+                    else None
+                ),
                 "dominant_sentiment": row["dominant_sentiment"],
-                "latest_article": row["latest_article"].isoformat()
-                if row["latest_article"]
-                else None,
-                "earliest_article": row["earliest_article"].isoformat()
-                if row["earliest_article"]
-                else None,
+                "latest_article": (
+                    row["latest_article"].isoformat() if row["latest_article"] else None
+                ),
+                "earliest_article": (
+                    row["earliest_article"].isoformat()
+                    if row["earliest_article"]
+                    else None
+                ),
             }
         )
 
@@ -240,9 +244,9 @@ async def get_geographic_distribution(db_conn=Depends(get_db_connection)):
     for row in result:
         distribution[row["region"]] = {
             "article_count": row["article_count"],
-            "avg_sentiment": round(float(row["avg_sentiment"]), 3)
-            if row["avg_sentiment"]
-            else None,
+            "avg_sentiment": (
+                round(float(row["avg_sentiment"]), 3) if row["avg_sentiment"] else None
+            ),
         }
 
     return {
@@ -288,9 +292,11 @@ async def get_weekly_trends(
                     "negative": row["negative_count"],
                     "neutral": row["neutral_count"],
                 },
-                "avg_sentiment_score": round(float(row["avg_sentiment_score"]), 3)
-                if row["avg_sentiment_score"]
-                else None,
+                "avg_sentiment_score": (
+                    round(float(row["avg_sentiment_score"]), 3)
+                    if row["avg_sentiment_score"]
+                    else None
+                ),
             }
         )
 

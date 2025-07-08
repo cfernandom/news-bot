@@ -20,7 +20,7 @@ def check_conventional_commit(commit_msg_file: str) -> bool:
         True if valid, False otherwise
     """
     try:
-        with open(commit_msg_file, 'r', encoding='utf-8') as f:
+        with open(commit_msg_file, "r", encoding="utf-8") as f:
             commit_msg = f.read().strip()
     except FileNotFoundError:
         print(f"❌ Error: Commit message file not found: {commit_msg_file}")
@@ -32,8 +32,18 @@ def check_conventional_commit(commit_msg_file: str) -> bool:
 
     # Define allowed types (including our custom ones)
     allowed_types = [
-        'feat', 'fix', 'docs', 'style', 'refactor', 'test', 'chore',
-        'migration', 'scraper', 'nlp', 'analytics', 'legal'
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "test",
+        "chore",
+        "migration",
+        "scraper",
+        "nlp",
+        "analytics",
+        "legal",
     ]
 
     # Conventional commit regex pattern

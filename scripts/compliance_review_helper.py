@@ -112,9 +112,11 @@ class ComplianceReviewHelper:
             scraping_status = (
                 "✅ Permitido"
                 if row["scraping_allowed"]
-                else "❌ Bloqueado"
-                if row["scraping_allowed"] is False
-                else "❓ Desconocido"
+                else (
+                    "❌ Bloqueado"
+                    if row["scraping_allowed"] is False
+                    else "❓ Desconocido"
+                )
             )
             print(
                 f"  {row['name']}: {row['article_count']} artículos - {scraping_status} - Delay: {row['crawl_delay_seconds']}s"
