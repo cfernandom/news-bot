@@ -119,10 +119,10 @@ async def scrape_breastcancer_org_to_postgres() -> List[int]:
                 except ValueError:
                     print(f"⚠️  Date parsing failed for {full_url}: {raw}")
                     # Use current date as fallback
-                    date = datetime.utcnow()
+                    date = datetime.now(timezone.utc)
             else:
                 # Use current date as fallback
-                date = datetime.utcnow()
+                date = datetime.now(timezone.utc)
 
             # Calculate metadata
             content_text = f"{title} {summary}"
@@ -139,7 +139,7 @@ async def scrape_breastcancer_org_to_postgres() -> List[int]:
                     continue
 
                 # Insert new article (using naive datetime for PostgreSQL compatibility)
-                current_time = datetime.utcnow()
+                current_time = datetime.now(timezone.utc)
 
                 insert_query = """
                     INSERT INTO articles (

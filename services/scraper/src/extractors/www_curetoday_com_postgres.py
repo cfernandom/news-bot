@@ -267,7 +267,7 @@ async def scrape_curetoday_to_postgres() -> List[int]:
 
             # Use current date as fallback if no date found
             if not date:
-                date = datetime.utcnow()
+                date = datetime.now(timezone.utc)
 
             # Calculate metadata
             content_text = f"{title} {summary}"
@@ -284,7 +284,7 @@ async def scrape_curetoday_to_postgres() -> List[int]:
                     continue
 
                 # Insert new article
-                current_time = datetime.utcnow()
+                current_time = datetime.now(timezone.utc)
 
                 insert_query = """
                     INSERT INTO articles (

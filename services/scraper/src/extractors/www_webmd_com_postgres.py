@@ -206,7 +206,7 @@ async def scrape_webmd_to_postgres() -> List[int]:
                 continue
 
             # Insert new article
-            current_time = datetime.utcnow()
+            current_time = datetime.now(timezone.utc)
 
             insert_query = """
                 INSERT INTO articles (

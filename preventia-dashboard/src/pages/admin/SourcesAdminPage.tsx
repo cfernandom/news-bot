@@ -93,8 +93,15 @@ export const SourcesAdminPage: React.FC = () => {
 
   const handleCreateSource = async (sourceData: any) => {
     try {
-      await api.post('/api/v1/sources/', sourceData);
+      if (selectedSource) {
+        // Update existing source
+        await api.put(`/api/v1/sources/${selectedSource.id}`, sourceData);
+      } else {
+        // Create new source
+        await api.post('/api/v1/sources/', sourceData);
+      }
       setShowCreateModal(false);
+      setSelectedSource(null);
       await loadData();
     } catch (err) {
       throw err; // Let the modal handle the error

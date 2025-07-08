@@ -4,7 +4,7 @@ High-performance queries for analytics dashboard with caching and indexing
 """
 
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
 import asyncpg
@@ -28,7 +28,7 @@ class OptimizedQueries:
         """
         Get comprehensive analytics summary with optimized single query
         """
-        cutoff_date = datetime.utcnow() - timedelta(days=days)
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
 
         query = """
         WITH recent_articles AS (
@@ -111,7 +111,7 @@ class OptimizedQueries:
         """
         Get sentiment trends over time with configurable granularity
         """
-        cutoff_date = datetime.utcnow() - timedelta(days=days)
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
 
         if granularity == "daily":
             date_trunc = "day"
@@ -230,7 +230,7 @@ class OptimizedQueries:
         """
         Get top keywords with frequency and sentiment analysis
         """
-        cutoff_date = datetime.utcnow() - timedelta(days=days)
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
 
         query = """
         WITH keyword_stats AS (
@@ -293,7 +293,7 @@ class OptimizedQueries:
         """
         Get source performance metrics with optimized query
         """
-        cutoff_date = datetime.utcnow() - timedelta(days=days)
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
 
         query = """
         WITH source_performance AS (

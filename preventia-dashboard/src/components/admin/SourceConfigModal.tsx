@@ -229,7 +229,17 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
     try {
       await onSubmit(formData);
     } catch (err: any) {
-      setError(err.response?.data?.detail?.error || err.message || 'No se pudo guardar la fuente');
+      const errorDetail = err.response?.data?.detail;
+      if (errorDetail && errorDetail.violations) {
+        // Formato detallado para errores de compliance
+        const violations = errorDetail.violations.map((v: string) => `• ${v}`).join('\n');
+        const recommendations = errorDetail.recommendations?.map((r: string) => `• ${r}`).join('\n') || '';
+        const score = errorDetail.compliance_score ? ` (Puntuación: ${errorDetail.compliance_score})` : '';
+        
+        setError(`❌ Validación de cumplimiento falló${score}\n\n🚨 Violaciones:\n${violations}${recommendations ? `\n\n💡 Recomendaciones:\n${recommendations}` : ''}`);
+      } else {
+        setError(errorDetail?.error || err.message || 'No se pudo guardar la fuente');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -487,7 +497,7 @@ export const SourceConfigModal: React.FC<SourceConfigModalProps> = ({
             {error && (
               <div className="admin-alert admin-alert-danger">
                 <AlertTriangle className="h-4 w-4" />
-                <div>{error}</div>
+                <div style={{ whiteSpace: 'pre-line' }}>{error}</div>
               </div>
             )}
 

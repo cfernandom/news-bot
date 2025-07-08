@@ -2,7 +2,7 @@
 Analytics API endpoints for dashboard metrics and trend analysis.
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, Query
@@ -23,7 +23,7 @@ async def get_dashboard_summary(
 ):
     """Get comprehensive dashboard summary with key metrics."""
 
-    cutoff_date = datetime.utcnow() - timedelta(days=days)
+    cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
 
     # Total articles
     total_query = select(func.count(Article.id))
@@ -85,7 +85,7 @@ async def get_sentiment_trends(
 ):
     """Get sentiment trends over time."""
 
-    cutoff_date = datetime.utcnow() - timedelta(days=days)
+    cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
 
     # Daily sentiment aggregation
     query = """
@@ -133,7 +133,7 @@ async def get_topic_distribution(
     )
 
     if days:
-        cutoff_date = datetime.utcnow() - timedelta(days=days)
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
         query = query.filter(Article.published_at >= cutoff_date)
 
     query = query.group_by(Article.topic_category).order_by(desc(func.count()))
@@ -263,7 +263,7 @@ async def get_weekly_trends(
 ):
     """Get weekly publication and sentiment trends."""
 
-    cutoff_date = datetime.utcnow() - timedelta(weeks=weeks)
+    cutoff_date = datetime.now(timezone.utc) - timedelta(weeks=weeks)
 
     query = """
     SELECT

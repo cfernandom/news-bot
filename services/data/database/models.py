@@ -3,7 +3,7 @@ SQLAlchemy models for PreventIA News Analytics
 Hybrid approach: ORM for basic operations, raw SQL for complex analytics
 """
 
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from enum import Enum
 from typing import Any, Dict, Generic, List, Optional, TypeVar
 
@@ -99,8 +99,8 @@ class NewsSource(Base):
     compliance_score = Column(Numeric(3, 2))  # 0.00 to 1.00
     last_compliance_check = Column(DateTime)
 
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None), onupdate=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
     # Relationships
     articles = relationship(
@@ -121,7 +121,7 @@ class Article(Base):
     content = Column(Text)  # Will be phased out for compliance
     summary = Column(Text)
     published_at = Column(DateTime, nullable=False)
-    scraped_at = Column(DateTime, default=datetime.utcnow)
+    scraped_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
     # Geographic and linguistic
     language = Column(String(10))
@@ -155,8 +155,8 @@ class Article(Base):
     )  # pending, approved, rejected, needs_review
     data_retention_expires_at = Column(DateTime)
 
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None), onupdate=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
     # Relationships
     source = relationship("NewsSource", back_populates="articles")
@@ -173,7 +173,7 @@ class ArticleKeyword(Base):
     keyword = Column(String(255), nullable=False)
     relevance_score = Column(Numeric(3, 2))
     keyword_type = Column(String(50))
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
     # Relationships
     article = relationship("Article", back_populates="keywords")
@@ -218,15 +218,15 @@ class ComplianceAuditLog(Base):
     new_values = Column(JSON)
     legal_basis = Column(String(255), default="academic_research_fair_use")
     performed_by = Column(String(255), nullable=False)
-    performed_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    performed_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None), nullable=False)
 
     # Compliance-specific fields
     compliance_score_before = Column(Numeric(3, 2))
     compliance_score_after = Column(Numeric(3, 2))
     risk_level = Column(String(20))
     violations_count = Column(Integer, default=0)
-
-    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Don't set created_at explicitly - it's handled by the database with DEFAULT NOW()
 
 
 # Pydantic schemas (for API serialization and validation)
@@ -403,8 +403,8 @@ class LegalNotice(Base):
     expiration_date = Column(Date)
     status = Column(String(20), default="active")
     legal_contact = Column(String(255))
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
     # Relationships
     source = relationship("NewsSource", back_populates="legal_notices")
@@ -418,8 +418,8 @@ class UserRole(Base):
     description = Column(Text)
     permissions = Column(JSON, default=list)
     is_system_role = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
 
 class User(Base):
@@ -435,9 +435,9 @@ class User(Base):
     last_login = Column(DateTime)
     failed_login_attempts = Column(Integer, default=0)
     account_locked_until = Column(DateTime)
-    password_changed_at = Column(DateTime, default=datetime.utcnow)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow)
+    password_changed_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
 
 class UserRoleAssignment(Base):
@@ -446,7 +446,7 @@ class UserRoleAssignment(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     role_id = Column(Integer, ForeignKey("user_roles.id"), nullable=False)
-    assigned_at = Column(DateTime, default=datetime.utcnow)
+    assigned_at = Column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
     assigned_by = Column(Integer, ForeignKey("users.id"))
     expires_at = Column(DateTime)
 

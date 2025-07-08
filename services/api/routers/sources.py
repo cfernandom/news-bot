@@ -142,46 +142,46 @@ async def validate_source_compliance(
         if robots_compliant:
             compliance_score += 0.25
         else:
-            violations.append("Source disallows scraping according to robots.txt")
+            violations.append("La fuente no permite scraping según robots.txt")
             recommendations.append(
-                "Review robots.txt compliance and adjust scraping strategy"
+                "Revisar cumplimiento de robots.txt y ajustar estrategia de scraping"
             )
     except Exception as e:
-        violations.append(f"Unable to verify robots.txt compliance: {str(e)}")
-        recommendations.append("Verify robots.txt URL is accessible and valid")
+        violations.append(f"No se pudo verificar cumplimiento de robots.txt: {str(e)}")
+        recommendations.append("Verificar que la URL de robots.txt sea accesible y válida")
 
     # 2. Check robots.txt URL provided
     if not source_data.robots_txt_url:
-        violations.append("Missing robots.txt URL")
-        recommendations.append("Add robots.txt URL for compliance verification")
+        violations.append("Falta URL de robots.txt")
+        recommendations.append("Agregar URL de robots.txt para verificación de cumplimiento")
     else:
         compliance_score += 0.15
 
     # 3. Check terms of service
     if not source_data.terms_of_service_url:
-        violations.append("Missing terms of service URL")
-        recommendations.append("Add terms of service URL for legal review")
+        violations.append("Falta URL de términos de servicio")
+        recommendations.append("Agregar URL de términos de servicio para revisión legal")
     else:
         compliance_score += 0.2
 
     # 4. Check legal contact
     if not source_data.legal_contact_email:
-        violations.append("Missing legal contact email")
-        recommendations.append("Add legal contact email for compliance communication")
+        violations.append("Falta email de contacto legal")
+        recommendations.append("Agregar email de contacto legal para comunicación de cumplimiento")
     else:
         compliance_score += 0.2
 
     # 5. Check fair use documentation
     if not source_data.fair_use_basis:
-        violations.append("Missing fair use basis documentation")
-        recommendations.append("Document fair use basis for academic research")
+        violations.append("Falta documentación de base de uso justo")
+        recommendations.append("Documentar base de uso justo para investigación académica")
     else:
         compliance_score += 0.2
 
     # 6. Check crawl delay (integrates with existing rate limiting)
     if source_data.crawl_delay_seconds < 2:
-        violations.append("Crawl delay too short (minimum 2 seconds)")
-        recommendations.append("Increase crawl delay to at least 2 seconds")
+        violations.append("Retraso de crawl muy corto (mínimo 2 segundos)")
+        recommendations.append("Aumentar retraso de crawl a al menos 2 segundos")
     else:
         compliance_score += 0.0  # No additional score, already counted
 
@@ -244,7 +244,7 @@ async def log_compliance_action(
             new_values=new_values,
             legal_basis="academic_research_fair_use",
             performed_by=performed_by,
-            performed_at=datetime.now(timezone.utc),
+            performed_at=datetime.now(timezone.utc).replace(tzinfo=None),
             compliance_score_before=compliance_score_before,
             compliance_score_after=compliance_score_after,
             risk_level=risk_level,
@@ -280,7 +280,7 @@ async def create_source(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={
-                "error": "Compliance validation failed",
+                "error": "La validación de cumplimiento falló",
                 "violations": compliance_result.violations,
                 "recommendations": compliance_result.recommendations,
                 "compliance_score": compliance_result.compliance_score,
@@ -312,13 +312,13 @@ async def create_source(
         crawl_delay_seconds=source.crawl_delay_seconds,
         fair_use_basis=source.fair_use_basis,
         compliance_score=compliance_result.compliance_score,
-        last_compliance_check=datetime.now(timezone.utc),
+        last_compliance_check=datetime.now(timezone.utc).replace(tzinfo=None),
         validation_status=(
             ValidationStatus.VALIDATED
             if compliance_result.is_compliant
             else ValidationStatus.PENDING
         ),
-        last_validation_at=datetime.now(timezone.utc),
+        last_validation_at=datetime.now(timezone.utc).replace(tzinfo=None),
     )
 
     session.add(new_source)
@@ -331,7 +331,7 @@ async def create_source(
         "news_sources",
         new_source.id,
         "create",
-        new_values=source.dict(),
+        new_values=source.model_dump(mode='json'),
         performed_by="admin",
         compliance_score_after=compliance_result.compliance_score,
         risk_level=compliance_result.risk_level,
@@ -407,7 +407,7 @@ async def update_source(
         update_data["terms_of_service_url"] = str(update_data["terms_of_service_url"])
 
     # Add updated timestamp
-    update_data["updated_at"] = datetime.now(timezone.utc)
+    update_data["updated_at"] = datetime.now(timezone.utc).replace(tzinfo=None)
 
     # Perform update
     await session.execute(
