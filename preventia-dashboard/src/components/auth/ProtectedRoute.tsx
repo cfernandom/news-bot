@@ -28,7 +28,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <LoginForm />;
   }
 
-  if (requireAdmin && user?.role !== 'admin') {
+  if (requireAdmin && !user?.roles?.includes('system_admin')) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

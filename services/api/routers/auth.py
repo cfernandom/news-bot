@@ -33,7 +33,7 @@ from services.api.auth.models import (
     UserUpdateRequest,
 )
 from services.api.auth.password_utils import hash_password, verify_password
-from services.api.auth.role_manager import get_user_permissions, role_manager
+from services.api.auth.role_manager import RoleManager, get_user_permissions
 from services.data.database.connection import db_manager
 from services.data.database.models import User, UserRole, UserRoleAssignment
 
@@ -80,8 +80,13 @@ async def login(login_data: LoginRequest):
             )
 
         # Get user roles and permissions
-        roles = await role_manager.get_user_roles(user.id)
-        permissions = await role_manager.get_user_permissions(user.id)
+        # Create a local role manager instance to avoid global variable issues
+        from services.api.auth.role_manager import RoleManager
+
+        local_role_manager = RoleManager(db_manager)
+
+        roles = await local_role_manager.get_user_roles(user.id)
+        permissions = await local_role_manager.get_user_permissions(user.id)
 
         # Create JWT token
         token_expiry = (
@@ -100,7 +105,7 @@ async def login(login_data: LoginRequest):
         )
 
         # Update last login
-        user.last_login = datetime.now(timezone.utc)
+        user.last_login = datetime.now(timezone.utc).replace(tzinfo=None)
         user.failed_login_attempts = 0  # Reset failed attempts
         await session.commit()
 

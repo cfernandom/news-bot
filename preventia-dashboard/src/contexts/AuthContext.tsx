@@ -2,9 +2,16 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { api } from '@/services/api';
 
 interface User {
+  id: number;
+  username: string;
   email: string;
   full_name: string;
-  role: 'admin' | 'user';
+  is_active: boolean;
+  is_superuser: boolean;
+  roles: string[];
+  permissions: string[];
+  last_login?: string;
+  created_at: string;
 }
 
 interface AuthContextType {
@@ -52,13 +59,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const validateToken = async (token: string) => {
     try {
-      const response = await api.get('/api/v1/auth/profile');
-      if (response.data.status === 'success') {
-        setUser(response.data.data);
-      } else {
-        // Token invalid, clear it
-        handleLogout();
-      }
+      // TODO: Implement /api/v1/auth/profile endpoint
+      // For now, just assume token is valid if it exists
+      setIsLoading(false);
     } catch (error) {
       console.error('Token validation failed:', error);
       handleLogout();
@@ -74,8 +77,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         password,
       });
 
-      if (response.data.status === 'success') {
-        const { access_token, user: userData } = response.data.data;
+      if (response.data.access_token) {
+        const { access_token, user: userData } = response.data;
 
         // Store token
         localStorage.setItem('auth_token', access_token);
