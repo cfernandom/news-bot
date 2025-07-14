@@ -67,19 +67,30 @@ CREATE TABLE IF NOT EXISTS compliance_audit_log (
     table_name VARCHAR(100) NOT NULL,
     record_id INTEGER,
     action VARCHAR(50) NOT NULL,
+    status VARCHAR(50) NOT NULL DEFAULT 'pending',
     old_values JSONB,
     new_values JSONB,
-    legal_basis TEXT,
+    legal_basis VARCHAR(255) DEFAULT 'academic_research_fair_use',
     compliance_notes TEXT,
     risk_assessment VARCHAR(20),
-    performed_by VARCHAR(100) NOT NULL,
+    performed_by VARCHAR(255) NOT NULL,
     performed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    -- Compliance-specific fields
+    compliance_score_before NUMERIC(3,2),
+    compliance_score_after NUMERIC(3,2),
+    risk_level VARCHAR(20),
+    violations_count INTEGER DEFAULT 0,
+
+    -- Timestamp fields
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     ip_address INET,
     user_agent TEXT,
     session_id VARCHAR(255),
 
     -- Indexes for performance
     CONSTRAINT valid_action CHECK (action IN ('create', 'update', 'delete', 'validate', 'review', 'suspend', 'activate')),
+    CONSTRAINT valid_status CHECK (status IN ('pending', 'passed', 'failed') OR status IS NULL),
     CONSTRAINT valid_risk_assessment CHECK (risk_assessment IN ('low', 'medium', 'high', 'critical') OR risk_assessment IS NULL)
 );
 
