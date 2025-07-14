@@ -3,9 +3,9 @@
 
 ## RESUMEN EJECUTIVO
 
-**Estado General:** 75% completado hacia MVP funcional  
-**Tiempo estimado para MVP:** 15-18 días laborales (3 semanas)  
-**Componentes core:** Backend sólido, Frontend con issues menores  
+**Estado General:** 75% completado hacia MVP funcional
+**Tiempo estimado para MVP:** 15-18 días laborales (3 semanas)
+**Componentes core:** Backend sólido, Frontend con issues menores
 **Próxima fase crítica:** Resolver TypeScript errors y completar integración
 
 ---
@@ -47,7 +47,7 @@
 
 #### Frontend (React + TypeScript)
 - **Estado:** 60% funcional
-- **Issues críticos:** 
+- **Issues críticos:**
   - TypeScript errors en `UserMenu.tsx` (role vs roles inconsistency)
   - Build failures debido a type errors
   - Integración auth incompleta
@@ -81,8 +81,8 @@
 
 ### Flujo de Datos Real
 ```
-Admin → Validación Compliance → Generación Scraper → 
-Deployment → Scraping (manual/programado) → Artículos en DB → 
+Admin → Validación Compliance → Generación Scraper →
+Deployment → Scraping (manual/programado) → Artículos en DB →
 NLP (batch/manual) → Analytics Dashboard
 ```
 
@@ -93,41 +93,41 @@ NLP (batch/manual) → Analytics Dashboard
 - **Infraestructura:** Docker + Docker Compose
 - **Testing:** pytest + Vitest + Puppeteer
 
-### Interfaces Actuales
-- **Legacy Interface:** `http://localhost:5173/` (rosa-azul, español)
-- **Modern Dashboard:** `http://localhost:5173/dashboard` (problemas de build)
-- **Admin Panel:** `http://localhost:5173/admin` (backend listo, frontend incompleto)
+### Interfaces Actuales (Por Prioridad)
+- **🔥 PRIORIDAD 1 - Legacy Interface:** `http://localhost:5173/` (producción, rosa-azul, español)
+- **🔥 PRIORIDAD 2 - Admin Panel:** `http://localhost:5173/admin` (administración fuentes, auth completo)
+- **🔄 PRIORIDAD BAJA - Modern Dashboard:** `http://localhost:5173/dashboard` (errores, mejora futura)
 
 ---
 
 ## RUTA CRÍTICA PARA MVP
 
-### FASE 1: Fixes Críticos (2-3 días)
+### ✅ FASE 1: Fixes Críticos (COMPLETADA)
 **Objetivo:** Frontend funcionando sin errores
 
-**Tareas inmediatas:**
-1. Resolver TypeScript errors en `UserMenu.tsx`
-2. Fix role vs roles inconsistency en autenticación
-3. Validar build de React sin errores
-4. Testing auth flow completo
+**Tareas completadas:**
+1. ✅ Resolver TypeScript errors en `UserMenu.tsx`
+2. ✅ Fix role vs roles inconsistency en autenticación
+3. ✅ Validar build de React sin errores
+4. ✅ Testing auth flow completo
 
-### FASE 2: Dashboard Funcional (3-4 días)
-**Objetivo:** Analytics visibles y funcionales
+### 🔥 FASE 2: Interfaces Prioritarias (3-4 días)
+**Objetivo:** Legacy dashboard y admin panel completamente funcionales
 
 **Tareas clave:**
-1. Conectar analytics API con frontend
-2. Implementar charts básicos
-3. Completar admin panel frontend
-4. Testing dashboard workflow
+1. Validar y completar Legacy Interface (`/`) - PRIORIDAD 1
+2. Completar admin panel frontend (`/admin`) - PRIORIDAD 2
+3. Conectar analytics API con legacy interface
+4. Testing workflow completo legacy + admin
 
 ### FASE 3: Funcionalidades MVP (4-5 días)
 **Objetivo:** Feature complete
 
 **Tareas finales:**
-1. Integrar exportación en UI
-2. E2E testing completo
-3. Performance optimization
-4. Mobile responsiveness básico
+1. Integrar exportación en Legacy UI
+2. E2E testing completo (legacy + admin)
+3. Performance optimization interfaces prioritarias
+4. Mobile responsiveness legacy interface
 
 ### FASE 4: Documentación (2-3 días)
 **Objetivo:** MVP documentado y listo
@@ -145,19 +145,21 @@ NLP (batch/manual) → Analytics Dashboard
 ### Core Value Proposition
 *"Sistema de análisis de noticias de cáncer de seno que permite administrar fuentes, generar scrapers automáticamente y visualizar analytics con cumplimiento ético/legal riguroso"*
 
-### Funcionalidades MVP Mínimas
-1. **Authentication:** Login/logout funcional
-2. **Dashboard:** Visualización de analytics de 121+ artículos
-3. **Admin Panel:** Gestión de fuentes con compliance validation
-4. **Export:** Descarga de datos en CSV/JSON
+### Funcionalidades MVP Mínimas (Interfaces Prioritarias)
+1. **Authentication:** Login/logout funcional ✅
+2. **Legacy Dashboard (`/`):** Visualización de analytics de 121+ artículos
+3. **Admin Panel (`/admin`):** Gestión de fuentes con compliance validation
+4. **Export:** Descarga de datos en Legacy interface
 5. **Documentation:** Manual básico de usuario
+6. **Modern Dashboard (`/dashboard`):** POSTPONED - baja prioridad
 
-### Criterios de Éxito
-- [ ] Usuario puede: Login → Dashboard → Ver analytics
-- [ ] Admin puede: Agregar fuente → Validación compliance → Scraper generado
-- [ ] Sistema procesa: Artículos → NLP → Analytics → Export
-- [ ] Performance: Load time < 3 segundos
-- [ ] Quality: Build sin errores, tests E2E passing
+### Criterios de Éxito (Interfaces Prioritarias)
+- [x] ✅ Build sin errores TypeScript, auth funcional
+- [ ] Usuario puede: Login → Legacy Dashboard (`/`) → Ver analytics
+- [ ] Admin puede: Login → Admin Panel (`/admin`) → Gestión fuentes
+- [ ] Sistema procesa: Artículos → NLP → Analytics → Export (Legacy)
+- [ ] Performance: Load time < 3 segundos (Legacy + Admin)
+- [ ] Quality: E2E testing Legacy + Admin interfaces
 
 ---
 

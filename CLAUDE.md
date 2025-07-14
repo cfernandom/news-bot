@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
 # Testing
 pytest                                    # Run all tests
-pytest -m unit                          # Unit tests only  
+pytest -m unit                          # Unit tests only
 pytest -m integration                   # Integration tests only
 pytest --cov=services --cov-report=html # Coverage report (85% required)
 
@@ -62,10 +62,10 @@ npm run validate                        # Final validation
 npm run lint                            # ESLint
 ```
 
-**Dashboard Access:**
-- **Legacy Interface:** `http://localhost:5173/` (currently default)
-- **Modern Dashboard:** `http://localhost:5173/dashboard` 
-- **Admin Panel:** `http://localhost:5173/admin`
+**Dashboard Access (Priority Order):**
+- **🔥 HIGH PRIORITY - Legacy Interface:** `http://localhost:5173/` (main user interface, pink-blue theme)
+- **🔥 HIGH PRIORITY - Admin Panel:** `http://localhost:5173/admin` (source administration, compliance)
+- **🔄 LOW PRIORITY - Modern Dashboard:** `http://localhost:5173/dashboard` (has errors, future enhancement)
 
 ### Docker Development
 
@@ -117,23 +117,24 @@ news_bot_3/
 
 - **Python version:** 3.13+ required
 - **Code style:** Black formatting (88 char line length), isort for imports
-- **Dashboard Architecture:** Dual implementation (Legacy + Modern React)
-  - **Legacy:** Original pink-blue prototype at `/` (Spanish interface, static HTML-based)
-  - **Modern:** Professional dashboard at `/dashboard` (medical design, dual-mode)
-  - **Admin:** Management panel at `/admin` (authentication required)
+- **Dashboard Architecture:** Multi-interface implementation
+  - **🔥 PRIORITY 1 - Legacy:** Production-ready interface at `/` (pink-blue theme, Spanish, full functionality)
+  - **🔥 PRIORITY 2 - Admin:** Source administration at `/admin` (compliance management, auth required)
+  - **🔄 FUTURE - Modern:** Professional dashboard at `/dashboard` (medical design, has errors, enhancement)
 - **API Compatibility:** Both modern (`/api/`) and legacy (`/api/v1/`) endpoints
 - **Medical focus:** Specialized for breast cancer news analysis
 - **CLI-first:** Comprehensive CLI tools for system management in `./preventia-cli`
 - **Security:** Bandit scanning, pre-commit hooks, secrets detection
 
-## Current Project Status (2025-07-13)
+## Current Project Status (2025-07-14)
 
-- **MVP Status:** 75% complete, ~15-18 days to functional MVP
-- **Critical Issue:** TypeScript errors in frontend preventing build
+- **MVP Status:** 80% complete, ~12-15 days to functional MVP
+- **✅ RESOLVED:** TypeScript errors fixed, build process working
 - **Data Status:** 121 articles processed, 8 scrapers operational
 - **Backend:** 95% functional (FastAPI + PostgreSQL + Redis)
-- **Frontend:** 60% functional (React build issues blocking progress)
-- **Next Priority:** Fix TypeScript errors in `UserMenu.tsx` and complete auth integration
+- **Frontend:** 75% functional (legacy + admin interfaces priority)
+- **Current Focus:** Legacy interface `/` and admin panel `/admin` functionality
+- **Next Priority:** Complete admin panel integration and ensure legacy dashboard works perfectly
 
 ## Recent Key Findings
 
