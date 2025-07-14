@@ -2,739 +2,150 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Overview
+## Project Overview
 
-PreventIA News Analytics is an intelligent media monitoring system specialized in automated analysis of breast cancer news. It transforms unstructured data from multiple sources into actionable insights through natural language processing and interactive visualizations. The system has evolved from a newsletter bot to a comprehensive analytics platform.
+PreventIA News Analytics is an intelligent media monitoring system specialized in automated analysis of breast cancer news. It combines web scraping, NLP sentiment analysis, and data visualization with a React dashboard and comprehensive CLI tools.
 
-## Key Commands
+**Key Architecture:**
+- Microservices backend with FastAPI
+- React + TypeScript frontend with Vite
+- PostgreSQL database with Redis caching
+- Docker containerization for development and production
 
-### Database Operations
-- **Start PostgreSQL**: `docker compose up postgres -d`
-- **Test database connection**: `python tests/legacy_test_database.py` (requires virtual env)
-- **Database shell**: `docker compose exec postgres psql -U preventia -d preventia_news`
-- **View logs**: `docker compose logs postgres`
+## Essential Development Commands
 
-### Development & Execution
-- **Setup virtual environment**: `python -m venv venv && source venv/bin/activate`
-- **Install dependencies**: `pip install -r requirements.txt`
-- **Run legacy pipeline**: `python main.py` (transitioning to analytics)
-- **Docker full stack**: `docker compose up -d --build`
-- **View all services**: `docker compose ps`
+### Backend (Python 3.13)
 
-### Testing Framework (Professional Structure)
-- **Setup testing environment**: `source venv/bin/activate && pip install -r tests/requirements-test.txt`
-- **Run unit tests**: `cd tests && pytest -m unit`
-- **Run integration tests**: `cd tests && pytest -m integration`
-- **Run end-to-end tests**: `cd tests && pytest -m e2e`
-- **Run all tests**: `cd tests && pytest`
-- **Coverage report**: `cd tests && pytest --cov=../services --cov-report=html`
-- **Database tests**: `cd tests && pytest -m database`
-- **Legacy database test**: `source venv/bin/activate && python tests/legacy_test_database.py`
-- **Check PostgreSQL health**: `docker compose exec postgres pg_isready -U preventia`
-
-### Integration Test Suite (COMPLETADO)
-- **Run complete integration test suite**: `python tests/run_integration_tests.py`
-- **Run specific test suite**: `python tests/run_integration_tests.py system`
-- **Run with verbose output**: `python tests/run_integration_tests.py --verbose --report test-report.md`
-- **Available test suites**: system, cli, auth, pipeline, validation, automation, all
-- **Test coverage**: 257+ tests covering complete system workflows
-- **Performance benchmarks**: API response times, concurrent operations, data processing
-
-### Automation Testing Suite (COMPLETADO)
-- **Run automation unit tests**: `cd tests && pytest unit/test_automation/ -v`
-- **Run automation API tests**: `cd tests && pytest integration/test_automation/test_automation_api.py -v`
-- **Run automation workflows**: `cd tests && pytest integration/test_automation/test_automation_workflows.py -v`
-- **Run complete automation suite**: `cd tests && pytest unit/test_automation/ integration/test_automation/ -v`
-- **Test coverage**: 57 automation tests (27 unit + 22 integration + 8 workflow)
-- **Coverage metrics**: 100% automation models, 100% API endpoints, 100% workflows
-- **Performance**: Complete suite execution < 45 seconds
-
-### Standards Automation Commands
-- **Setup pre-commit hooks**: `pip install pre-commit && pre-commit install && pre-commit install --hook-type commit-msg`
-- **Run all hooks manually**: `pre-commit run --all-files`
-- **Update hook versions**: `pre-commit autoupdate`
-- **Skip hooks (emergency)**: `git commit --no-verify -m "emergency fix"`
-- **Run specific hook**: `pre-commit run black` or `pre-commit run flake8`
-- **Check automation status**: `pre-commit --version && git config --list | grep pre-commit`
-
-### NLP Analytics Commands
-- **Run sentiment analysis**: `python scripts/batch_sentiment_analysis.py`
-- **Run topic classification**: `python scripts/batch_topic_classification.py`
-- **Test sentiment analyzer**: `source venv/bin/activate && python tests/legacy_test_sentiment_analysis.py`
-- **Analyze individual article**: Use `services.nlp.src.sentiment.get_sentiment_analyzer()` and `services.nlp.src.topic_classifier.get_topic_classifier()`
-
-### FastAPI Commands (FASE 3 COMPLETADA)
-- **Start FastAPI server**: `python -m services.api.main`
-- **Docker FastAPI service**: `docker compose up api -d` (✅ Production ready)
-- **View API docs**: Open `http://localhost:8000/docs` (OpenAPI auto-generated)
-- **Health check**: `curl http://localhost:8000/health` (Advanced health monitoring)
-- **Test API endpoints**: `python tests/integration/test_api/test_api.py`
-- **Run all API tests**: `pytest tests/unit/test_api/ tests/integration/test_api/`
-- **API performance check**: All endpoints < 5s response time (106 artículos dataset)
-
-### React Dashboard Commands (FASE 4 COMPLETADA)
-- **Start development server**: `cd preventia-dashboard && npm run dev` (✅ Running on port 5173)
-- **Production build**: `cd preventia-dashboard && npm run build` (✅ Optimized 1.2MB bundle)
-- **Run legacy component tests**: `cd preventia-dashboard && npx vitest run src/components/legacy/__tests__/`
-- **Docker React service**: `docker compose up frontend -d` (✅ Running on port 3000)
-- **Production deployment**: `cd preventia-dashboard && npm run preview`
-- **Testing coverage**: `cd preventia-dashboard && npm run test:coverage`
-- **Component test status**: LegacySentimentChart 100% passing, others need language standardization
-
-### CLI Tools Commands (COMPLETADO)
-- **Setup CLI tools**: `python setup_cli.py`
-- **Check system status**: `./preventia-cli status`
-- **List news sources**: `./preventia-cli source list`
-- **Create news source**: `./preventia-cli source create "Source Name" "https://example.com"`
-- **Run scrapers**: `./preventia-cli scraper run 1`
-- **User management**: `./preventia-cli user create john john@example.com "John Doe"`
-- **Compliance monitoring**: `./preventia-cli compliance dashboard`
-- **Backup system**: `./preventia-cli backup --backup-file backup.json`
-- **API server**: `./preventia-cli serve --port 8000`
-- **Get help**: `./preventia-cli --help`
-
-### Authentication & Authorization (COMPLETADO)
-- **JWT token management**: Built-in JWT handler with RBAC
-- **Available roles**: system_admin, source_admin, source_editor, source_viewer, compliance_officer
-- **Permission system**: Resource-based permissions (sources:read, sources:update, etc.)
-- **Security features**: Token expiration, tampering protection, secure defaults
-- **Integration**: Full FastAPI dependency injection for protected endpoints
-
-### Source Administration Commands (PLANIFICADO)
-- **News Sources Admin**: Access via React dashboard admin panel (to be implemented)
-- **Compliance validation**: `python scripts/validate_source_compliance.py <domain>` (planned)
-- **Automated scraper generation**: `python scripts/generate_scraper.py <domain>` (planned)
-- **Source discovery**: `python scripts/discover_sources.py --keywords "breast cancer"` (planned)
-- **Compliance monitoring**: `python scripts/run_compliance_monitoring.py` (planned)
-
-## Architecture Overview
-
-The system follows a hybrid architecture combining data analytics with the existing modular microservices:
-
-### New Analytics Architecture (Primary)
-1. **Data Layer** (`services/data/`) - PostgreSQL with hybrid ORM + raw SQL approach
-   - Database models with SQLAlchemy + Pydantic
-   - Optimized schema for analytics queries
-   - Connection pooling and health checks
-2. **Collection Layer** (evolved `services/scraper/`) - Smart data extraction
-3. **Processing Layer** (evolved `services/nlp/`) - NLP analysis + VADER sentiment analysis + spaCy preprocessing
-4. **Analytics Layer** (new) - Data aggregation and trend analysis
-5. **API Layer** (planned) - FastAPI REST endpoints for dashboard
-6. **Frontend Layer** (planned) - React dashboard with visualizations
-
-### Legacy Components (Transitioning)
-- **Orchestrator** (`services/orchestrator/`) - Evolving to analytics pipeline coordinator
-- **Copywriter** (`services/copywriter/`) - Repurposed for summary generation
-- **Decision Engine** (`services/decision_engine/`) - Evolving to analytics aggregation
-- **Publisher** (`services/publisher/`) - Deprecated (no longer publishes to WordPress)
-
-### Key Models
-- **NewsSource** (`services/data/database/models.py`) - Dynamic news source management
-- **Article** (`services/data/database/models.py`) - Enhanced with sentiment, topic, geographic data
-- **ArticleKeyword** - Keyword extraction with relevance scores
-- **WeeklyAnalytics** - Pre-calculated metrics for dashboard performance
-
-### Current Data Flow
-```
-External Sources → Scrapers → Full-text Extraction →
-PostgreSQL Storage → NLP Analysis (Keywords + VADER Sentiment) →
-Sentiment/Topic Classification → Analytics Aggregation →
-FastAPI REST API → React Dashboard (✅ IMPLEMENTED)
-```
-
-## NLP Analytics Architecture
-
-### Sentiment Analysis System
-- **Engine**: VADER (Valence Aware Dictionary and sEntiment Reasoner)
-- **Preprocessing**: spaCy 3.8.7 with en_core_web_sm model
-- **Specialization**: Medical content with conservative thresholds
-- **Performance**: ~2 articles/second batch processing
-- **Coverage**: 56/106 articles analyzed (52.8%)
-
-### Medical Content Adjustments
-```python
-# Conservative thresholds for medical news
-if compound >= 0.3:          # Strong positive (vs 0.05 standard)
-    return "positive"
-elif compound <= -0.3:       # Strong negative (vs -0.05 standard)
-    return "negative"
-else:
-    return "neutral"         # Medical content tends to be neutral
-```
-
-### Sentiment Analysis Usage
-```python
-from services.nlp.src.sentiment import get_sentiment_analyzer
-
-# Analyze single article
-analyzer = get_sentiment_analyzer()
-result = analyzer.analyze_sentiment(
-    text="Medical breakthrough shows promising results",
-    title="Cancer Treatment Success"
-)
-# Returns: {'sentiment_label': 'positive', 'confidence': 0.7, 'scores': {...}}
-
-# Batch processing (production script)
-python scripts/batch_sentiment_analysis.py
-```
-
-### Current NLP Capabilities
-1. **Keyword Extraction** - Medical term identification with relevance scoring
-2. **Sentiment Analysis** - VADER-based with medical content adjustments (106/106 articles processed)
-3. **Topic Classification** - Rule-based categorization into 10 medical topics (106/106 articles classified)
-4. **Content Relevance** - Multi-keyword matching for breast cancer content
-5. **Batch Processing** - Optimized for large article collections
-6. **Database Integration** - Sentiment + topic data stored in PostgreSQL
-
-### NLP Pipeline Integration
-```python
-# Enhanced analyze_article function
-def analyze_article(article: Article) -> NLPResult:
-    # Keyword matching (existing)
-    matched_keywords = extract_keywords(article)
-
-    # Sentiment analysis (new)
-    sentiment_data = get_sentiment_analyzer().analyze_sentiment(
-        text=article.summary,
-        title=article.title
-    )
-
-    return NLPResult(
-        article=article,
-        is_relevant=len(matched_keywords) >= 2,
-        matched_keywords=matched_keywords,
-        score=len(matched_keywords),
-        sentiment_data=sentiment_data  # New field
-    )
-```
-
-## Database Architecture
-
-### PostgreSQL Setup
-- **Port**: 5433 (external), 5432 (internal container)
-- **Database**: `preventia_news`
-- **User**: `preventia`
-- **Connection**: Hybrid SQLAlchemy ORM + asyncpg for raw SQL
-
-### Key Tables
-- `news_sources` - Dynamic source management with validation
-- `articles` - Articles with NLP analysis results
-- `article_keywords` - Extracted keywords with relevance
-- `weekly_analytics` - Pre-calculated dashboard metrics
-
-### Connection Management
-```python
-# ORM for CRUD operations
-async with db_manager.get_session() as session:
-    articles = await session.execute(select(Article))
-
-# Raw SQL for complex analytics
-results = await db_manager.execute_sql(
-    "SELECT COUNT(*) FROM articles WHERE sentiment_label = %s",
-    "positive"
-)
-```
-
-## Development Guidelines
-
-### Environment Configuration
-- **Required `.env` variables**:
-  - `DATABASE_URL` - PostgreSQL connection string
-  - `OPENAI_API_KEY` - For LLM analysis
-  - `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`
-- **Optional**: Redis configuration for caching (future)
-
-### Database Development
-- **Migrations**: Located in `services/data/database/migrations/`
-- **Models**: Hybrid approach - use ORM for CRUD, raw SQL for analytics
-- **Testing**: Always run `cd tests && pytest -m database` after database changes
-
-### Documentation Standards & Quality Assurance
-- **Automated verification**: `python scripts/verify_docs.py` - Auto-updates status indicators in 2-3 minutes
-- **Quality checking**: `python scripts/doc_quality_check.py --severity warning` - Detects 8 quality issue types
-- **Language standards**: English for technical docs, Spanish for team decisions per `docs/development/standards/language-usage-standard.md`
-- **Metadata requirements**: Important documents must include metadata blocks with version, maintainer, status
-- **Status tracking**: Documentation completeness tracked automatically in `docs/README.md`
-
-### Adding New Features
-- **New endpoints**: Extend FastAPI in `services/api/routers/` (20+ endpoints implemented)
-- **Analytics**: Extend `services/data/database/models.py` with new analytics models
-- **NLP features**: Enhance `services/nlp/` for new analysis types
-- **Frontend components**: Add to `preventia-dashboard/src/components/legacy/` following existing patterns
-
-### Site-Specific Extractors
-- **Basic extractors**: `services/scraper/src/extractors/`
-- **Full-text extractors**: `services/scraper/fulltext/src/extractors/`
-- **Follow existing patterns** when adding new sources
-- **Test with database storage** instead of file output
-
-### Code Quality Standards
-- **Automated formatting**: Black formatter with Python 3.12 compatibility (`--target-version=py312`)
-- **Import organization**: isort with Black profile integration (`--profile black`)
-- **Code linting**: flake8 with medical codebase optimizations and extended ignore patterns
-- **Security scanning**: gitleaks for secret detection with zero false positives
-- **Documentation quality**: Automated link checking and quality assurance
-- **Configuration**: Centralized in `pyproject.toml` for tool consistency
-- **Enforcement**: Pre-commit hooks with 85% automation coverage (15:1 ROI improvement)
-
-### Git Workflow Standards
-- **Conventional Commits**: Use format `type(scope): description` (feat, fix, docs, test, chore)
-- **Atomic Commits**: One logical change per commit, complete and testable
-- **Branch Strategy**: `main` (production) ← `dev` (integration) ← `feature/name` (development)
-- **Documentation**: Follow language usage standard (English for technical, Spanish for decisions)
-- **Automated validation**: Pre-commit hooks enforce standards on every commit
-- **Reference**: See `docs/development/standards/git-workflow.md` for complete guidelines
-
-### Example Git Commands
 ```bash
-# Create feature branch
-git checkout dev
-git checkout -b feature/analytics-endpoints
-
-# Atomic commits with conventional format
-git add services/api/
-git commit -m "feat(api): add FastAPI endpoints for sentiment analytics"
-
-git add tests/integration/
-git commit -m "test(api): add integration tests for analytics endpoints"
-
-# Merge back to dev
-git checkout dev
-git merge --no-ff feature/analytics-endpoints
-```
-
-## Technology Stack
-
-### Backend
-- **Python 3.13+** - Main language
-- **PostgreSQL 16+** - Primary database with JSONB support
-- **SQLAlchemy 2.0** - ORM with async support
-- **asyncpg 0.30** - High-performance PostgreSQL driver
-- **FastAPI 0.115** - Modern async web framework (implemented)
-- **spaCy 3.8** - NLP processing
-- **VADER Sentiment** - Sentiment analysis
-
-### Infrastructure
-- **Docker & Docker Compose** - Containerization
-- **Redis** - Caching and real-time features (configured)
-
-### Analytics & ML
-- **Pandas** - Data processing
-- **NumPy** - Numerical computations
-- **OpenAI API** - LLM for summaries and insights
-
-## Important Files
-
-### Core Application
-- `main.py` - Legacy entry point (transitioning)
-- `requirements.txt` - All dependencies with verified versions
-
-### Scripts (Production)
-- `scripts/batch_sentiment_analysis.py` - Batch sentiment analysis for existing articles
-- `scripts/batch_topic_classification.py` - Batch topic classification for existing articles
-- `scripts/run_migrated_scrapers.py` - Execute individual or all scrapers
-
-### Database Layer
-- `services/data/database/connection.py` - Hybrid connection manager
-- `services/data/database/models.py` - SQLAlchemy + Pydantic models
-- `services/data/database/migrations/001_initial_schema.sql` - Database schema
-
-### NLP Analytics Layer
-- `services/nlp/src/sentiment.py` - VADER sentiment analyzer with medical adjustments
-- `services/nlp/src/topic_classifier.py` - Medical topic classifier with 10 categories
-- `services/nlp/src/analyzer.py` - Enhanced NLP pipeline with sentiment + topic integration
-- `services/nlp/src/models.py` - NLP result models with sentiment + topic data
-
-### Testing Framework (Professional Structure)
-- `tests/conftest.py` - pytest configuration with async fixtures
-- `tests/pytest.ini` - Test markers and execution settings
-- `tests/requirements-test.txt` - Testing dependencies (verified versions)
-- `tests/unit/test_nlp/test_sentiment.py` - 14 comprehensive sentiment tests
-- `tests/integration/test_nlp_pipeline.py` - NLP pipeline integration tests
-- `tests/legacy_test_database.py` - Legacy database testing (migrated)
-- `tests/legacy_test_sentiment_analysis.py` - Legacy sentiment testing (migrated)
-
-### Automation Testing Framework (COMPLETADO)
-- `tests/unit/test_automation/test_automation_models.py` - 27 comprehensive automation model tests
-- `tests/integration/test_automation/test_automation_api.py` - 22 automation API endpoint tests
-- `tests/integration/test_automation/test_automation_workflows.py` - 8 end-to-end workflow tests
-- **Coverage**: 100% automation models, API endpoints, and workflow scenarios
-- **Test quality**: Mock-based unit tests + real integration testing + workflow validation
-- **Performance**: Sub-second execution for most test suites
-
-### Configuration
-- `.env.template` - Configuration template with all variables
-- `docker-compose.yml` - PostgreSQL + Redis + analytics service
-- `DEPLOYMENT.md` - Deployment instructions
-
-### Documentation (Professional Structure)
-- `docs/README.md` - Documentation hub (updated for Phase 2)
-- `docs/api/services/nlp-api.md` - ✅ NLP API documentation with sentiment analysis
-- `docs/architecture/system-overview.md` - Complete system architecture
-- `docs/development/setup/local-development.md` - Local setup guide
-- `docs/development/standards/` - ✅ Language standards, testing strategy, git workflow standards
-- `docs/decisions/` - ✅ 5 Architecture Decision Records (ADR-001 through ADR-005)
-- `docs/implementation/` - ✅ Phase 1 & 2 results documentation
-
-### Documentation Tools & Automation
-- `scripts/verify_docs.py` - Automated documentation verification (95% time savings: 30-45min → 2-3min)
-- `scripts/doc_quality_check.py` - Quality assurance automation detecting 8 issue types
-- **Completion metrics**: 61.0% documentation completeness (25 existing/16 pending files)
-- **Automated status updates**: Status indicators (✅/Pendiente) auto-updated in docs/README.md
-
-### Prompts Strategy System (v1.0)
-- `docs/prompts/` - Self-contained prompts for efficient Claude Code sessions
-- **Optimized design** - 30-60 seconds vs theoretical complex modular approach
-- **Self-contained prompts** - no assembly required, copy-paste ready
-- **Quick commands** - 10-30 second one-liners for frequent scenarios
-- **4 prompt types:** development, academic, debugging, quick-commands
-- **Production-ready** system tested and optimized for daily use
-
-# 📊 Estado del Proyecto: PRODUCTION READY - System Fully Verified (2025-07-07)
-
-## ✅ FASE 1 COMPLETADA - Migración de Scrapers a PostgreSQL
-- **4 scrapers migrados** exitosamente: Breast Cancer Org, WebMD, CureToday, News Medical
-- **106 artículos** almacenados con 100% integridad y 0% duplicados
-- **Playwright integrado** para JavaScript rendering (React/Next.js sites)
-- **Framework de testing** estandarizado con validaciones automatizadas
-- **Documentación comprehensiva** (ADRs, guías de uso, resultados implementación)
-- **Git workflow profesional** establecido con conventional commits y commits atómicos
-
-### Scrapers Operativos (4/8)
-| Scraper | Status | Artículos | Performance | Tecnología |
-|---------|--------|-----------|------------|------------|
-| Breast Cancer Org | ✅ Operativo | 25 | ~2.5s | Playwright + PostgreSQL |
-| WebMD | ✅ Operativo | 31 | ~45s | Playwright + Date Parsing |
-| CureToday | ✅ Operativo | 30 | ~50s | Playwright + Duplicate Detection |
-| News Medical | ✅ Operativo | 20 | ~30s | Playwright + International Metadata |
-
-### Scrapers Pendientes (4/8 - Opcional para FASE 2)
-- Medical Xpress, Nature, Breast Cancer Now, Science Daily
-
-## ✅ FASE 2 COMPLETADA - NLP Analytics Implementation
-- **Sentiment analysis** implementado con VADER + spaCy especializado para contenido médico
-- **56 artículos procesados** con sentiment analysis (52.8% coverage, 0 errores)
-- **Testing framework profesional** establecido: unit/integration/e2e structure
-- **24 tests implementados** (14 unit + 6 integration + 4 database) con 100% passing
-- **Coverage 95%** en módulos NLP con HTML reporting
-- **Scripts de producción** organizados en `scripts/` directory
-- **Git workflow estandarizado** con conventional commits y commits atómicos
-
-### Distribución Sentiment Analysis
-| Label | Artículos | Porcentaje | Promedio Score |
-|-------|-----------|------------|----------------|
-| Negative | 40 | 71% | -0.700 |
-| Positive | 15 | 27% | 0.415 |
-| Neutral | 1 | 2% | 0.000 |
-
-## 🛡️ CUMPLIMIENTO LEGAL COMPLETADO (2025-06-30)
-- **Legal compliance framework** implementado con robots.txt + rate limiting + GDPR
-- **106 artículos aprobados** para uso académico bajo fair use doctrine
-- **Documentación legal** completa: privacy policy + medical disclaimers + contact info
-- **Auditoría legal** establecida con compliance_audit_log y legal_notices tables
-- **Risk assessment:** 🔴 ALTO RIESGO → 🟢 BAJO RIESGO - FULLY COMPLIANT
-
-### Marco Legal Implementado
-- **Robots.txt Compliance:** Verificación automática para todos los scrapers
-- **Rate Limiting:** 2 segundos entre requests, respeta crawl-delay directives
-- **Copyright Protection:** Fair use académico, solo metadatos almacenados
-- **GDPR Framework:** Privacy policy + user rights + data retention (1 año)
-- **Medical Disclaimers:** Avisos legales para contenido médico automatizado
-- **Universidad Contact:** Información institucional UCOMPENSAR integrada
-
-### Archivos Legales Creados
-- `legal/privacy-policy-template.md` - Política de privacidad personalizada UCOMPENSAR
-- `legal/medical-disclaimers.md` - Disclaimers médicos comprehensivos
-- `services/scraper/src/compliance/` - Framework de cumplimiento ético
-- `scripts/apply_legal_compliance.py` - Migración legal automatizada
-- `docs/implementation/legal-compliance-implementation.md` - Documentación completa
-
-## 🚀 SISTEMA DE PROMPTS IMPLEMENTADO (2025-06-30)
-- **Prompts Strategy v1.0** - Sistema optimizado para sesiones eficientes Claude Code
-- **Diseño eficiente** - 30-60 segundos vs enfoque modular complejo teórico
-- **Self-contained architecture** - No ensamblaje, copy-paste directo
-- **4 tipos especializados** - development, academic, debugging, quick-commands
-- **Quick commands** - One-liners de 10-30 segundos para casos frecuentes
-- **Production-ready** - Testado y optimizado para uso diario en desarrollo e investigación
-
-### Sistema de Prompts Implementado
-- `docs/prompts/README.md` - Guía rápida y reference completo
-- `docs/prompts/development.md` - Sessions desarrollo, APIs, features (152 líneas)
-- `docs/prompts/academic.md` - Productos académicos rigurosos (154 líneas)
-- `docs/prompts/debugging.md` - Bug fixes y issues urgentes (105 líneas)
-- `docs/prompts/quick-commands.md` - One-liners para scenarios frecuentes (151 líneas)
-
-## ✅ FASE 3 COMPLETADA - FastAPI Dashboard Analytics
-- **API REST completa** implementada: 20+ endpoints especializados
-- **Testing framework profesional** con 95% coverage (14+ tests)
-- **Performance optimizada** para 106 artículos con queries < 5s
-- **Docker integration** con `Dockerfile.api` y compose configuration
-- **OpenAPI documentation** auto-generada en `/docs`
-- **Modular architecture** con routers por dominio (articles, analytics, nlp)
-
-## ✅ FASE 4 COMPLETADA - Legacy Prototype Implementation
-- **8 elementos críticos implementados**: Charts corregidos, mapas con leyenda, exportación completa
-- **LegacySentimentChart**: Soporte dual type (language/sentiment) con pie charts ✅ 100% tests passing
-- **LegacyTopicsChart**: Language breakdown con colores por idioma (español/inglés)
-- **LegacyGeographicMap**: Leyenda intensidad cobertura (azul claro → medio → oscuro)
-- **LegacyExportHistory**: Historial completo con timestamps y acciones
-- **LegacyKPICard**: Key performance indicators para analytics
-- **LegacyFilterBar**: Filtros avanzados para componentes
-- **LegacyNewsTable**: Vista tabular de artículos con detalles
-- **LegacyTrendChart**: Tendencias temporales de métricas
-- **React 19 + TypeScript** con modern tooling stack completamente configurado
-- **Production build** optimizado (1.2MB bundle) ✅ Build successful
-
-### FastAPI Endpoints Implementados
-| Categoría | Endpoints | Funcionalidad | Status |
-|-----------|-----------|---------------|---------|
-| Health & System | 3 | Health checks, API info, docs | ✅ Operativo |
-| Articles Management | 4 | CRUD, search, stats | ✅ Operativo |
-| Analytics Dashboard | 6 | Metrics, trends, geographic | ✅ Operativo |
-| NLP Integration | 5 | Sentiment, topic, batch | ✅ Operativo |
-
-### Performance Metrics (Dataset: 106 artículos)
-- **Health Check**: ~0.5s
-- **Articles CRUD**: ~1.2s
-- **Dashboard Analytics**: ~3.8s
-- **Search Functionality**: ~2.1s
-- **All endpoints**: < 5s response time target achieved
-
-## 🎯 Estado Actual del Sistema (Actualizado 2025-07-08)
-**Status:** ✅ **ENTERPRISE READY** - Sistema completamente operativo
-**Branch actual:** `feature/legacy-prototype-rollback`
-**Environment:** ✅ Full stack verified + News Sources Admin operational
-**React Dashboard URL:** http://localhost:5173 (dev server running)
-**API Backend URL:** http://localhost:8000 (FastAPI healthy)
-**Admin Interface:** ✅ `/admin` route - News Sources Administration 100% operational
-**Database:** ✅ PostgreSQL healthy - 121 artículos + 9 sources configured
-**Production Status:** ✅ **Enterprise deployment ready** - All systems verified
-
-### ✅ Verificación Completa del Sistema + News Sources Admin (2025-07-08)
-- **Database:** PostgreSQL healthy - 121 articles + 9 sources configured, sentiment analysis 100% complete
-- **API Backend:** FastAPI operational - 20+ endpoints verified, sources API 100% working
-- **Frontend:** React dashboard + Admin interface - http://localhost:5173 full operational
-- **Admin Interface:** `/admin` route operational - News Sources Administration 100% functional
-- **Docker Services:** All containers healthy (preventia_api, preventia_postgres, preventia_frontend, preventia_redis) verified
-- **Testing:** Complete testing framework - 45 test files with comprehensive coverage
-- **Virtual Environment:** Python 3.13 setup complete, all dependencies installed
-- **Authentication:** JWT RBAC system with user_roles, users, user_role_assignments tables
-- **Scrapers:** 4 scrapers verified + News Sources management interface operational
-- **Compliance System:** Real-time compliance monitoring with 100% compliance rate achieved
-
-### Infraestructura Lista para Analytics
-- **PostgreSQL** optimizado con campos analytics-ready (sentiment_score, topic_category)
-- **Testing Framework** con estructura profesional unit/integration/e2e
-- **Documentación completa** en `docs/` con guías de uso y troubleshooting
-- **Scripts utilitarios** para manejo de scrapers individuales o batch
-
-### Comandos para Scrapers Migrados
-```bash
-# Ejecutar scraper individual
-python scripts/run_migrated_scrapers.py webmd.com
-
-# Testing completo
-python tests/scrapers/test_all_migrated_scrapers.py
-
-# Ver artículos almacenados
-docker compose exec postgres psql -U preventia -d preventia_news -c "SELECT COUNT(*) FROM articles;"
-```
-
-## Current Implementation Status (ACTUALIZADO 2025-07-07)
-
-### ✅ Completed - ALL HIGH-PRIORITY TASKS (FASE 1-5)
-- **PostgreSQL database** with optimized analytics schema (106 artículos)
-- **Hybrid ORM + raw SQL** data layer with performance < 5s
-- **Docker containerization** with health checks and production readiness
-- **4 scrapers migrados** con Playwright integration
-- **VADER sentiment analysis** with medical content specialization (100% coverage)
-- **FastAPI REST API** with 20+ endpoints and OpenAPI documentation
-- **React Legacy Dashboard** with 8 critical components implemented
-- **Professional testing framework** (unit/integration/e2e/performance) with 257+ tests
-- **Automation testing suite** with 57 comprehensive tests (100% coverage automation system)
-- **Complete CLI automation suite** for system management and operations
-- **JWT-based authentication** with RBAC and permission system
-- **Database migration scripts** with complete schema management
-- **Integration test suites** with comprehensive end-to-end validation
-- **Complete documentation** structure and usage guides
-- **Git workflow profesional** con conventional commits y branch strategy
-
-### 📋 Completed Implementations (2025-07-08)
-- **News Sources Administration**: ✅ **100% COMPLETADO** - Enterprise-ready admin interface fully operational
-- **Automated Scraper Generation**: ✅ **COMPLETADO** - Template-based system with comprehensive CMS support
-- **Compliance Dashboard**: ✅ **COMPLETADO** - Real-time legal status monitoring operational
-- **Source Discovery System**: ✅ **COMPLETADO** - Automated evaluation and quality scoring implemented
-- **Automation Testing Suite**: ✅ **COMPLETADO** - 57 comprehensive automation tests (100% coverage)
-- **Chart Export System**: ✅ **COMPLETADO** - PNG/SVG export functionality with matplotlib integration
-- **Technical Debt Resolution**: ✅ **COMPLETADO** - Pydantic V2 migration and datetime deprecation fixes
-
-### ✅ CRITICAL ISSUES RESOLUTION COMPLETADO (2025-07-08)
-- **✅ Test Infrastructure**: 45 test files with comprehensive coverage implemented
-- **✅ Issue Detection**: All critical issues identified and documented
-- **✅ Critical Fixes**: All critical issues resolved successfully
-- **✅ Production Ready**: Sistema listo para deployment con core functionality estable
-- **✅ Documentation**: Documentación comprehensiva de resolución generada
-
-### ✅ ALL CRITICAL ISSUES RESUELTOS (2025-07-08)
-1. **✅ Timezone Handling API** - Fixed: datetime.replace(tzinfo=None) en timeline endpoints
-2. **✅ Data Format Mismatch** - Fixed: LegacySentimentChart interface y mocks actualizados
-3. **✅ SQL Query Geographic** - Fixed: Resuelto automáticamente por timezone fix
-4. **✅ Input Validation** - Fixed: HTTPException con error handling descriptivo
-5. **✅ Chart Library Mismatch** - Fixed: Recharts standardization completed
-6. **✅ Language Inconsistency** - Fixed: Components and tests standardized
-7. **✅ Pydantic V2 Migration** - Fixed: All @validator decorators migrated
-8. **✅ Datetime Deprecation** - Fixed: All datetime.utcnow() instances updated
-9. **✅ Country Detection** - Fixed: Dynamic database queries implemented
-10. **✅ Template Engine** - Fixed: 7 CMS templates with comprehensive patterns
-
-### 📊 PRODUCTION READINESS ACHIEVED (2025-07-08)
-- **API Test Pass Rate**: 100% - All critical endpoints operational
-- **Core Component Tests**: All legacy components passing
-- **Critical Endpoints**: Timeline, Geographic, Analytics endpoints fully operational
-- **Error Handling**: Comprehensive validation with descriptive messages
-- **Testing Framework**: 45 test files with comprehensive coverage
-- **Automation Suite**: 57 automation tests with 100% coverage
-- **Status**: ✅ **ENTERPRISE PRODUCTION READY** - All systems verified and operational
-
-## 📈 Evolution Timeline
-
-**FASE 1 (COMPLETADA):** Newsletter Bot → PostgreSQL Migration
-**FASE 2 (COMPLETADA):** NLP Analytics + Sentiment Analysis
-**FASE 3 (COMPLETADA):** FastAPI REST API + OpenAPI Documentation
-**FASE 4 (COMPLETADA):** Legacy Prototype Complete - 8 elementos críticos
-**FASE 5 (COMPLETADA):** Testing & Validation - 45 test files
-**FASE 6 (COMPLETADA):** Automation System - 57 automation tests
-**FASE 7 (COMPLETADA):** Technical Debt Resolution - All critical issues fixed
-**ESTADO ACTUAL:** ✅ **ENTERPRISE PRODUCTION READY** - Sistema completamente operativo
-
-### Migration Notes
-This system evolved from a newsletter generation bot to a comprehensive analytics platform:
-- **No longer publishes to WordPress** - focus is on data analysis
-- **PostgreSQL + FastAPI + React** - modern full-stack architecture
-- **Analytics-first design** - optimized for insights and visualizations
-- **Dual-mode system** - Professional/Educational user experiences
-- **Production-ready** - Docker containerization, testing, monitoring
-
-For historical context, see `docs/decisions/ADR-001-project-scope-change.md`.
-
----
-
-## 🔧 Quick Start Commands (ACTUALIZADOS 2025-07-07 - Include News Sources Admin)
-
-### Full Stack Startup
-```bash
-# Start backend services
-docker compose up postgres redis api -d
-
-# Start React frontend (separate terminal)
-cd preventia-dashboard && npm run dev
-
-# Verify all services
-docker compose ps
-curl http://localhost:8000/health
-
-# Access Admin Interface
-# Navigate to http://localhost:5173/admin for News Sources Administration
-```
-
-### Development Workflow
-```bash
-# Backend development
+# Environment setup
+python -m venv venv
 source venv/bin/activate
-python -m services.api.main  # FastAPI dev server
+pip install -r requirements.txt
 
-# Frontend development
-cd preventia-dashboard
-npm run dev                  # React dev server
-npm run test:unit           # Unit tests
-npm run build               # Production build
+# Testing
+pytest                                    # Run all tests
+pytest -m unit                          # Unit tests only  
+pytest -m integration                   # Integration tests only
+pytest --cov=services --cov-report=html # Coverage report (85% required)
+
+# Code quality
+black .                                  # Format code
+isort .                                  # Sort imports
+flake8 .                                # Lint code
+bandit .                                # Security scan
+
+# CLI operations
+./preventia-cli status                   # System health check
+./preventia-cli scraper run-all          # Run all scrapers
+./preventia-cli source list             # List news sources
+./main.py                               # Run main pipeline
 ```
 
-### Data & Analytics
+### Frontend (React + TypeScript)
+
 ```bash
-# Database operations
-docker compose exec postgres psql -U preventia -d preventia_news
+# Development (from preventia-dashboard/)
+npm install
+npm run dev                             # Start dev server (port 5173)
+npm run build                           # Production build
+npm run preview                         # Preview production build
 
-# Run analytics
-python scripts/batch_sentiment_analysis.py
-python scripts/batch_topic_classification.py
+# Testing
+npm run test                            # Run Vitest tests
+npm run test:unit                       # Unit tests only
+npm run test:integration                # Integration tests only
+npm run test:e2e                        # End-to-end tests with Puppeteer
+npm run test:coverage                   # Coverage report
+npm run validate                        # Final validation
 
-# API testing
-curl http://localhost:8000/api/v1/articles/
-curl http://localhost:8000/api/v1/analytics/sentiment
-
-# News Sources Administration
-curl http://localhost:8000/api/v1/sources/
-curl http://localhost:8000/api/v1/sources/compliance/dashboard
+# Quality
+npm run lint                            # ESLint
 ```
 
-### 🔧 LEGACY TESTING COMMANDS (IMPLEMENTADOS)
+**Dashboard Access:**
+- **Legacy Interface:** `http://localhost:5173/` (currently default)
+- **Modern Dashboard:** `http://localhost:5173/dashboard` 
+- **Admin Panel:** `http://localhost:5173/admin`
+
+### Docker Development
+
 ```bash
-# 1. Run Legacy API Tests (18 tests - 12 passing, 6 failing)
-cd tests && pytest integration/test_api/test_legacy_api.py -v
+# Full development environment
+docker-compose up -d                    # Start all services
+docker-compose logs -f api              # View API logs
+docker-compose exec api bash            # Access API container
 
-# 2. Run Legacy Component Tests (120+ tests - 50%+ passing)
-cd preventia-dashboard && npx vitest run src/components/legacy/__tests__/
-
-# 3. Run Specific Failing Tests
-pytest integration/test_api/test_legacy_api.py::TestLegacyAPIEndpoints::test_get_tones_timeline_legacy -v
-npx vitest run src/components/legacy/__tests__/LegacySentimentChart.test.tsx
-
-# 4. Coverage Reports
-pytest --cov=../services --cov-report=html
-npx vitest run --coverage src/components/legacy/
-
-# 5. Quick Test Status Check
-pytest integration/test_api/test_legacy_api.py -v | grep -E "(PASSED|FAILED)"
+# Production build
+docker-compose -f docker-compose.prod.yml up -d
 ```
 
-### 📊 TESTING DOCUMENTATION GENERADA
-- **`docs/implementation/legacy-testing-results.md`** - Análisis detallado de resultados
-- **`docs/implementation/legacy-test-suite-summary.md`** - Inventario completo de tests
-- **`docs/implementation/testing-coverage-dashboard.md`** - Dashboard ejecutivo visual
+## Project Structure
 
-### ✅ Legacy Prototype Status (IMPLEMENTADO - 2025-07-03)
-- **Estado**: ✅ 8 elementos críticos implementados
-- **Dashboard legacy**: http://localhost:5173 con componentes legacy funcionales
-- **Components**: LegacySentimentChart, LegacyTopicsChart, LegacyGeographicMap, LegacyExportHistory
-- **Documentation**: Roadmap producción en `docs/implementation/production-deployment-roadmap.md`
-- **Session notes**: Handoff completo en `docs/implementation/session-handoff-notes.md`
-- **Testing required**: Ver sección "CRITICAL TESTING & VALIDATION" arriba
+```
+news_bot_3/
+├── services/                   # Backend microservices
+│   ├── api/                   # FastAPI REST API
+│   ├── scraper/               # Web scraping (Beautiful Soup + Playwright)
+│   ├── nlp/                   # Sentiment analysis (Spacy + VADER)
+│   ├── data/                  # SQLAlchemy database layer
+│   ├── copywriter/            # Newsletter generation
+│   ├── decision_engine/       # Business logic
+│   ├── orchestrator/          # Pipeline coordination
+│   └── publisher/             # Content publishing
+├── preventia-dashboard/        # React frontend
+├── cli/                       # Command-line interface
+├── tests/                     # Test suites (unit/integration/e2e)
+├── scripts/                   # Automation scripts
+└── config/                    # Configuration files
+```
 
-### ✅ ALL CRITICAL ISSUES RESOLVED (2025-07-08)
+## Key Technologies
 
-#### **Sistema Completamente Operativo - No Hay Tareas Críticas Pendientes**
+**Backend:** FastAPI, SQLAlchemy, PostgreSQL, Redis, Spacy, VaderSentiment, Beautiful Soup, Playwright, OpenAI API
+**Frontend:** React 19, TypeScript 5.8, Vite, TanStack Query, Tailwind CSS, Recharts, Leaflet
+**Testing:** pytest (Python), Vitest (JavaScript), Puppeteer (E2E)
+**Tools:** Black, isort, ESLint, Docker, pre-commit hooks
 
-**Todas las tareas críticas han sido completadas exitosamente:**
+## Testing Framework
 
-1. **✅ Timezone Handling API** - Resuelto: datetime.now(timezone.utc) implementado
-2. **✅ Data Format Mismatch** - Resuelto: LegacySentimentChart interface corregida
-3. **✅ SQL Query Geographic** - Resuelto: Consultas optimizadas y funcionando
-4. **✅ Input Validation** - Resuelto: HTTPException con manejo descriptivo
-5. **✅ Pydantic V2 Migration** - Resuelto: Migración completa a @field_validator
-6. **✅ Datetime Deprecation** - Resuelto: Todos los datetime.utcnow() actualizados
-7. **✅ Country Detection** - Resuelto: Consultas dinámicas implementadas
-8. **✅ Template Engine** - Resuelto: 7 templates CMS con patrones comprehensivos
-9. **✅ Chart Export** - Resuelto: Sistema PNG/SVG con matplotlib integrado
-10. **✅ Database Stability** - Resuelto: Optimización de conexiones completada
+- **Markers:** `unit`, `integration`, `e2e`, `performance`, `database`, `slow`
+- **Coverage:** Minimum 85% required for services and scripts
+- **Structure:** Tests organized by type in `tests/unit/`, `tests/integration/`, `tests/e2e/`
+- **Frontend:** Vitest for unit/integration, Puppeteer for E2E validation
 
-### 📋 **ESTADO ACTUAL: SISTEMA ENTERPRISE READY**
+## Development Notes
 
-**Sistema 100% operativo y listo para producción:**
+- **Python version:** 3.13+ required
+- **Code style:** Black formatting (88 char line length), isort for imports
+- **Dashboard Architecture:** Dual implementation (Legacy + Modern React)
+  - **Legacy:** Original pink-blue prototype at `/` (Spanish interface, static HTML-based)
+  - **Modern:** Professional dashboard at `/dashboard` (medical design, dual-mode)
+  - **Admin:** Management panel at `/admin` (authentication required)
+- **API Compatibility:** Both modern (`/api/`) and legacy (`/api/v1/`) endpoints
+- **Medical focus:** Specialized for breast cancer news analysis
+- **CLI-first:** Comprehensive CLI tools for system management in `./preventia-cli`
+- **Security:** Bandit scanning, pre-commit hooks, secrets detection
 
-- **✅ Core Functionality**: Todas las funcionalidades críticas implementadas y probadas
-- **✅ Testing Framework**: 45 archivos de test con cobertura comprehensiva
-- **✅ Automation Suite**: 57 tests de automatización con 100% cobertura
-- **✅ Production Ready**: Docker services, API endpoints, frontend dashboard
-- **✅ Technical Debt**: Todas las deudas técnicas críticas resueltas
-- **✅ Documentation**: Documentación completa y actualizada
+## Current Project Status (2025-07-13)
 
-**Estado actual**: ✅ **ENTERPRISE PRODUCTION READY** - Sistema completamente operativo sin tareas críticas pendientes.
+- **MVP Status:** 75% complete, ~15-18 days to functional MVP
+- **Critical Issue:** TypeScript errors in frontend preventing build
+- **Data Status:** 121 articles processed, 8 scrapers operational
+- **Backend:** 95% functional (FastAPI + PostgreSQL + Redis)
+- **Frontend:** 60% functional (React build issues blocking progress)
+- **Next Priority:** Fix TypeScript errors in `UserMenu.tsx` and complete auth integration
 
----
+## Recent Key Findings
 
-# important-instruction-reminders
-Do what has been asked; nothing more, nothing less.
-NEVER create files unless they're absolutely necessary for achieving your goal.
-ALWAYS prefer editing an existing file to creating a new one.
-NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+- **Architecture Reality:** News source administration system (not traditional pipeline)
+- **Compliance-First:** Rigorous ethical/legal validation before any scraping
+- **NLP Processing:** Batch/manual execution (not automatic post-scraping)
+- **Scraper Generation:** Automated creation system fully implemented
+- **Documentation:** `PROJECT_STATUS_ANALYSIS.md` contains comprehensive technical analysis
+
+## Configuration
+
+- **Environment:** Use `.env` files for local development
+- **Database:** PostgreSQL with asyncpg driver
+- **Cache:** Redis for performance optimization
+- **AI:** OpenAI integration for advanced text processing

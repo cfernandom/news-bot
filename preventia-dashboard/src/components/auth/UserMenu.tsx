@@ -15,6 +15,15 @@ export const UserMenu: React.FC = () => {
 
   if (!user) return null;
 
+  // Helper function to get primary role
+  const getPrimaryRole = () => {
+    if (user.is_superuser || user.roles.includes('admin')) return 'admin';
+    return user.roles[0] || 'user';
+  };
+
+  const primaryRole = getPrimaryRole();
+  const isAdmin = primaryRole === 'admin';
+
   const handleLogout = async () => {
     await logout();
   };
@@ -31,8 +40,8 @@ export const UserMenu: React.FC = () => {
         <div className="admin-user-info">
           <div className="admin-user-name">{user.full_name}</div>
           <div className="admin-user-role">
-            {user.role === 'admin' && <Shield className="h-3 w-3" style={{ color: 'var(--admin-primary)' }} />}
-            <span>{user.role === 'admin' ? 'Administrador' : 'Usuario'}</span>
+            {isAdmin && <Shield className="h-3 w-3" style={{ color: 'var(--admin-primary)' }} />}
+            <span>{isAdmin ? 'Administrador' : 'Usuario'}</span>
           </div>
         </div>
         <ChevronDown className="h-4 w-4" style={{ color: 'var(--admin-text-muted)' }} />
@@ -57,9 +66,9 @@ export const UserMenu: React.FC = () => {
                   <div className="admin-user-name" style={{ fontSize: '0.875rem' }}>{user.full_name}</div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-secondary)' }}>{user.email}</div>
                   <div style={{ marginTop: '0.25rem' }}>
-                    <Badge variant={user.role === 'admin' ? 'default' : 'secondary'} className="text-xs">
-                      {user.role === 'admin' && <Shield className="h-3 w-3 mr-1" />}
-                      <span className="capitalize">{user.role === 'admin' ? 'Administrador' : 'Usuario'}</span>
+                    <Badge variant={isAdmin ? 'default' : 'secondary'} className="text-xs">
+                      {isAdmin && <Shield className="h-3 w-3 mr-1" />}
+                      <span className="capitalize">{isAdmin ? 'Administrador' : 'Usuario'}</span>
                     </Badge>
                   </div>
                 </div>
