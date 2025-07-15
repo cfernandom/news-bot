@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 
 from services.scraper.src.utils import get_html_with_playwright
 from services.shared.models.article import Article
+from services.shared.utils.date_parser import parse_date_robust
 
 
 async def scraper__medicalxpress_com_breast_cancer() -> list[Article]:
@@ -87,7 +88,7 @@ async def scraper__medicalxpress_com_breast_cancer() -> list[Article]:
                 if date_p:
                     date_str = date_p.get_text(strip=True)
                     print(f"Fecha encontrada: '{date_str}'")
-                    date = parse_date(date_str)
+                    date = parse_date_robust(date_str)
                 else:
                     print("No se encontró párrafo con fecha en article__info")
 
@@ -106,7 +107,7 @@ async def scraper__medicalxpress_com_breast_cancer() -> list[Article]:
                     if match:
                         date_str = match.group(0)
                         print(f"Fecha encontrada con regex: '{date_str}'")
-                        date = parse_date(date_str)
+                        date = parse_date_robust(date_str)
                         if date:
                             break
 
@@ -147,58 +148,3 @@ async def scraper__medicalxpress_com_breast_cancer() -> list[Article]:
             continue
 
     return articles
-
-
-def parse_date(date_str: str) -> Optional[datetime]:
-    """Parsea una fecha con múltiples formatos posibles"""
-    if not date_str:
-        return None
-
-    # Limpiar la cadena de fecha
-    clean_date_str = re.sub(r"(\d+)(st|nd|rd|th)", r"\1", date_str.strip())
-
-    # Formatos de fecha a intentar
-    date_formats = [
-        "%B %d, %Y",  # May 22, 2025
-        "%B %d %Y",  # May 22 2025
-        "%b %d, %Y",  # May 22, 2025
-        "%b %d %Y",  # May 22 2025
-        "%m/%d/%Y",  # 05/22/2025
-        "%d/%m/%Y",  # 22/05/2025
-        "%Y-%m-%d",  # 2025-05-22
-        "%d-%m-%Y",  # 22-05-2025
-        "%m-%d-%Y",  # 05-22-2025
-    ]
-
-    for fmt in date_formats:
-        try:
-            parsed_date = datetime.strptime(clean_date_str, fmt).replace(
-                tzinfo=timezone.utc
-            )
-            print(f"Fecha parseada exitosamente con formato '{fmt}': {parsed_date}")
-            return parsed_date
-        except ValueError:
-            continue
-
-    # Intentar extraer solo números si los formatos anteriores fallan
-    numbers = re.findall(r"\d+", clean_date_str)
-    if len(numbers) >= 3:
-        try:
-            # Para dates como "May 22, 2025" ya procesadas
-            # Asumir formato MM/DD/YYYY o DD/MM/YYYY basado en el tamaño del primer número
-            if int(numbers[0]) > 12:  # Probablemente DD/MM/YYYY
-                day, month, year = int(numbers[0]), int(numbers[1]), int(numbers[2])
-            else:  # Probablemente MM/DD/YYYY
-                month, day, year = int(numbers[0]), int(numbers[1]), int(numbers[2])
-
-            if year < 100:  # Año de 2 dígitos
-                year += 2000
-
-            parsed_date = datetime(year, month, day, tzinfo=timezone.utc)
-            print(f"Fecha parseada con extracción numérica: {parsed_date}")
-            return parsed_date
-        except (ValueError, IndexError):
-            pass
-
-    print(f"No se pudo parsear la fecha: '{date_str}'")
-    return None

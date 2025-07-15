@@ -6,12 +6,18 @@ Test del scraper migrado de breastcancer.org
 import asyncio
 import os
 import sys
+from pathlib import Path
+
+# Setup project environment (replaces manual sys.path manipulation)
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from utils import setup_script_environment
+
+setup_script_environment()
 
 import pytest
 from dotenv import load_dotenv
 
 # Configurar path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Cargar variables de entorno
 load_dotenv()

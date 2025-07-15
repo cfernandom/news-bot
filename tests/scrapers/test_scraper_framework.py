@@ -7,6 +7,13 @@ Provee base común para tests de scrapers con validaciones estándar
 import asyncio
 import os
 import sys
+from pathlib import Path
+
+# Setup project environment (replaces manual sys.path manipulation)
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from utils import setup_script_environment
+
+setup_script_environment()
 from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional

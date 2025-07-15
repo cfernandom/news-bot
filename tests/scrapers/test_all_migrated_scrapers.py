@@ -7,6 +7,13 @@ Usa el framework estandarizado para validar todos los scrapers
 import asyncio
 import os
 import sys
+from pathlib import Path
+
+# Setup project environment (replaces manual sys.path manipulation)
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from utils import setup_script_environment
+
+setup_script_environment()
 from datetime import datetime
 
 from .test_scraper_framework import ScraperTestFramework, run_scraper_test

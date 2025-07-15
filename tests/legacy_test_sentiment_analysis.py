@@ -8,12 +8,17 @@ import asyncio
 import sys
 from pathlib import Path
 
-# Add services to path
-sys.path.append(str(Path(__file__).parent))
+# Setup project environment (replaces manual sys.path manipulation)
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from utils import setup_script_environment
+
+setup_script_environment()
 
 from services.nlp.src.analyzer import analyze_article
 from services.nlp.src.sentiment import get_sentiment_analyzer
 from services.shared.models.article import Article
+
+# Add services to path
 
 
 def test_sentiment_analyzer():

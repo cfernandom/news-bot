@@ -4,7 +4,11 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 from services.scraper.src.utils import get_html_with_playwright
+from services.shared.logging.structured_logger import get_logger
 from services.shared.models.article import Article
+from services.shared.utils.date_parser import parse_date_robust
+
+logger = get_logger("scraper.news_medical")
 
 
 async def scraper__news_medical() -> list[Article]:
@@ -41,17 +45,14 @@ async def scraper__news_medical() -> list[Article]:
             date_span = date_row.find("span", class_="article-meta-date")
             if date_span:
                 date_str = date_span.get_text(strip=True)
-                try:
-                    date = datetime.strptime(date_str, "%d %b %Y")
-                except ValueError:
-                    try:
-                        # Intentar otro formato por si acaso
-                        date = datetime.strptime(date_str, "%d %B %Y")
-                    except ValueError:
-                        print(
-                            f"⚠️ Formato de fecha no reconocido: {date_str} en artículo: {title}"
-                        )
-                        continue
+                date = parse_date_robust(date_str)
+                if not date:
+                    logger.date_parse_failed(date_str, full_url, "news-medical.net")
+                    logger.info(
+                        "Processing article without date",
+                        title=title[:50],
+                        url=full_url,
+                    )
 
         articles.append(
             Article(

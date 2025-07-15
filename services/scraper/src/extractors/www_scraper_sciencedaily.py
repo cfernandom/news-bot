@@ -4,7 +4,11 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 from services.scraper.src.utils import get_html_with_playwright
+from services.shared.logging.structured_logger import get_logger
 from services.shared.models.article import Article
+from services.shared.utils.date_parser import parse_date_robust
+
+logger = get_logger("scraper.sciencedaily")
 
 
 async def scraper__sciencedaily() -> list[Article]:
@@ -43,15 +47,14 @@ async def scraper__sciencedaily() -> list[Article]:
             # Extraer resumen
             summary = summary_div.get_text(strip=True)
 
-        # Parsear fecha
-        date = None
-        if date_str:
-            try:
-                date = datetime.strptime(date_str, "%B %d, %Y")
-            except ValueError:
-                print(
-                    f"⚠️ Formato de fecha no reconocido: {date_str} en artículo: {title}"
-                )
+        # Parsear fecha con el parser robusto
+        date = parse_date_robust(date_str) if date_str else None
+        if date_str and not date:
+            logger.date_parse_failed(date_str, full_url, "sciencedaily.com")
+            # Continue processing instead of skipping article
+            logger.info(
+                "Processing article without date", title=title[:50], url=full_url
+            )
 
         article_obj = Article(
             title=title, url=full_url, summary=summary, published_at=date, content=""
