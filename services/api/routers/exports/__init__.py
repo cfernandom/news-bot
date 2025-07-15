@@ -12,7 +12,7 @@ from .export_history import router as history_router
 from .pdf_exports import router as pdf_router
 
 # Create main exports router
-router = APIRouter(tags=["exports"], prefix="/api/v1/exports")
+router = APIRouter(tags=["exports"], prefix="/api/v1/export")
 
 # Include all sub-routers
 router.include_router(csv_router, prefix="")

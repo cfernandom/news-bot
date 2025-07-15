@@ -5,10 +5,11 @@ Handles PDF report generation and download endpoints.
 
 import io
 from datetime import datetime
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from services.data.database.connection import get_db_session
@@ -18,19 +19,15 @@ from .shared import get_filtered_articles, track_export
 router = APIRouter()
 
 
+class PDFExportRequest(BaseModel):
+    filters: Dict[str, Any] = {}
+    include_ai_summaries: bool = True
+
+
 @router.post("/report")
 async def generate_pdf_report(
+    request: PDFExportRequest,
     db: AsyncSession = Depends(get_db_session),
-    search: Optional[str] = Query(None, description="Search term for filtering"),
-    start_date: Optional[datetime] = Query(None, description="Start date filter"),
-    end_date: Optional[datetime] = Query(None, description="End date filter"),
-    source_id: Optional[int] = Query(None, description="Filter by source ID"),
-    sentiment: Optional[str] = Query(None, description="Filter by sentiment"),
-    country: Optional[str] = Query(None, description="Filter by country"),
-    language: Optional[str] = Query(None, description="Filter by language"),
-    min_word_count: Optional[int] = Query(None, description="Minimum word count"),
-    max_word_count: Optional[int] = Query(None, description="Maximum word count"),
-    limit: int = Query(1000, description="Maximum number of records"),
 ):
     """
     Generate comprehensive PDF report with filtered articles.
@@ -42,19 +39,22 @@ async def generate_pdf_report(
     - Statistical analysis
     """
     try:
-        # Get filtered articles
+        # Extract filters from request body
+        filters = request.filters
+
+        # Get filtered articles using filters from request body
         articles = await get_filtered_articles(
             db,
-            search,
-            start_date,
-            end_date,
-            source_id,
-            sentiment,
-            country,
-            language,
-            min_word_count,
-            max_word_count,
-            limit,
+            filters.get("search"),
+            filters.get("start_date"),
+            filters.get("end_date"),
+            filters.get("source_id"),
+            filters.get("sentiment"),
+            filters.get("country"),
+            filters.get("language"),
+            filters.get("min_word_count"),
+            filters.get("max_word_count"),
+            filters.get("limit", 1000),
         )
 
         if not articles:
@@ -137,17 +137,118 @@ async def generate_pdf_report(
         </html>
         """
 
-        # Convert HTML to PDF (simplified - in production use proper PDF library)
-        pdf_content = html_content.encode("utf-8")
+        # Convert HTML to PDF using reportlab (simple approach)
+        try:
+            from reportlab.lib.pagesizes import A4, letter
+            from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+            from reportlab.lib.units import inch
+            from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
+
+            # Create PDF buffer
+            buffer = io.BytesIO()
+            doc = SimpleDocTemplate(buffer, pagesize=A4)
+            styles = getSampleStyleSheet()
+
+            # Build PDF content
+            story = []
+
+            # Title
+            title_style = ParagraphStyle(
+                "CustomTitle",
+                parent=styles["Heading1"],
+                fontSize=20,
+                textColor="#2c3e50",
+                alignment=1,  # Center alignment
+            )
+            story.append(Paragraph("PreventIA News Analytics Report", title_style))
+            story.append(Spacer(1, 12))
+
+            # Date
+            story.append(
+                Paragraph(
+                    f"Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+                    styles["Normal"],
+                )
+            )
+            story.append(Spacer(1, 20))
+
+            # Executive Summary
+            story.append(Paragraph("Executive Summary", styles["Heading2"]))
+            summary_text = f"""
+            <b>Total Articles:</b> {len(articles)}<br/>
+            <b>Sources:</b> {len(set(a.source.name for a in articles if a.source))}<br/>
+            <b>Countries:</b> {len(set(a.country for a in articles if a.country))}<br/>
+            <b>Languages:</b> {len(set(a.language for a in articles if a.language))}
+            """
+            story.append(Paragraph(summary_text, styles["Normal"]))
+            story.append(Spacer(1, 20))
+
+            # Articles section
+            story.append(Paragraph("Article Listings", styles["Heading2"]))
+            story.append(Spacer(1, 12))
+
+            for i, article in enumerate(articles[:20], 1):  # Limit to 20 for PDF size
+                story.append(
+                    Paragraph(f"{i}. {article.title or 'Untitled'}", styles["Heading3"])
+                )
+
+                metadata = (
+                    f"Source: {article.source.name if article.source else 'Unknown'} | "
+                )
+                metadata += f"Published: {article.published_at.strftime('%Y-%m-%d') if article.published_at else 'Unknown'} | "
+                metadata += f"Language: {article.language or 'Unknown'} | "
+                metadata += f"Words: {article.word_count or 0}"
+
+                story.append(Paragraph(metadata, styles["Normal"]))
+                story.append(
+                    Paragraph(
+                        article.summary or "No summary available", styles["Normal"]
+                    )
+                )
+                story.append(Spacer(1, 12))
+
+            # Build PDF
+            doc.build(story)
+            pdf_content = buffer.getvalue()
+
+        except ImportError:
+            # Fallback: Generate a simple text-based PDF
+            pdf_content = f"""Simple PDF Report
+
+PreventIA News Analytics Report
+Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+Executive Summary:
+- Total Articles: {len(articles)}
+- Sources: {len(set(a.source.name for a in articles if a.source))}
+- Countries: {len(set(a.country for a in articles if a.country))}
+- Languages: {len(set(a.language for a in articles if a.language))}
+
+Article Listings:
+""".encode(
+                "utf-8"
+            )
+
+            for i, article in enumerate(articles[:10], 1):
+                article_text = f"""
+{i}. {article.title or 'Untitled'}
+   Source: {article.source.name if article.source else 'Unknown'}
+   Published: {article.published_at.strftime('%Y-%m-%d') if article.published_at else 'Unknown'}
+   Summary: {article.summary or 'No summary available'}
+
+""".encode(
+                    "utf-8"
+                )
+                pdf_content += article_text
 
         # Track export
-        filename = f"news_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
+        filename = f"news_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
         track_export("PDF Report", filename, file_size=len(pdf_content))
 
         # Return as streaming response
         return StreamingResponse(
             io.BytesIO(pdf_content),
-            media_type="text/html",
+            media_type="application/pdf",
             headers={"Content-Disposition": f"attachment; filename={filename}"},
         )
 
