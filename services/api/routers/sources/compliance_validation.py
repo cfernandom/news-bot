@@ -69,9 +69,9 @@ async def validate_source_compliance_endpoint(
 
     # Update source validation status
     new_status = (
-        ValidationStatus.COMPLIANT
+        ValidationStatus.VALIDATED
         if compliance_result.is_compliant
-        else ValidationStatus.NON_COMPLIANT
+        else ValidationStatus.FAILED
     )
 
     if source.validation_status != new_status:
@@ -126,7 +126,7 @@ async def get_compliance_dashboard(session: AsyncSession = Depends(get_db_sessio
     # Recent compliance actions
     recent_actions_query = (
         select(ComplianceAuditLog)
-        .order_by(ComplianceAuditLog.timestamp.desc())
+        .order_by(ComplianceAuditLog.performed_at.desc())
         .limit(10)
     )
     recent_actions_result = await session.execute(recent_actions_query)
@@ -152,7 +152,7 @@ async def get_compliance_dashboard(session: AsyncSession = Depends(get_db_sessio
             "active_sources": active_sources,
             "inactive_sources": total_sources - active_sources,
             "compliance_rate": (
-                compliance_stats.get(ValidationStatus.COMPLIANT, 0)
+                compliance_stats.get(ValidationStatus.VALIDATED, 0)
                 / total_sources
                 * 100
                 if total_sources > 0
@@ -160,8 +160,8 @@ async def get_compliance_dashboard(session: AsyncSession = Depends(get_db_sessio
             ),
         },
         "compliance_distribution": {
-            "compliant": compliance_stats.get(ValidationStatus.COMPLIANT, 0),
-            "non_compliant": compliance_stats.get(ValidationStatus.NON_COMPLIANT, 0),
+            "compliant": compliance_stats.get(ValidationStatus.VALIDATED, 0),
+            "non_compliant": compliance_stats.get(ValidationStatus.FAILED, 0),
             "pending": compliance_stats.get(ValidationStatus.PENDING, 0),
         },
         "geographic_distribution": {
@@ -171,11 +171,12 @@ async def get_compliance_dashboard(session: AsyncSession = Depends(get_db_sessio
         "recent_activity": [
             {
                 "id": action.id,
-                "source_id": action.source_id,
+                "source_id": action.record_id,
                 "action": action.action,
-                "timestamp": action.timestamp,
-                "reviewer_id": action.reviewer_id,
-                "details": action.details,
+                "timestamp": action.performed_at,
+                "reviewer_id": action.performed_by,
+                "status": action.status,
+                "table_name": action.table_name,
             }
             for action in recent_actions
         ],
@@ -197,14 +198,14 @@ async def get_compliance_stats(session: AsyncSession = Depends(get_db_session)):
     total_sources = total_result.scalar()
 
     compliant_query = select(func.count(NewsSource.id)).filter(
-        NewsSource.validation_status == ValidationStatus.COMPLIANT
+        NewsSource.validation_status == ValidationStatus.VALIDATED
     )
     compliant_result = await session.execute(compliant_query)
     compliant_sources = compliant_result.scalar()
 
     # Compliance issues breakdown
     non_compliant_query = select(NewsSource).filter(
-        NewsSource.validation_status == ValidationStatus.NON_COMPLIANT
+        NewsSource.validation_status == ValidationStatus.FAILED
     )
     non_compliant_result = await session.execute(non_compliant_query)
     non_compliant_sources = non_compliant_result.scalars().all()
@@ -274,7 +275,7 @@ async def get_non_compliant_sources(session: AsyncSession = Depends(get_db_sessi
         List of non-compliant sources with violation details
     """
     query = select(NewsSource).filter(
-        NewsSource.validation_status == ValidationStatus.NON_COMPLIANT
+        NewsSource.validation_status == ValidationStatus.FAILED
     )
     result = await session.execute(query)
     non_compliant_sources = result.scalars().all()

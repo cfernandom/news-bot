@@ -96,6 +96,7 @@ class LegalReviewRequest(BaseModel):
 async def get_db_session():
     """Get database session."""
     db_manager = DatabaseManager()
+    await db_manager.initialize()
     async with db_manager.get_session() as session:
         yield session
 

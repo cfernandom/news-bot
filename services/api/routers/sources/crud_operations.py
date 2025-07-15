@@ -4,7 +4,7 @@ Handles basic Create, Read, Update, Delete operations for news sources.
 """
 
 from datetime import datetime, timezone
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import delete, select, update
@@ -93,7 +93,9 @@ async def create_source(
 async def get_sources(
     skip: int = 0,
     limit: int = 100,
-    active_only: bool = True,
+    is_active: Optional[bool] = None,
+    language: Optional[str] = None,
+    country: Optional[str] = None,
     session: AsyncSession = Depends(get_db_session),
 ):
     """
@@ -102,13 +104,21 @@ async def get_sources(
     Args:
         skip: Number of sources to skip
         limit: Maximum number of sources to return
-        active_only: Filter to only active sources
+        is_active: Filter by active status (None=all, True=active, False=inactive)
+        language: Filter by language
+        country: Filter by country
         session: Database session
     """
     query = select(NewsSource)
 
-    if active_only:
-        query = query.filter(NewsSource.is_active == True)
+    if is_active is not None:
+        query = query.filter(NewsSource.is_active == is_active)
+
+    if language:
+        query = query.filter(NewsSource.language == language)
+
+    if country:
+        query = query.filter(NewsSource.country == country)
 
     query = query.offset(skip).limit(limit)
 
