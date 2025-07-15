@@ -43,7 +43,7 @@ async def create_default_admin():
             username="admin",
             email="admin@preventia.com",
             full_name="System Administrator",
-            password_hash=hash_password("PreventIA@2025!"),  # Strong default password
+            password_hash=hash_password("PreventIA2025"),  # Strong default password
             is_active=True,
             is_superuser=True,
             password_changed_at=datetime.now(timezone.utc).replace(tzinfo=None),
@@ -65,7 +65,7 @@ async def create_default_admin():
         print("✅ Default admin user created successfully!")
         print("   Username: admin")
         print("   Email: admin@preventia.com")
-        print("   Password: PreventIA@2025!")
+        print("   Password: PreventIA2025")
         print("   ⚠️  PLEASE CHANGE THE DEFAULT PASSWORD IMMEDIATELY!")
 
 

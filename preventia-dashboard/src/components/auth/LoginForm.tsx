@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import '../../styles/admin-theme.css';
 
 export const LoginForm: React.FC = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -17,7 +17,7 @@ export const LoginForm: React.FC = () => {
     setError(null);
 
     try {
-      await login(email, password);
+      await login(username, password);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Inicio de sesión fallido');
     } finally {
@@ -49,13 +49,13 @@ export const LoginForm: React.FC = () => {
             )}
 
             <div className="admin-form-group">
-              <label className="admin-label" htmlFor="email">Correo Electrónico</label>
+              <label className="admin-label" htmlFor="username">Usuario</label>
               <input
-                id="email"
-                type="email"
-                placeholder="admin@preventia.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username"
+                type="text"
+                placeholder="Ingrese su usuario"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
                 disabled={isLoading}
                 className="admin-input"
@@ -118,15 +118,6 @@ export const LoginForm: React.FC = () => {
             </button>
           </form>
 
-          <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--admin-border)' }}>
-            <div style={{ fontSize: '0.875rem', color: 'var(--admin-text-secondary)' }}>
-              <p style={{ fontWeight: '500', marginBottom: '0.5rem' }}>Credenciales de Demostración:</p>
-              <div className="admin-space-y-4">
-                <p><strong>Administrador:</strong> admin@preventia.com / admin123</p>
-                <p><strong>Usuario:</strong> demo@preventia.com / demo123</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
