@@ -7,7 +7,14 @@ import asyncio
 import hashlib
 import os
 import sys
-from datetime import datetime
+from pathlib import Path
+
+# Setup project environment (replaces manual sys.path manipulation)
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from utils import setup_script_environment
+
+setup_script_environment()
+from datetime import datetime, timezone
 from typing import List, Optional
 from urllib.parse import urljoin
 
@@ -18,7 +25,6 @@ from playwright.async_api import async_playwright
 project_root = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 )
-sys.path.append(project_root)
 
 from services.data.database.connection import db_manager
 
