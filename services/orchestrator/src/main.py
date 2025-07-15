@@ -1,19 +1,122 @@
+import hashlib
 import json
 import os
 from datetime import date, datetime, timedelta, timezone
+from urllib.parse import urlparse
 
 from openai import OpenAI
+from sqlalchemy import select
 
 from services.copywriter.article_selector.src.main import choose_articles_for_structure
 from services.copywriter.structure_builder.src.main import propose_structure
 from services.copywriter.summary_generator.src.main import generate_summary_structured
+from services.data.database.connection import db_manager
+from services.data.database.models import Article as ArticleModel
+from services.data.database.models import NewsSource
 from services.decision_engine.src.main import decide_publications
 from services.nlp.src.main import analyze_articles
 from services.orchestrator.src.utils import markdown_to_html
 from services.publisher.src.main import publish_newsletter_post
 from services.scraper.fulltext.src.fulltext_scraper import scrape_full_text
 from services.scraper.src.main import scrape_articles
+from services.shared.models.article import Article
 from services.shared.utils.dates import filter_articles_by_date_range
+
+
+async def save_articles_to_database(articles: list[Article]) -> int:
+    """
+    Save scraped articles to the database
+    Returns the number of articles successfully saved
+    """
+    if not articles:
+        return 0
+
+    saved_count = 0
+    await db_manager.initialize()
+
+    async with db_manager.get_session() as session:
+        # Get all existing news sources for URL matching
+        sources_result = await session.execute(select(NewsSource))
+        sources = {source.base_url: source for source in sources_result.scalars().all()}
+
+        for article in articles:
+            try:
+                # Extract domain from article URL to find matching source
+                parsed_url = urlparse(article.url)
+                domain = parsed_url.netloc.lower()
+
+                # Find matching source by domain
+                matching_source = None
+                for base_url, source in sources.items():
+                    if domain in base_url.lower() or base_url.lower() in domain:
+                        matching_source = source
+                        break
+
+                if not matching_source:
+                    # Create a new source for this domain
+                    new_source = NewsSource(
+                        name=domain.replace("www.", "")
+                        .replace(".com", "")
+                        .replace(".org", "")
+                        .replace(".net", "")
+                        .title(),
+                        base_url=f"https://{domain}/",
+                        language="en",
+                        country="US",
+                        is_active=True,
+                        validation_status="pending",
+                    )
+                    session.add(new_source)
+                    await session.flush()  # Get the ID
+                    matching_source = new_source
+                    sources[f"https://{domain}/"] = new_source
+                    print(f"✅ Created new source for {domain}: {new_source.name}")
+
+                # Check if article already exists
+                existing_article = await session.execute(
+                    select(ArticleModel).where(ArticleModel.url == article.url)
+                )
+                if existing_article.scalar_one_or_none():
+                    print(f"📰 Article already exists: {article.title}")
+                    continue
+
+                # Generate content hash
+                content_hash = hashlib.sha256(
+                    (article.title + article.url + (article.content or "")).encode(
+                        "utf-8"
+                    )
+                ).hexdigest()
+
+                # Fix timezone issue - ensure timezone-naive datetime for database
+                published_at = article.published_at
+                if published_at and published_at.tzinfo:
+                    published_at = published_at.replace(tzinfo=None)
+
+                # Create new article
+                db_article = ArticleModel(
+                    source_id=matching_source.id,
+                    title=article.title,
+                    url=article.url,
+                    content=article.content or "",
+                    summary=article.summary or "",
+                    published_at=published_at,
+                    content_hash=content_hash,
+                    word_count=len(article.content.split()) if article.content else 0,
+                    processing_status="pending",
+                )
+
+                session.add(db_article)
+                saved_count += 1
+                print(f"💾 Saved article: {article.title[:50]}...")
+
+            except Exception as e:
+                print(f"❌ Error saving article {article.title}: {e}")
+                continue
+
+        # Commit all changes
+        await session.commit()
+
+    return saved_count
 
 
 async def run_pipeline():
@@ -25,9 +128,20 @@ async def run_pipeline():
         return
 
     print(f"📰 {len(articles)} artículos encontrados")
+
+    # Save articles to database
+    print("💾 Guardando artículos en base de datos...")
+    saved_count = await save_articles_to_database(articles)
+    print(f"✅ {saved_count} artículos guardados en la base de datos")
     for article in articles:
+        # Fix crash when published_at is None
+        published_str = (
+            article.published_at.strftime("%Y-%m-%d")
+            if article.published_at
+            else "Sin fecha"
+        )
         print(
-            f"- {article.title[:20]} ({article.published_at.strftime('%Y-%m-%d')}) - Resumen: {article.summary[:30]} - URL: {article.url}"
+            f"- {article.title[:20]} ({published_str}) - Resumen: {article.summary[:30]} - URL: {article.url}"
         )
 
     # Filtro: últimos 7 días
