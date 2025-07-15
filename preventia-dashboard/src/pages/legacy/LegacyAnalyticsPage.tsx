@@ -80,35 +80,65 @@ const LegacyAnalyticsPage: React.FC = () => {
   const { data: sentimentTimelineData, isLoading: sentimentTimelineLoading } = useLegacySentimentTimeline(8);
   const { data: topicsWithLanguageData, isLoading: topicsWithLanguageLoading } = useLegacyTopicsWithLanguage(8);
 
+  // Safe date formatting function
+  const formatDateSafe = (dateString: string): string => {
+    if (!dateString) return 'Fecha no disponible';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Fecha inválida';
+    return date.toLocaleDateString('es-ES');
+  };
+
   // Calculate date ranges and temporal context
   const getGlobalDateRange = (): { startDate: string; endDate: string } | undefined => {
     if (!generalStats?.latest_article_date) return undefined;
 
+    // Validate the date before using it
+    const endDate = new Date(generalStats.latest_article_date);
+    if (isNaN(endDate.getTime())) {
+      console.error('Invalid latest_article_date:', generalStats.latest_article_date);
+      return undefined;
+    }
+
     // Calculate approximate start date based on total articles and daily average
     const totalArticles = generalStats.total_articles || 0;
     const estimatedDaysBack = Math.max(30, Math.min(365, totalArticles * 2)); // Estimate 2 days per article, min 30 days, max 1 year
-    const endDate = new Date(generalStats.latest_article_date);
     const startDate = new Date(endDate);
     startDate.setDate(endDate.getDate() - estimatedDaysBack);
 
+    // Validate calculated start date
+    if (isNaN(startDate.getTime())) {
+      console.error('Invalid calculated start date');
+      return undefined;
+    }
+
     return {
       startDate: startDate.toISOString().split('T')[0],
-      endDate: generalStats.latest_article_date
+      endDate: endDate.toISOString().split('T')[0]
     };
   };
 
   const getFilteredDateRange = (): { startDate: string; endDate: string } | undefined => {
     if (!newsData || !Array.isArray(newsData) || newsData.length === 0) return undefined;
 
-    const dates: string[] = newsData
+    const validDates: string[] = newsData
       .map((item: NewsItem) => item.date || item.published_at)
-      .filter((date: string | undefined): date is string => date !== undefined)
+      .filter((date: string | undefined): date is string => {
+        if (!date) return false;
+        // Validate that the date string can be parsed
+        const parsedDate = new Date(date);
+        return !isNaN(parsedDate.getTime());
+      })
       .sort();
 
-    return dates.length > 0 ? {
-      startDate: dates[0],
-      endDate: dates[dates.length - 1]
-    } : undefined;
+    if (validDates.length === 0) {
+      console.warn('No valid dates found in news data');
+      return undefined;
+    }
+
+    return {
+      startDate: validDates[0],
+      endDate: validDates[validDates.length - 1]
+    };
   };
 
   const globalDateRange = getGlobalDateRange();
@@ -166,7 +196,7 @@ const LegacyAnalyticsPage: React.FC = () => {
             <><br />
             <strong>{hasActiveFilters ? 'Datos filtrados:' : 'Dataset completo:'}</strong> {displayArticleCount} artículos
             {displayDateRange && (
-              <> desde {new Date(displayDateRange.startDate).toLocaleDateString('es-ES')} hasta {new Date(displayDateRange.endDate).toLocaleDateString('es-ES')}</>
+              <> desde {formatDateSafe(displayDateRange.startDate)} hasta {formatDateSafe(displayDateRange.endDate)}</>
             )}
             {hasActiveFilters && totalArticles > 0 && (
               <><br /><small>Dataset total: {totalArticles} artículos</small></>
@@ -189,9 +219,9 @@ const LegacyAnalyticsPage: React.FC = () => {
         <h2 className="legacy-section-title">📈 Resumen General</h2>
         <p className="legacy-section-description">
           {hasActiveFilters
-            ? `Visión general de ${filteredArticles} artículos que coinciden con los filtros aplicados${filteredDateRange ? ` (${new Date(filteredDateRange.startDate).toLocaleDateString('es-ES')} - ${new Date(filteredDateRange.endDate).toLocaleDateString('es-ES')})` : ''}.`
+            ? `Visión general de ${filteredArticles} artículos que coinciden con los filtros aplicados${filteredDateRange ? ` (${formatDateSafe(filteredDateRange.startDate)} - ${formatDateSafe(filteredDateRange.endDate)})` : ''}.`
             : globalDateRange
-            ? `Visión general y cuantitativa de la cobertura informativa desde ${new Date(globalDateRange.startDate).toLocaleDateString('es-ES')} hasta ${new Date(globalDateRange.endDate).toLocaleDateString('es-ES')}.`
+            ? `Visión general y cuantitativa de la cobertura informativa desde ${formatDateSafe(globalDateRange.startDate)} hasta ${formatDateSafe(globalDateRange.endDate)}.`
             : 'Visión general y cuantitativa de la cobertura informativa en el dataset histórico acumulado.'
           }
         </p>
@@ -202,7 +232,7 @@ const LegacyAnalyticsPage: React.FC = () => {
             title={hasActiveFilters ? "Noticias Filtradas" : "Noticias Recolectadas"}
             value={displayArticleCount > 0 ? displayArticleCount : 'Sin datos'}
             subtitle={displayDateRange
-              ? `Del ${new Date(displayDateRange.startDate).toLocaleDateString('es-ES')} al ${new Date(displayDateRange.endDate).toLocaleDateString('es-ES')}`
+              ? `Del ${formatDateSafe(displayDateRange.startDate)} al ${formatDateSafe(displayDateRange.endDate)}`
               : hasActiveFilters
               ? 'Filtros aplicados'
               : 'Datos históricos acumulados'
@@ -265,7 +295,7 @@ const LegacyAnalyticsPage: React.FC = () => {
           <p>
             {generalStats?.ai_summary ||
             (totalArticles > 0
-              ? `Análisis de ${totalArticles} artículos recopilados${globalDateRange ? ` desde ${new Date(globalDateRange.startDate).toLocaleDateString('es-ES')} hasta ${new Date(globalDateRange.endDate).toLocaleDateString('es-ES')}` : ' en el dataset actual'}. El sistema de IA está procesando la información para generar insights automáticos.`
+              ? `Análisis de ${totalArticles} artículos recopilados${globalDateRange ? ` desde ${formatDateSafe(globalDateRange.startDate)} hasta ${formatDateSafe(globalDateRange.endDate)}` : ' en el dataset actual'}. El sistema de IA está procesando la información para generar insights automáticos.`
               : "No hay datos suficientes para generar un resumen automatizado. Verifique la conexión con la API o la disponibilidad de datos."
             )}
           </p>
