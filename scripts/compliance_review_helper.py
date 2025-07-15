@@ -16,12 +16,15 @@ Actions:
 import argparse
 import asyncio
 import sys
-from datetime import datetime
 from pathlib import Path
 
-# Add project root to path
-project_root = Path(__file__).parent.parent
-sys.path.append(str(project_root))
+# Setup project environment (replaces manual sys.path manipulation)
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from utils import setup_script_environment
+
+setup_script_environment()
+from datetime import datetime
+from pathlib import Path
 
 from services.data.database.connection import DatabaseManager
 

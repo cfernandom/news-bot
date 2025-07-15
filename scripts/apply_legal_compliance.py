@@ -15,12 +15,15 @@ import asyncio
 import logging
 import os
 import sys
-from datetime import datetime, timedelta
 from pathlib import Path
 
-# Add project root to path
-project_root = Path(__file__).parent.parent
-sys.path.append(str(project_root))
+# Setup project environment (replaces manual sys.path manipulation)
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from utils import setup_script_environment
+
+setup_script_environment()
+from datetime import datetime, timedelta
+from pathlib import Path
 
 from services.data.database.connection import DatabaseManager
 from services.scraper.src.compliance import check_robots_compliance
@@ -50,6 +53,7 @@ class LegalComplianceMigrator:
         """Apply the 002_legal_compliance.sql migration."""
         logger.info("Applying legal compliance database migration...")
 
+        project_root = Path(__file__).parent.parent
         migration_file = (
             project_root / "services/data/database/migrations/002_legal_compliance.sql"
         )

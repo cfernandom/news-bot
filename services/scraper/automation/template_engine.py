@@ -5,6 +5,14 @@ Generates scraper code based on site structure and templates.
 
 import logging
 import re
+import sys
+from pathlib import Path
+
+# Setup project environment (replaces manual sys.path manipulation)
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from utils import setup_script_environment
+
+setup_script_environment()
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
@@ -165,6 +173,7 @@ import asyncio
 import hashlib
 import os
 import sys
+from pathlib import Path
 from datetime import datetime
 from typing import List, Optional
 from urllib.parse import urljoin
@@ -176,27 +185,22 @@ from playwright.async_api import async_playwright
 project_root = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 )
-sys.path.append(project_root)
 
 from services.data.database.connection import db_manager
-
 
 def calculate_content_hash(content: str) -> str:
     """Calculate SHA-256 hash for duplicate detection"""
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
-
 def count_words(text: str) -> int:
     """Count words in text for analytics"""
     return len(text.split()) if text else 0
-
 
 async def get_{{ domain_safe }}_source_id() -> Optional[int]:
     """Get the source_id for {{ domain }} from news_sources table"""
     query = "SELECT id FROM news_sources WHERE base_url LIKE %s LIMIT 1"
     result = await db_manager.execute_sql_one(query, f"%{{ domain }}%")
     return result["id"] if result else None
-
 
 async def scrape_{{ domain_safe }}_to_postgres() -> List[int]:
     """
@@ -376,7 +380,6 @@ async def scrape_{{ domain_safe }}_to_postgres() -> List[int]:
         print(f"❌ Failed to scrape {{ domain }}: {e}")
         return []
 
-
 # Main entry point for testing
 if __name__ == "__main__":
     async def main():
@@ -403,6 +406,7 @@ import asyncio
 import hashlib
 import os
 import sys
+from pathlib import Path
 from datetime import datetime
 from typing import List, Optional
 from urllib.parse import urljoin
@@ -414,27 +418,22 @@ from playwright.async_api import async_playwright
 project_root = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 )
-sys.path.append(project_root)
 
 from services.data.database.connection import db_manager
-
 
 def calculate_content_hash(content: str) -> str:
     """Calculate SHA-256 hash for duplicate detection"""
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
-
 def count_words(text: str) -> int:
     """Count words in text for analytics"""
     return len(text.split()) if text else 0
-
 
 async def get_{{ domain_safe }}_source_id() -> Optional[int]:
     """Get the source_id for {{ domain }} from news_sources table"""
     query = "SELECT id FROM news_sources WHERE base_url LIKE %s LIMIT 1"
     result = await db_manager.execute_sql_one(query, f"%{{ domain }}%")
     return result["id"] if result else None
-
 
 async def scrape_{{ domain_safe }}_to_postgres() -> List[int]:
     """
@@ -614,7 +613,6 @@ async def scrape_{{ domain_safe }}_to_postgres() -> List[int]:
         print(f"❌ Failed to scrape {{ domain }}: {e}")
         return []
 
-
 # Main entry point for testing
 if __name__ == "__main__":
     async def main():
@@ -642,6 +640,7 @@ import asyncio
 import hashlib
 import os
 import sys
+from pathlib import Path
 from datetime import datetime
 from typing import List, Optional
 from urllib.parse import urljoin
@@ -653,27 +652,22 @@ from playwright.async_api import async_playwright
 project_root = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 )
-sys.path.append(project_root)
 
 from services.data.database.connection import db_manager
-
 
 def calculate_content_hash(content: str) -> str:
     """Calculate SHA-256 hash for duplicate detection"""
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
-
 def count_words(text: str) -> int:
     """Count words in text for analytics"""
     return len(text.split()) if text else 0
-
 
 async def get_{{ domain_safe }}_source_id() -> Optional[int]:
     """Get the source_id for {{ domain }} from news_sources table"""
     query = "SELECT id FROM news_sources WHERE base_url LIKE %s LIMIT 1"
     result = await db_manager.execute_sql_one(query, f"%{{ domain }}%")
     return result["id"] if result else None
-
 
 async def scrape_{{ domain_safe }}_to_postgres() -> List[int]:
     """
@@ -854,7 +848,6 @@ async def scrape_{{ domain_safe }}_to_postgres() -> List[int]:
         print(f"❌ Failed to scrape medical content from {{ domain }}: {e}")
         return []
 
-
 # Main entry point for testing
 if __name__ == "__main__":
     async def main():
@@ -897,6 +890,7 @@ import asyncio
 import hashlib
 import os
 import sys
+from pathlib import Path
 from datetime import datetime
 from typing import List, Optional
 from urllib.parse import urljoin
@@ -908,27 +902,22 @@ from playwright.async_api import async_playwright
 project_root = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 )
-sys.path.append(project_root)
 
 from services.data.database.connection import db_manager
-
 
 def calculate_content_hash(content: str) -> str:
     """Calculate SHA-256 hash for duplicate detection"""
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
-
 def count_words(text: str) -> int:
     """Count words in text for analytics"""
     return len(text.split()) if text else 0
-
 
 async def get_{{ domain_safe }}_source_id() -> Optional[int]:
     """Get the source_id for {{ domain }} from news_sources table"""
     query = "SELECT id FROM news_sources WHERE base_url LIKE %s LIMIT 1"
     result = await db_manager.execute_sql_one(query, f"%{{ domain }}%")
     return result["id"] if result else None
-
 
 async def scrape_{{ domain_safe }}_to_postgres() -> List[int]:
     """
@@ -1109,7 +1098,6 @@ async def scrape_{{ domain_safe }}_to_postgres() -> List[int]:
     except Exception as e:
         print(f"❌ Failed to scrape {{ domain }}: {e}")
         return []
-
 
 # Main entry point for testing
 if __name__ == "__main__":
