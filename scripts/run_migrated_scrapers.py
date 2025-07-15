@@ -5,17 +5,15 @@ Usage: python scripts/run_migrated_scrapers.py [scraper_name]
 """
 
 import asyncio
-import os
 import sys
 from datetime import datetime
+from pathlib import Path
 
-from dotenv import load_dotenv
+# Setup project environment (replaces manual sys.path manipulation)
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from utils import setup_script_environment
 
-# Add project root to path
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(project_root)
-
-load_dotenv()
+setup_script_environment()
 
 from services.data.database.connection import close_database, init_database
 

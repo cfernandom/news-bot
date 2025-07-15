@@ -5,11 +5,14 @@ Generate and save a sample scraper to demonstrate the automation system.
 import asyncio
 import os
 import sys
-from datetime import datetime
+from pathlib import Path
 
-# Add project root to path
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(project_root)
+# Setup project environment (replaces manual sys.path manipulation)
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from utils import setup_script_environment
+
+setup_script_environment()
+from datetime import datetime
 
 from services.scraper.automation import ScraperGenerator
 
@@ -39,6 +42,7 @@ async def generate_and_save_scraper():
 
     # Save the generated scraper
     filename = f"generated_scraper_{domain.replace('.', '_')}.py"
+    project_root = Path(__file__).parent.parent
     filepath = os.path.join(project_root, "scripts", filename)
 
     with open(filepath, "w", encoding="utf-8") as f:
