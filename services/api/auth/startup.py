@@ -46,7 +46,7 @@ async def create_default_admin():
             password_hash=hash_password("PreventIA@2025!"),  # Strong default password
             is_active=True,
             is_superuser=True,
-            password_changed_at=datetime.now(timezone.utc),
+            password_changed_at=datetime.now(timezone.utc).replace(tzinfo=None),
         )
 
         session.add(admin_user)
