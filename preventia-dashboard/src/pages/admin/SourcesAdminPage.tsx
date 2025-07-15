@@ -71,7 +71,20 @@ export const SourcesAdminPage: React.FC = () => {
       ]);
 
       setSources(sourcesResponse.data);
-      setComplianceDashboard(dashboardResponse.data);
+
+      // Transform API response to match expected interface
+      const apiData = dashboardResponse.data;
+      const transformedDashboard: ComplianceDashboard = {
+        total_sources: apiData.overview?.total_sources || 0,
+        compliant_sources: apiData.compliance_distribution?.compliant || 0,
+        pending_review: apiData.compliance_distribution?.pending || 0,
+        failed_validation: apiData.compliance_distribution?.non_compliant || 0,
+        compliance_rate: apiData.overview?.compliance_rate || 0,
+        sources_needing_attention: (apiData.compliance_distribution?.pending || 0) + (apiData.compliance_distribution?.non_compliant || 0),
+        dashboard_updated_at: apiData.generated_at || new Date().toISOString()
+      };
+
+      setComplianceDashboard(transformedDashboard);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load data');
       console.error('Error loading sources data:', err);
