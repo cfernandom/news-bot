@@ -3,7 +3,10 @@
 
 **Versión:** 1.0
 **Fecha:** 29 de Julio de 2025
-**Estado:** BORRADOR - Pendiente información del usuario
+**Estado:** FINAL
+**Proyecto de Investigación:** PreventIA - Detección temprana de Cáncer de mama
+**Institución:** Fundación Universitaria Compensar, Colombia
+**Capítulo del Libro:** Capítulo 9 - Aplicación Informativa para la Comunidad
 
 ---
 
@@ -56,32 +59,37 @@
 
 ### 1.1 Propósito
 
-Este documento establece la especificación completa de requerimientos del software para el sistema **PreventIA News Analytics**, una plataforma inteligente de monitoreo y análisis de noticias especializada en el análisis automatizado de información relacionada con el cáncer de mama.
+Este documento establece la especificación completa de requerimientos del software para el sistema **PreventIA News Analytics**, una plataforma inteligente de monitoreo y análisis de noticias especializada en el análisis automatizado de información relacionada con el cáncer de mama. Este sistema forma parte del proyecto de investigación multidisciplinario PreventIA, desarrollado en el marco del programa de Investigación y Desarrollo de la Fundación Universitaria Compensar en Colombia.
 
 El propósito principal de este documento es:
-- Definir las funcionalidades completas del sistema
-- Establecer los requerimientos funcionales y no funcionales
-- Servir como referencia para el desarrollo y mantenimiento
-- Facilitar la comunicación entre stakeholders técnicos y no técnicos
+- Definir las funcionalidades completas del sistema de análisis de narrativas mediáticas sobre cáncer de mama
+- Establecer los requerimientos funcionales y no funcionales para el "Radar de Narrativas Médicas"
+- Servir como referencia para el desarrollo, mantenimiento y evolución del sistema
+- Facilitar la comunicación entre investigadores, desarrolladores y stakeholders del proyecto PreventIA
+- Documentar el cumplimiento de aspectos éticos y legales en el tratamiento de información mediática
 
 ### 1.2 Alcance
 
-PreventIA News Analytics es un sistema integral que automatiza la recopilación, análisis y visualización de noticias sobre cáncer de mama, proporcionando:
+PreventIA News Analytics es un sistema integral que automatiza la recopilación, análisis y visualización de noticias sobre cáncer de mama, diseñado específicamente para apoyar la investigación y comprensión de las narrativas mediáticas en el contexto colombiano, con aplicación específica en hospitales de primer y segundo nivel ubicados en municipios de 5ta y 6ta categoría.
 
 **Incluye:**
-- Web scraping automatizado de fuentes de noticias médicas
-- Análisis de sentimiento mediante procesamiento de lenguaje natural (NLP)
-- Clasificación temática de artículos
-- Dashboard interactivo para visualización de analytics
-- Sistema de exportación multi-formato (CSV, Excel, PDF)
-- Gestión de usuarios con roles y permisos
-- CLI para administración del sistema
+- Web scraping automatizado de fuentes de noticias médicas colombianas e internacionales
+- Análisis de sentimiento mediante procesamiento de lenguaje natural (NLP) en español e inglés
+- Clasificación temática de artículos según categorías médicas relevantes
+- Dashboard interactivo para visualización de analytics y tendencias mediáticas
+- Sistema de exportación multi-formato (CSV, Excel, PDF) para investigadores
+- perfil de administrador para gestión de fuentes de noticias
+- CLI para administración y automatización del sistema
+- Análisis estadístico de patrones discursivos y sesgos en la cobertura mediática
+- Generación de métricas e indicadores sobre la comunicación del cáncer de mama
 
 **No incluye:**
-- Diagnóstico médico automatizado
-- Recomendaciones de tratamiento
-- Almacenamiento de historiales clínicos de pacientes
-- Integración directa con sistemas hospitalarios (en esta versión)
+- Diagnóstico médico automatizado o asistencia clínica directa
+- Recomendaciones de tratamiento o consejos médicos
+- Almacenamiento o procesamiento de historiales clínicos de pacientes
+- Integración directa con sistemas hospitalarios o de salud
+- Generación automática de resúmenes de noticias (por restricciones de derechos de autor)
+- Análisis de imágenes médicas o mamografías
 
 ### 1.3 Definiciones, Acrónimos y Abreviaturas
 
@@ -178,12 +186,36 @@ Las funciones principales del sistema incluyen:
 
 ### 2.3 Características de los Usuarios
 
-**[PENDIENTE: Información requerida del usuario]**
+El sistema está diseñado para atender a los siguientes perfiles de usuarios, en el contexto del proyecto de investigación PreventIA:
 
-Tipos de usuarios identificados preliminarmente:
-- Administradores del sistema
-- Analistas de contenido
-- Usuarios de consulta
+**Investigadores del Proyecto PreventIA:**
+- Perfil: Investigadores multidisciplinarios de la Fundación Universitaria Compensar
+- Necesidades: Análisis de tendencias mediáticas, exportación de datos para publicaciones, identificación de patrones discursivos
+- Nivel técnico: Medio-alto
+- Frecuencia de uso: Semanal/mensual
+
+**Profesionales de la Salud:**
+- Perfil: Médicos y personal sanitario de hospitales de primer y segundo nivel en municipios de 5ta y 6ta categoría
+- Necesidades: Información actualizada sobre comunicación del cáncer de mama, tendencias en la cobertura mediática
+- Nivel técnico: Básico-medio
+- Frecuencia de uso: Consulta ocasional
+
+**Administradores del Sistema:**
+- Perfil: Personal técnico del equipo de desarrollo PreventIA
+- Necesidades: Gestión completa del sistema, mantenimiento, configuración de fuentes
+- Nivel técnico: Alto
+- Frecuencia de uso: Diaria
+
+**Tomadores de Decisiones en Salud Pública:**
+- Perfil: Funcionarios y gestores de política pública en salud
+- Necesidades: Reportes ejecutivos, análisis de impacto mediático, métricas agregadas
+- Nivel técnico: Básico
+- Frecuencia de uso: Mensual
+**Comunidad General:**
+- Perfil: Público interesado en la prevención del cáncer de mama
+- Necesidades: Acceso a información confiable, comprensión de tendencias mediáticas
+- Nivel técnico: Básico
+- Frecuencia de uso: Ocasional
 
 ### 2.4 Restricciones
 
@@ -193,16 +225,24 @@ Tipos de usuarios identificados preliminarmente:
    - PostgreSQL 13+ como base de datos principal
    - Contenedores Docker para despliegue
 
-2. **Restricciones Legales:**
-   - Cumplimiento con políticas de robots.txt
-   - Respeto de términos de servicio de fuentes
-   - Aplicación de principios de Fair Use
-   - Protección de datos personales
+2. **Restricciones Legales y Éticas:**
+   - Cumplimiento estricto con políticas de robots.txt
+   - Respeto de términos de servicio de todas las fuentes
+   - Aplicación de principios de Fair Use en el manejo de contenido
+   - Protección de datos personales según regulaciones colombianas
+   - Prohibición absoluta de generar resúmenes automáticos de noticias (derechos de autor)
+   - Manejo ético de información sensible sobre salud
 
 3. **Restricciones de Diseño:**
-   - Arquitectura de microservicios
-   - API RESTful para comunicación
+   - Arquitectura de microservicios para modularidad
+   - API RESTful para comunicación entre componentes
    - Interfaz responsive para múltiples dispositivos
+   - Diseño centrado en la usabilidad para personal médico con conocimientos técnicos básicos
+
+4. **Restricciones del Contexto de Investigación:**
+   - Enfoque específico en hospitales de municipios de 5ta y 6ta categoría
+   - Prioridad en el análisis estadístico sobre la generación de contenido
+   - Alineación con los objetivos del proyecto PreventIA
 
 ### 2.5 Suposiciones y Dependencias
 
@@ -364,17 +404,19 @@ Tipos de usuarios identificados preliminarmente:
 
 ### 4.1 Requisitos de Rendimiento
 
-**[PENDIENTE: Información específica requerida del usuario]**
+**RNF-4.1.1** El sistema debe procesar al menos 50 artículos por minuto considerando las limitaciones de crawl delay
 
-**RNF-4.1.1** El sistema debe procesar al menos 100 artículos por minuto
+**RNF-4.1.2** El dashboard debe cargar en menos de 3 segundos incluso en conexiones de baja velocidad típicas de municipios de 5ta y 6ta categoría
 
-**RNF-4.1.2** El dashboard debe cargar en menos de 3 segundos
+**RNF-4.1.3** Las consultas a la API deben responder en menos de 2 segundos para operaciones de lectura
 
-**RNF-4.1.3** Las consultas a la API deben responder en menos de 1 segundo
+**RNF-4.1.4** El sistema debe soportar al menos 20 usuarios concurrentes (considerando el tamaño del equipo de investigación y profesionales de salud objetivo)
 
-**RNF-4.1.4** El sistema debe soportar al menos 50 usuarios concurrentes
+**RNF-4.1.5** El análisis NLP debe completarse en menos de 5 segundos por artículo
 
-**RNF-4.1.5** El análisis NLP debe completarse en menos de 2 segundos por artículo
+**RNF-4.1.6** El sistema debe procesar el pipeline completo diario en menos de 4 horas
+
+**RNF-4.1.7** Las exportaciones de datos deben generarse en menos de 30 segundos para datasets de hasta 10,000 artículos
 
 ### 4.2 Requisitos de Seguridad
 
@@ -390,15 +432,17 @@ Tipos de usuarios identificados preliminarmente:
 
 ### 4.3 Requisitos de Fiabilidad
 
-**[PENDIENTE: Nivel de disponibilidad requerido]**
+**RNF-4.3.1** El sistema debe tener una disponibilidad mínima del 95% durante horario de investigación (8:00 AM - 6:00 PM hora Colombia)
 
-**RNF-4.3.1** El sistema debe tener una disponibilidad mínima del 99%
+**RNF-4.3.2** El sistema debe recuperarse automáticamente de fallos de scraping sin pérdida de datos
 
-**RNF-4.3.2** El sistema debe recuperarse automáticamente de fallos de scraping
+**RNF-4.3.3** Los datos deben respaldarse diariamente con retención de 30 días
 
-**RNF-4.3.3** Los datos deben respaldarse diariamente
+**RNF-4.3.4** El sistema debe mantener logs de auditoría por al menos 90 días para cumplimiento de investigación
 
-**RNF-4.3.4** El sistema debe mantener logs de auditoría por al menos 90 días
+**RNF-4.3.5** El sistema debe continuar funcionando aunque fallen fuentes individuales de noticias
+
+**RNF-4.3.6** Las ventanas de mantenimiento deben programarse fuera del horario de investigación (fines de semana preferiblemente)
 
 ### 4.4 Requisitos de Mantenibilidad
 
@@ -601,16 +645,62 @@ user_roles
 
 ---
 
+## 7. Consideraciones Éticas y de Investigación
+
+### 7.1 Principios Éticos
+
+El sistema se desarrolla bajo los siguientes principios éticos del proyecto PreventIA:
+
+- **Transparencia**: Toda fuente de información es claramente identificada y atribuida
+- **Veracidad**: No se genera contenido artificial sobre noticias, solo análisis estadístico
+- **Responsabilidad**: El sistema no proporciona consejos médicos ni diagnósticos
+- **Equidad**: Enfoque en poblaciones vulnerables de municipios de 5ta y 6ta categoría
+
+### 7.2 Cumplimiento con la Investigación
+
+- El sistema debe generar datos auditables para publicaciones académicas
+- Los resultados deben ser reproducibles para validación científica
+- La metodología de análisis debe estar documentada y ser transparente
+- Los datos deben preservarse según estándares de investigación académica
+
+### 7.3 Impacto Social
+
+- El sistema busca democratizar el acceso a información sobre cáncer de mama
+- Contribuye a identificar brechas en la comunicación de salud pública
+- Apoya la toma de decisiones basada en evidencia en políticas de salud
+
+---
+
+## 8. Evolución Futura del Sistema
+
+### 8.1 Radar de Narrativas Médicas
+
+El sistema evolucionará hacia una plataforma más completa de análisis de narrativas:
+
+- Visualización avanzada de patrones discursivos
+- Identificación de sesgos en la cobertura mediática
+- Análisis comparativo entre regiones y períodos
+- Integración con otros productos del proyecto PreventIA
+
+### 8.2 Expansión de Capacidades
+
+- Soporte para más idiomas (portugués, lenguas indígenas)
+- Análisis de redes sociales y medios digitales
+- Integración con bases de datos académicas
+- APIs públicas para investigadores externos
+
+---
+
 ## Estado del Documento
 
-**NOTA:** Este documento está en estado BORRADOR y requiere la siguiente información del usuario para ser completado:
+**Versión 1.0 - FINAL**
 
-1. Perfiles detallados de usuarios y sus necesidades
-2. Requisitos específicos de rendimiento (volumen de datos, usuarios concurrentes)
-3. Nivel de disponibilidad requerido
-4. Regulaciones de protección de datos aplicables
-5. Alcance geográfico y lingüístico definitivo
-6. Planes de integración con otros sistemas
-7. Ventanas de mantenimiento aceptables
+Este documento refleja los requerimientos completos del sistema PreventIA News Analytics basándose en:
 
-Una vez proporcionada esta información, se actualizarán las secciones correspondientes para crear la versión final del documento.
+- El análisis exhaustivo del código fuente actual
+- Los objetivos del proyecto de investigación PreventIA
+- El contexto específico de aplicación en Colombia
+- Las restricciones éticas y legales identificadas
+- La evolución planificada del sistema hacia el Radar de Narrativas Médicas
+
+El documento será actualizado conforme evolucione el proyecto y se identifiquen nuevos requerimientos durante la fase de implementación y validación con usuarios finales.
