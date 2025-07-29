@@ -6,7 +6,6 @@
 **Estado:** FINAL
 **Proyecto de Investigación:** PreventIA - Detección temprana de Cáncer de mama
 **Institución:** Fundación Universitaria Compensar, Colombia
-**Capítulo del Libro:** Capítulo 9 - Aplicación Informativa para la Comunidad
 
 ---
 
@@ -70,18 +69,19 @@ El propósito principal de este documento es:
 
 ### 1.2 Alcance
 
-PreventIA News Analytics es un sistema integral que automatiza la recopilación, análisis y visualización de noticias sobre cáncer de mama, diseñado específicamente para apoyar la investigación y comprensión de las narrativas mediáticas en el contexto colombiano, con aplicación específica en hospitales de primer y segundo nivel ubicados en municipios de 5ta y 6ta categoría.
+PreventIA News Analytics es una plataforma integral que combina un portal informativo público sobre prevención del cáncer de mama con un sistema automatizado de análisis de noticias, diseñado específicamente para apoyar tanto a la comunidad general como a investigadores en el contexto colombiano.
 
 **Incluye:**
+- Portal web público con información educativa sobre prevención y detección temprana del cáncer de mama
+- Directorio de instituciones de apoyo y recursos en Colombia
 - Web scraping automatizado de fuentes de noticias médicas colombianas e internacionales
 - Análisis de sentimiento mediante procesamiento de lenguaje natural (NLP) en español e inglés
 - Clasificación temática de artículos según categorías médicas relevantes
-- Dashboard interactivo para visualización de analytics y tendencias mediáticas
+- Dashboard interactivo para visualización de analytics y tendencias mediáticas (con autenticación)
 - Sistema de exportación multi-formato (CSV, Excel, PDF) para investigadores
-- perfil de administrador para gestión de fuentes de noticias
+- Panel de administración para gestión de fuentes de noticias
 - CLI para administración y automatización del sistema
 - Análisis estadístico de patrones discursivos y sesgos en la cobertura mediática
-- Generación de métricas e indicadores sobre la comunicación del cáncer de mama
 
 **No incluye:**
 - Diagnóstico médico automatizado o asistencia clínica directa
@@ -93,16 +93,41 @@ PreventIA News Analytics es un sistema integral que automatiza la recopilación,
 
 ### 1.3 Definiciones, Acrónimos y Abreviaturas
 
-- **API**: Application Programming Interface
-- **CLI**: Command Line Interface
-- **CRUD**: Create, Read, Update, Delete
-- **JWT**: JSON Web Token
-- **NLP**: Natural Language Processing
-- **ORM**: Object-Relational Mapping
-- **REST**: Representational State Transfer
-- **SPA**: Single Page Application
-- **VADER**: Valence Aware Dictionary and sEntiment Reasoner
-- **WebScraping**: Técnica de extracción automatizada de datos de sitios web
+#### Términos Técnicos
+
+- **API (Application Programming Interface)**: Interfaz de programación de aplicaciones que permite la comunicación entre diferentes componentes de software mediante un conjunto definido de protocolos y herramientas.
+
+- **CLI (Command Line Interface)**: Interfaz de línea de comandos que permite a los usuarios interactuar con el sistema mediante comandos de texto, utilizada principalmente para tareas administrativas y automatización.
+
+- **CRUD (Create, Read, Update, Delete)**: Conjunto de operaciones básicas de gestión de datos que permiten crear, leer, actualizar y eliminar registros en una base de datos.
+
+- **JWT (JSON Web Token)**: Estándar abierto (RFC 7519) que define una forma compacta y autónoma de transmitir información de forma segura entre partes como un objeto JSON, utilizado para autenticación en el sistema.
+
+- **NLP (Natural Language Processing)**: Procesamiento de Lenguaje Natural, rama de la inteligencia artificial que permite a las computadoras comprender, interpretar y generar lenguaje humano de manera útil.
+
+- **ORM (Object-Relational Mapping)**: Técnica de programación que permite convertir datos entre sistemas incompatibles utilizando lenguajes de programación orientados a objetos, facilitando el acceso a bases de datos relacionales.
+
+- **REST (Representational State Transfer)**: Estilo arquitectónico para el desarrollo de servicios web que utiliza el protocolo HTTP para operaciones CRUD sobre recursos identificados por URLs.
+
+- **SPA (Single Page Application)**: Aplicación web que carga una sola página HTML y actualiza dinámicamente el contenido según la interacción del usuario, mejorando la experiencia de usuario.
+
+#### Términos Específicos del Sistema
+
+- **VADER (Valence Aware Dictionary and sEntiment Reasoner)**: Herramienta de análisis de sentimiento basada en reglas y léxico, especialmente efectiva para textos de redes sociales y noticias, utilizada en el módulo NLP del sistema.
+
+- **Web Scraping**: Técnica automatizada de extracción de datos de sitios web mediante programas que simulan la navegación humana, respetando las políticas de robots.txt y términos de servicio.
+
+- **Compliance Score**: Puntuación numérica (0.00 a 1.00) que indica el nivel de cumplimiento legal de una fuente de noticias, considerando factores como robots.txt, términos de servicio y derechos de autor.
+
+- **Crawl Delay**: Tiempo mínimo de espera entre solicitudes consecutivas a un sitio web durante el proceso de scraping, especificado en robots.txt para evitar sobrecarga del servidor.
+
+#### Términos del Dominio Médico
+
+- **Cáncer de Mama/Seno**: Tipo de cáncer que se forma en las células de las mamas, foco principal del análisis de noticias del sistema PreventIA.
+
+- **Detección Temprana**: Identificación del cáncer en sus etapas iniciales cuando es más tratable, objetivo principal del proyecto PreventIA.
+
+- **Tamizaje**: Proceso de evaluación sistemática para detectar enfermedades en personas asintomáticas, incluye mamografías y autoexámenes.
 
 ### 1.4 Referencias
 
@@ -125,61 +150,87 @@ Este documento está estructurado siguiendo el estándar IEEE 830, organizado en
 PreventIA News Analytics es un sistema autónomo diseñado para operar como una plataforma independiente de monitoreo de medios especializados. El sistema se integra con:
 
 - **Fuentes de datos externas**: Sitios web de noticias médicas mediante web scraping
-- **Servicios de IA**: OpenAI API para procesamiento avanzado de texto
+- **Servicios de IA**: OpenAI API para procesamiento avanzado de texto 
 - **Infraestructura de contenedores**: Docker para despliegue y escalabilidad
 
 **Arquitectura del Sistema:**
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Frontend (React + TypeScript)             │
-│  ┌─────────────┐  ┌──────────────┐  ┌──────────────────┐   │
-│  │   Legacy    │  │    Admin     │  │  Modern Dashboard│   │
-│  │  Interface  │  │    Panel     │  │   (Future)       │   │
-│  └─────────────┘  └──────────────┘  └──────────────────┘   │
-└─────────────────────────────┬───────────────────────────────┘
-                              │ HTTP/REST
-┌─────────────────────────────┴───────────────────────────────┐
-│                      API Gateway (FastAPI)                   │
-├─────────────────────────────────────────────────────────────┤
-│                        Microservicios                        │
-│  ┌──────────┐ ┌──────────┐ ┌─────────┐ ┌───────────────┐  │
-│  │ Scraper  │ │   NLP    │ │  Data   │ │ Decision      │  │
-│  │ Service  │ │ Service  │ │ Service │ │ Engine        │  │
-│  └──────────┘ └──────────┘ └─────────┘ └───────────────┘  │
-│  ┌──────────┐ ┌──────────┐ ┌─────────┐ ┌───────────────┐  │
-│  │Copywriter│ │Publisher │ │Orchestr.│ │ Analytics     │  │
-│  │ Service  │ │ Service  │ │ Service │ │ Service       │  │
-│  └──────────┘ └──────────┘ └─────────┘ └───────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-                              │
-┌─────────────────────────────┴───────────────────────────────┐
-│                    Capa de Persistencia                      │
-│  ┌──────────────────────┐        ┌─────────────────────┐   │
-│  │    PostgreSQL DB     │        │    Redis Cache      │   │
-│  └──────────────────────┘        └─────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
+El sistema PreventIA News Analytics sigue una arquitectura de microservicios simplificada que separa las responsabilidades en capas bien definidas. La capa de presentación consiste en una aplicación React SPA que ofrece tres interfaces principales: un portal público informativo sobre prevención del cáncer de mama, un dashboard de analytics para investigadores, y un panel administrativo. Todas las interfaces se comunican con el backend a través de un API Gateway centralizado basado en FastAPI que maneja la autenticación JWT y enruta las peticiones a los servicios apropiados.
+
+El backend está compuesto por servicios especializados que incluyen el servicio de web scraping para recolectar noticias, el servicio NLP para análisis de sentimiento y clasificación, y un servicio de datos que gestiona el acceso a la base de datos PostgreSQL. La arquitectura utiliza Redis como caché para optimizar el rendimiento, y se integra con servicios externos como OpenAI API para procesamiento avanzado de texto y los sitios web de noticias como fuentes de información.
+
+```mermaid
+graph TB
+    subgraph "Frontend - React SPA"
+        A1[Portal Público<br/>Prevención e Información]
+        A2[Dashboard Analytics<br/>Análisis de Noticias]
+        A3[Panel Admin<br/>Gestión del Sistema]
+    end
+    
+    subgraph "Backend"
+        B[API Gateway<br/>FastAPI + JWT]
+        
+        subgraph "Servicios Core"
+            C1[Scraper<br/>Web Scraping]
+            C2[NLP<br/>Análisis Sentimiento]
+            C3[Data Service<br/>Acceso a Datos]
+        end
+    end
+    
+    subgraph "Storage"
+        D1[(PostgreSQL)]
+        D2[(Redis Cache)]
+    end
+    
+    subgraph "External"
+        E1[OpenAI API]
+        E2[News Sites]
+    end
+    
+    A1 --> B
+    A2 --> B
+    A3 --> B
+    
+    B --> C3
+    C3 --> D1
+    B --> D2
+    
+    C1 --> E2
+    C2 --> E1
+    
+    style A1 fill:#FFE5E5
+    style A2 fill:#E5F3FF
+    style A3 fill:#E5F3FF
+    style B fill:#FFF4E5
+    style D1 fill:#E5FFE5
+    style D2 fill:#E5FFE5
 ```
 
 ### 2.2 Funciones del Producto
 
 Las funciones principales del sistema incluyen:
 
-1. **Monitoreo Automatizado de Noticias**
+1. **Portal Informativo Público**
+   - Contenido educativo sobre prevención del cáncer de mama
+   - Guías de autoexamen y detección temprana
+   - Directorio de instituciones de apoyo en Colombia
+   - Información del proyecto PreventIA
+
+2. **Monitoreo Automatizado de Noticias**
    - Recopilación automática de artículos de fuentes configuradas
    - Detección de duplicados y contenido relevante
    - Respeto de políticas de robots.txt y términos de servicio
 
-2. **Análisis Inteligente de Contenido**
+3. **Análisis Inteligente de Contenido**
    - Análisis de sentimiento (positivo, neutral, negativo)
    - Clasificación temática (prevención, tratamiento, investigación, etc.)
    - Extracción de palabras clave y entidades
 
-3. **Visualización y Analytics**
+4. **Visualización y Analytics**
    - Dashboard en tiempo real con métricas agregadas
    - Gráficos de tendencias temporales
-   - Mapas geográficos de distribución de noticias
+   - Integración de datos relevantes en el portal público
 
-4. **Gestión y Administración**
+5. **Gestión y Administración**
    - Panel de administración para gestión de fuentes
    - Sistema de compliance y validación legal
    - Herramientas CLI para operaciones avanzadas
@@ -240,7 +291,6 @@ El sistema está diseñado para atender a los siguientes perfiles de usuarios, e
    - Diseño centrado en la usabilidad para personal médico con conocimientos técnicos básicos
 
 4. **Restricciones del Contexto de Investigación:**
-   - Enfoque específico en hospitales de municipios de 5ta y 6ta categoría
    - Prioridad en el análisis estadístico sobre la generación de contenido
    - Alineación con los objetivos del proyecto PreventIA
 
@@ -328,28 +378,37 @@ El sistema está diseñado para atender a los siguientes perfiles de usuarios, e
 
 **RF-3.3.4** El sistema debe soportar análisis en español e inglés
 
-### 3.4 Dashboard de Visualización
+### 3.4 Dashboard de Visualización y Portal Informativo
 
-**RF-3.4.1** El sistema debe proporcionar una interfaz web responsive con tres vistas:
-- Dashboard principal (legacy)
-- Panel de administración
-- Dashboard moderno (futuro)
+**RF-3.4.1** El sistema debe proporcionar una plataforma web unificada con dos áreas principales:
 
-**RF-3.4.2** El dashboard debe mostrar en tiempo real:
+**A) Portal Público Informativo:**
+- Página de inicio con información general del proyecto PreventIA
+- Sección educativa sobre el cáncer de seno
+- Guías de prevención y autoexamen
+- Directorio de instituciones de apoyo en Colombia
+- Información sobre el proyecto y equipo de investigación
+- Formulario de contacto
+
+**B) Dashboard de Analytics:**
+- Panel de análisis de noticias
+- Estadísticas y tendencias mediáticas
+- Herramientas de exportación de datos
+- Panel de administración de fuentes
+
+**RF-3.4.2** El portal público debe mostrar:
+- Contenido educativo estático sobre prevención del cáncer de mama
+- Datos relevantes del análisis de noticias (sin requerir login)
+- Información actualizada sobre el proyecto PreventIA
+
+**RF-3.4.3** El dashboard de analytics debe mostrar:
 - Total de artículos procesados
 - Distribución de sentimientos
 - Tendencias temporales
 - Top de palabras clave
-- Mapa geográfico de noticias
+- Filtros por fecha, fuente, sentimiento y categoría
 
-**RF-3.4.3** El sistema debe permitir filtrar información por:
-- Rango de fechas
-- Fuente de noticias
-- Sentimiento
-- Categoría temática
-- País/Región
-
-**RF-3.4.4** El sistema debe actualizar los datos sin recargar la página (SPA)
+**RF-3.4.4** Toda la plataforma debe ser responsive y funcionar como SPA
 
 ### 3.5 Sistema de Exportación
 
@@ -560,7 +619,7 @@ El sistema sigue una arquitectura de microservicios con los siguientes component
    - **Analytics Service**: Agregación y cálculo de métricas
    - **Decision Engine**: Lógica de negocio y reglas
    - **Orchestrator**: Coordinación de pipeline
-   - **Publisher**: Publicación de resultados
+   - **Publisher**: Publicación de resultados en wordpress (legacy)
    - **Copywriter**: Generación de contenido
 
 4. **Data Layer**
@@ -569,47 +628,128 @@ El sistema sigue una arquitectura de microservicios con los siguientes component
 
 ### 6.2 Modelo de Datos
 
-Entidades principales:
+El modelo de datos del sistema está diseñado para soportar tanto el análisis de noticias como la gestión de usuarios y el cumplimiento legal. Las principales entidades se relacionan de manera que permiten trazabilidad completa desde las fuentes de noticias hasta los análisis realizados.
 
+```mermaid
+erDiagram
+    NEWS_SOURCES ||--o{ ARTICLES : "publica"
+    ARTICLES ||--o{ ARTICLE_KEYWORDS : "contiene"
+    USERS ||--o{ USER_ROLE_ASSIGNMENTS : "tiene"
+    USER_ROLES ||--o{ USER_ROLE_ASSIGNMENTS : "asignado_a"
+    NEWS_SOURCES ||--o{ COMPLIANCE_AUDIT_LOG : "genera"
+    
+    NEWS_SOURCES {
+        int id PK
+        varchar name
+        varchar base_url UK
+        varchar language
+        varchar country
+        varchar extractor_class
+        boolean is_active
+        varchar validation_status
+        text validation_error
+        timestamp last_validation_at
+        varchar robots_txt_url
+        timestamp robots_txt_last_checked
+        int crawl_delay_seconds
+        boolean scraping_allowed
+        varchar terms_of_service_url
+        timestamp terms_reviewed_at
+        varchar legal_contact_email
+        text fair_use_basis
+        decimal compliance_score
+        timestamp last_compliance_check
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    ARTICLES {
+        int id PK
+        int source_id FK
+        text title
+        varchar url UK
+        text content
+        text summary
+        timestamp published_at
+        timestamp scraped_at
+        varchar language
+        varchar country
+        decimal sentiment_score
+        varchar sentiment_label
+        decimal sentiment_confidence
+        varchar topic_category
+        decimal topic_confidence
+        varchar processing_status
+        text processing_error
+        varchar content_hash
+        int word_count
+        boolean robots_txt_compliant
+        varchar copyright_status
+        text fair_use_basis
+        boolean scraping_permission
+        varchar content_type
+        varchar legal_review_status
+        timestamp data_retention_expires_at
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    ARTICLE_KEYWORDS {
+        int id PK
+        int article_id FK
+        varchar keyword
+        decimal relevance_score
+        varchar keyword_type
+        timestamp created_at
+    }
+    
+    USERS {
+        int id PK
+        varchar username UK
+        varchar email UK
+        varchar hashed_password
+        varchar full_name
+        boolean is_active
+        timestamp last_login_at
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    USER_ROLES {
+        int id PK
+        varchar name UK
+        text description
+        timestamp created_at
+    }
+    
+    USER_ROLE_ASSIGNMENTS {
+        int user_id FK
+        int role_id FK
+        timestamp assigned_at
+    }
+    
+    COMPLIANCE_AUDIT_LOG {
+        int id PK
+        int source_id FK
+        varchar action
+        varchar status
+        text details
+        decimal compliance_score_before
+        decimal compliance_score_after
+        varchar performed_by
+        timestamp created_at
+    }
 ```
-news_sources
-├── id (PK)
-├── name
-├── base_url
-├── language
-├── country
-├── compliance_score
-└── [campos de compliance]
 
-articles
-├── id (PK)
-├── source_id (FK)
-├── title
-├── url
-├── content
-├── sentiment_score
-├── sentiment_label
-├── topic_category
-└── [metadatos]
+**Notas sobre el modelo:**
 
-article_keywords
-├── id (PK)
-├── article_id (FK)
-├── keyword
-├── relevance_score
-└── keyword_type
-
-users
-├── id (PK)
-├── username
-├── email
-├── hashed_password
-└── [timestamps]
-
-user_roles
-├── user_id (FK)
-└── role_id (FK)
-```
+- **news_sources**: Almacena las fuentes de noticias con extensos campos de compliance legal
+- **articles**: Contiene los artículos procesados con análisis de sentimiento y categorización
+- **article_keywords**: Palabras clave extraídas con su relevancia y tipo
+- **users**: Usuarios del sistema con autenticación segura
+- **user_roles**: Roles disponibles (Admin, Analista, Demo)
+- **user_role_assignments**: Relación muchos a muchos entre usuarios y roles
+- **compliance_audit_log**: Registro de auditoría para cumplimiento legal
 
 ### 6.3 Stack Tecnológico
 
@@ -654,7 +794,7 @@ El sistema se desarrolla bajo los siguientes principios éticos del proyecto Pre
 - **Transparencia**: Toda fuente de información es claramente identificada y atribuida
 - **Veracidad**: No se genera contenido artificial sobre noticias, solo análisis estadístico
 - **Responsabilidad**: El sistema no proporciona consejos médicos ni diagnósticos
-- **Equidad**: Enfoque en poblaciones vulnerables de municipios de 5ta y 6ta categoría
+
 
 ### 7.2 Cumplimiento con la Investigación
 
