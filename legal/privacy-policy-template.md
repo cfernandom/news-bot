@@ -10,11 +10,11 @@ PreventIA News Analytics ("we," "our," or "us") operates a medical news monitori
 ## 2. Information We Collect
 
 ### 2.1 Automated News Content Collection
-We collect publicly available information from medical news websites, including:
-- Article titles and content summaries (not full text)
+We temporarily process publicly available information from medical news websites for analysis purposes only:
+- Article titles and content summaries (processed transiently, not permanently stored)
 - Publication dates and metadata
-- Source website information
-- Article URLs and identifiers
+- Source website information (anonymized as source_id)
+- Content hash identifiers (for duplicate detection without storing original content)
 
 ### 2.2 Technical Information
 Our automated systems collect:
@@ -37,19 +37,39 @@ Under GDPR and Colombian data protection law, our legal basis for processing inc
 
 ## 4. How We Use Information
 
-We use collected information to:
-- Analyze trends in medical news coverage
-- Provide sentiment analysis of medical content
-- Generate educational summaries and insights
-- Support breast cancer awareness and research
-- Advance academic research in health communication
+We use processed information (analytics only, not original content) to:
+- Analyze statistical trends in medical news coverage
+- Generate aggregate sentiment analysis metrics
+- Create anonymized research datasets for academic study
+- Support breast cancer awareness through data insights
+- Advance academic research in health communication patterns
+- Provide educational statistics on media coverage trends
+
+**Important**: We do not store or redistribute original article content, only statistical analysis results.
 
 ## 5. Data Retention and Storage
 
-### 5.1 Retention Periods
-- Article metadata: 12 months from collection date
-- Processed analytics: 24 months for trend analysis
-- Technical logs: 90 days
+### 5.1 Ultra-Conservative Retention Policy
+Following principles of data minimization and fair use protection, we implement an ultra-conservative retention approach:
+
+**Permanently Retained Data (for longitudinal research analysis):**
+- Non-protected metadata: publication_date, anonymized source_id, country, language
+- Calculated analytics: sentiment_score, sentiment_label, topic_category
+- Aggregated statistics: word_count, confidence_scores
+- NLP-extracted keywords only
+- Content hash identifiers (without original content)
+
+**Temporarily Retained Data (automatic deletion):**
+- Compliance audit logs: 90 days maximum
+- System audit logs: 90 days maximum
+- Debugging data: 30 days maximum
+- Original content (titles, summaries): **DELETED immediately after NLP processing**
+
+**Never Stored:**
+- Complete article titles or summaries after processing
+- Full article content or body text
+- Direct URLs (replaced with anonymized source_id)
+- Any personally identifiable information
 
 ### 5.2 Data Security
 - All data stored in secure, encrypted databases
@@ -77,14 +97,18 @@ Response time: Within 30 days of verified request
 We respect robots.txt directives and crawling guidelines for all websites we monitor.
 
 ### 7.2 Content Removal Requests
-Website owners may request removal of their content by contacting: cfernandom@ucompensar.edu.co
+Website owners may request removal of analytics derived from their content by contacting: cfmorenom@ucompensar.edu.co
+
+**Note**: Since we do not store original content (titles, summaries, or articles), removal involves deleting only the statistical analytics derived from the content.
 
 Required information:
-- Specific URLs or content to be removed
+- Specific URLs or date ranges to be removed
 - Verification of ownership or authority
 - Reason for removal request
 
 Response time: Within 5 business days
+
+**What gets removed**: Only analytics data (sentiment scores, topic classifications, keywords) derived from the specified content. No original text content is stored to remove.
 
 ### 7.3 Opt-Out Process
 Website owners can opt out of monitoring by:

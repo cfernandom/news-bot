@@ -123,7 +123,7 @@ PreventIA News Analytics es una plataforma integral que combina un portal inform
 
 #### Términos del Dominio Médico
 
-- **Cáncer de Mama/Seno**: Tipo de cáncer que se forma en las células de las mamas, foco principal del análisis de noticias del sistema PreventIA.
+- **Cáncer de Mama**: Tipo de cáncer que se forma en las células de las mamas, foco principal del análisis de noticias del sistema PreventIA.
 
 - **Detección Temprana**: Identificación del cáncer en sus etapas iniciales cuando es más tratable, objetivo principal del proyecto PreventIA.
 
@@ -161,9 +161,9 @@ El backend está compuesto por servicios especializados que incluyen el servicio
 ```mermaid
 graph TB
     subgraph "Frontend - React SPA"
-        A1[Portal Público<br/>Prevención e Información]
-        A2[Dashboard Analytics<br/>Análisis de Noticias]
-        A3[Panel Admin<br/>Gestión del Sistema]
+        A1[Portal Principal Legacy<br/>Ruta: /<br/>Portal Público + Analytics]
+        A2[Panel Administrativo<br/>Ruta: /admin<br/>Gestión y Compliance]
+        A3[Dashboard Experimental<br/>Ruta: /dashboard<br/>En desarrollo]
     end
     
     subgraph "Backend"
@@ -199,7 +199,7 @@ graph TB
     
     style A1 fill:#FFE5E5
     style A2 fill:#E5F3FF
-    style A3 fill:#E5F3FF
+    style A3 fill:#F0F0F0
     style B fill:#FFF4E5
     style D1 fill:#E5FFE5
     style D2 fill:#E5FFE5
@@ -321,16 +321,32 @@ El sistema está diseñado para atender a los siguientes perfiles de usuarios, e
 - Idioma
 - Email de contacto legal
 
-**RF-3.1.2** El sistema debe validar automáticamente el cumplimiento legal de cada fuente:
-- Verificación de robots.txt
-- Análisis de términos de servicio
-- Cálculo de score de compliance (0.00 a 1.00)
+**RF-3.1.2** El sistema debe validar automáticamente el cumplimiento legal de cada fuente mediante los siguientes criterios específicos:
+- Verificación de robots.txt accessibility y permisos de scraping
+- Verificación de información de contacto legal disponible
+- Análisis de términos de servicio para restricciones automatizadas
+- Documentación de base de uso justo (fair use) para investigación académica
+- Aplicación de principios de minimización de datos
+- Validación de crawl delay mínimo de 2 segundos
+- Cálculo de score de compliance (0.00 a 1.00) basado en criterios objetivos
 
-**RF-3.1.3** El sistema debe rechazar automáticamente fuentes con compliance score < 0.5
+**RF-3.1.3** El sistema debe rechazar automáticamente fuentes que no cumplan con los criterios mínimos:
+- Crawl delay menor a 2 segundos
+- Ausencia de robots.txt URL
+- Falta de información de contacto legal
+- Ausencia de URL de términos de servicio
+- Falta de documentación de base de uso justo
 
 **RF-3.1.4** El sistema debe permitir operaciones CRUD completas sobre fuentes existentes
 
 **RF-3.1.5** El sistema debe mantener un registro de auditoría de todos los cambios en fuentes
+
+**RF-3.1.6** El sistema debe implementar re-evaluación automática mensual de compliance:
+- Verificación programada de robots.txt cada 30 días
+- Validación periódica de términos de servicio
+- Re-cálculo de compliance score mensualmente
+- Notificación automática de cambios en el estado de compliance
+- Desactivación automática de fuentes que fallen la re-evaluación
 
 ### 3.2 Web Scraping Automatizado
 
@@ -354,10 +370,14 @@ El sistema está diseñado para atender a los siguientes perfiles de usuarios, e
 
 ### 3.3 Análisis de Sentimiento y NLP
 
-**RF-3.3.1** El sistema debe analizar el sentimiento de cada artículo generando:
-- Score numérico (-1.000 a 1.000)
-- Etiqueta categórica (positivo, neutral, negativo)
-- Nivel de confianza (0.00 a 1.00)
+**RF-3.3.1** El sistema debe analizar el sentimiento de cada artículo mediante VADER optimizado para contenido médico, generando:
+- Score compuesto (-1.000 a 1.000) calculado por VADER
+- Etiqueta categórica con thresholds específicos para contenido médico:
+  - Positivo: compound ≥ 0.3 (confianza = |compound|) o compound ≥ 0.1 (confianza = |compound| × 0.7)
+  - Negativo: compound ≤ -0.3 (confianza = |compound|) o compound ≤ -0.1 (confianza = |compound| × 0.7)
+  - Neutral: -0.1 < compound < 0.1 (confianza = 1 - |compound|)
+- Scores detallados: positivo, negativo, neutral de VADER
+- Metadatos: longitud de texto original y procesado
 
 **RF-3.3.2** El sistema debe clasificar artículos en categorías temáticas:
 - Prevención
@@ -378,23 +398,39 @@ El sistema está diseñado para atender a los siguientes perfiles de usuarios, e
 
 **RF-3.3.4** El sistema debe soportar análisis en español e inglés
 
+**RF-3.3.5** El sistema debe aplicar criterios de calidad de datos para análisis NLP válido:
+- Longitud mínima de título: 10 caracteres (configurable: SCRAPER_MIN_TITLE_LENGTH)
+- Longitud mínima de resumen: 20 caracteres (configurable: SCRAPER_MIN_SUMMARY_LENGTH)
+- Requisito de resumen: obligatorio (configurable: SCRAPER_REQUIRE_SUMMARY=True)
+- Longitud mínima de contenido completo: 0 caracteres (permite el procesamiento de artículos que solo tienen título y resumen, sin contenido corporal extenso, útil para noticias breves o alertas)
+- Validación de word_count para métricas de calidad del análisis
+- Preservación de text_length y processed_text_length para auditoría y métricas
+
+**RF-3.3.6** El sistema debe manejar errores de análisis NLP mediante:
+- Fallback a valores neutrales cuando el análisis falla (sentiment_label: "neutral", confidence: 0.0)
+- Preservación de metadatos de error para debugging
+- Continuación del procesamiento de otros artículos en caso de fallo individual
+- Logging estructurado de errores para monitoreo del sistema
+
 ### 3.4 Dashboard de Visualización y Portal Informativo
 
-**RF-3.4.1** El sistema debe proporcionar una plataforma web unificada con dos áreas principales:
+**RF-3.4.1** El sistema debe proporcionar una plataforma web unificada con dos interfaces principales:
 
-**A) Portal Público Informativo:**
-- Página de inicio con información general del proyecto PreventIA
-- Sección educativa sobre el cáncer de seno
+**A) Portal Principal Legacy (Ruta: `/`):**
+- Portal público informativo con información del proyecto PreventIA
+- Sección educativa sobre el cáncer de mama
 - Guías de prevención y autoexamen
-- Directorio de instituciones de apoyo en Colombia
-- Información sobre el proyecto y equipo de investigación
-- Formulario de contacto
-
-**B) Dashboard de Analytics:**
-- Panel de análisis de noticias
+- Dashboard de analytics integrado con tema rosa-azul médico
 - Estadísticas y tendencias mediáticas
 - Herramientas de exportación de datos
-- Panel de administración de fuentes
+- Acceso sin autenticación para datos públicos
+
+**B) Panel de Administración (Ruta: `/admin`):**
+- Gestión completa de fuentes de noticias con operaciones CRUD
+- Monitoreo de compliance en tiempo real
+- Dashboard de estadísticas de compliance
+- Administración de usuarios y roles
+- Acceso restringido con autenticación JWT
 
 **RF-3.4.2** El portal público debe mostrar:
 - Contenido educativo estático sobre prevención del cáncer de mama
@@ -465,11 +501,11 @@ El sistema está diseñado para atender a los siguientes perfiles de usuarios, e
 
 **RNF-4.1.1** El sistema debe procesar al menos 50 artículos por minuto considerando las limitaciones de crawl delay
 
-**RNF-4.1.2** El dashboard debe cargar en menos de 3 segundos incluso en conexiones de baja velocidad típicas de municipios de 5ta y 6ta categoría
+**RNF-4.1.2** El dashboard debe cargar en menos de 3 segundos incluso en conexiones de baja velocidad de 1 Mbps (velocidad práctica mínima en municipios de 5ta y 6ta categoría en Colombia)
 
 **RNF-4.1.3** Las consultas a la API deben responder en menos de 2 segundos para operaciones de lectura
 
-**RNF-4.1.4** El sistema debe soportar al menos 20 usuarios concurrentes (considerando el tamaño del equipo de investigación y profesionales de salud objetivo)
+**RNF-4.1.4** El sistema debe soportar al menos 20 usuarios humanos concurrentes utilizando el dashboard web simultáneamente (no incluye procesos automáticos de scraping que operan independientemente)
 
 **RNF-4.1.5** El análisis NLP debe completarse en menos de 5 segundos por artículo
 
@@ -491,13 +527,36 @@ El sistema está diseñado para atender a los siguientes perfiles de usuarios, e
 
 ### 4.3 Requisitos de Fiabilidad
 
-**RNF-4.3.1** El sistema debe tener una disponibilidad mínima del 95% durante horario de investigación (8:00 AM - 6:00 PM hora Colombia)
+**RNF-4.3.1** El sistema debe tener una disponibilidad mínima del 95% durante horario de investigación (8:00 AM - 6:00 PM hora Colombia), medida como:
+- Uptime del servidor ≥ 95% del tiempo
+- Tiempo de respuesta de API ≤ 5 segundos para el 95% de las peticiones
+- Métrica combinada: (tiempo_operativo × respuestas_exitosas_bajo_5s) / tiempo_total ≥ 0.95
 
 **RNF-4.3.2** El sistema debe recuperarse automáticamente de fallos de scraping sin pérdida de datos
 
 **RNF-4.3.3** Los datos deben respaldarse diariamente con retención de 30 días
 
-**RNF-4.3.4** El sistema debe mantener logs de auditoría por al menos 90 días para cumplimiento de investigación
+**RNF-4.3.4** El sistema debe implementar política de retención ultra-conservadora priorizando seguridad legal:
+
+**Datos Permanentes (para análisis longitudinal):**
+- Metadatos no-protegidos: fecha_publicación, fuente_id, país, idioma
+- Analytics calculados: sentiment_score, sentiment_label, topic_category
+- Estadísticas agregadas: word_count, confidence_scores
+- Keywords extraídas mediante NLP
+- Hash del contenido original (para detectar duplicados sin almacenar contenido)
+
+**Datos Temporales (eliminación automática):**
+- Logs de compliance: 90 días
+- Logs de auditoría del sistema: 90 días  
+- Datos de debugging: 30 días
+- Contenido original (títulos, resúmenes): NO SE ALMACENA tras procesamiento
+
+**Restricciones de Privacidad:**
+- No se almacenan títulos completos ni resúmenes tras el análisis NLP
+- Fair Use ultra-conservador: solo procesamiento transitorio para análisis académico
+- Principio de minimización: extracción de solo metadatos esenciales para investigación
+- URLs de referencia se mantienen solo como fuente_id para anonimización
+- Datos personales identificables: eliminación inmediata
 
 **RNF-4.3.5** El sistema debe continuar funcionando aunque fallen fuentes individuales de noticias
 
@@ -754,21 +813,22 @@ erDiagram
 ### 6.3 Stack Tecnológico
 
 **Backend:**
-- Python 3.13+
-- FastAPI 0.115.14
-- SQLAlchemy 2.0.41
-- Spacy 3.8.7
+- Python 3.13 (exacto, especificado en settings.py)
+- FastAPI 0.115.14 (especificado en requirements.txt)
+- SQLAlchemy 2.0+ con extensión asyncpg
+- Spacy 3.8+ con modelo en_core_web_sm
 - VaderSentiment 3.3.2
-- Beautiful Soup 4.13.4
-- Playwright 1.51.0
+- Beautiful Soup 4.13+
+- Playwright 1.51+ para scraping avanzado
+- Pydantic Settings para configuración unificada
 
 **Frontend:**
-- React 19.1.0
-- TypeScript 5.8.3
-- Vite 7.0.0
-- TanStack Query 5.81.5
-- Tailwind CSS 4.1.11
-- Recharts 3.0.2
+- React 19+ con TypeScript 5.8+
+- Vite como bundler principal
+- TanStack Query para estado del servidor
+- Tailwind CSS para estilos responsivos
+- Recharts para visualizaciones médicas
+- React Router para enrutamiento SPA
 
 **Infraestructura:**
 - Docker & Docker Compose

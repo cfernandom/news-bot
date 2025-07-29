@@ -33,10 +33,12 @@ Our system uses automated sentiment analysis to categorize medical news content.
 
 **INFORMATION ACCURACY NOTICE**
 
-- **Third-Party Content**: We analyze news content from various sources but do not verify the medical accuracy of the original articles
-- **Not Peer-Reviewed**: Content analyzed may not be from peer-reviewed medical journals
-- **Evolving Information**: Medical knowledge and recommendations change rapidly; information may become outdated
-- **Source Verification**: Always verify important medical information with authoritative medical sources
+- **Statistical Analysis Only**: We provide only statistical analysis and sentiment trends of medical news coverage, not the original content itself
+- **No Content Storage**: Original article titles, summaries, or content are not stored or redistributed by our system
+- **Third-Party Sources**: Analytics are derived from publicly available news sources whose medical accuracy we do not verify
+- **Not Peer-Reviewed**: Source content analyzed may not be from peer-reviewed medical journals
+- **Evolving Information**: Medical knowledge and news coverage change rapidly; statistical trends may become outdated
+- **Aggregate Data Only**: Our system provides only anonymized, aggregated insights about media coverage patterns
 
 ## Research and Academic Use
 
@@ -55,10 +57,13 @@ This system is developed for academic research purposes at Fundación Universita
 
 **DATA INTERPRETATION NOTICE**
 
-- **Statistical Analysis**: Trends and patterns identified are for research purposes only
-- **Population Health**: Findings may not apply to individual health situations
-- **Correlation vs Causation**: Statistical associations do not imply causation
-- **Professional Interpretation**: Complex medical data requires professional medical interpretation
+- **Statistical Analysis Only**: All trends and patterns are derived from statistical analysis of media coverage, not medical content itself
+- **No Original Content**: Our system does not store or provide access to original medical articles or advice
+- **Metadata Analytics**: Analysis is based solely on anonymized metadata and calculated sentiment metrics
+- **Population Health**: Media coverage trends may not reflect actual health situations or outcomes
+- **Correlation vs Causation**: Statistical associations in media coverage do not imply medical causation
+- **Professional Interpretation**: Media trend analysis should not be used for medical decision-making
+- **Research Context Only**: All data is provided exclusively for academic research and educational purposes
 
 ## Legal and Ethical Disclaimers
 
