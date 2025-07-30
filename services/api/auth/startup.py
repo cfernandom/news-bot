@@ -12,6 +12,9 @@ from services.api.auth.password_utils import hash_password
 from services.api.auth.role_manager import initialize_role_manager
 from services.data.database.connection import db_manager
 from services.data.database.models import User, UserRole, UserRoleAssignment
+from services.shared.logging import get_logger
+
+logger = get_logger(__name__, service_name="auth")
 
 
 async def create_default_admin():
@@ -24,8 +27,10 @@ async def create_default_admin():
         existing_users = result.scalars().all()
 
         if len(existing_users) > 0:
-            print(
-                f"Found {len(existing_users)} existing users. Skipping admin creation."
+            logger.info(
+                "Users already exist, skipping admin creation",
+                existing_users_count=len(existing_users),
+                event_type="admin_creation_skipped",
             )
             return
 
@@ -35,7 +40,11 @@ async def create_default_admin():
         admin_role = admin_role_result.scalar()
 
         if not admin_role:
-            print("ERROR: system_admin role not found. Run database migration first.")
+            logger.error(
+                "System admin role not found - database migration required",
+                role_name="system_admin",
+                event_type="admin_creation_failed",
+            )
             return
 
         # Create default admin user
